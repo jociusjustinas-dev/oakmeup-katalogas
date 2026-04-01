@@ -49,10 +49,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .filter-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
 .filter-btn .cnt{font-size:10px;opacity:0.6;font-family:'Geist Mono',monospace}
 .filter-btn-wrap{position:relative;display:flex;align-items:center;gap:4px}
-.info-icon{width:14px;height:14px;border-radius:50%;background:rgba(28,58,19,0.12);color:#1C3A13;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-family:'DM Mono',monospace}
-.info-icon:hover .tooltip{display:block}
-.tooltip{display:none;position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;background:#1C3A13;color:#fff;font-size:11px;padding:8px 10px;border-radius:8px;width:200px;z-index:200;line-height:1.5;pointer-events:none}
-.tooltip::before{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);border:5px solid transparent;border-right-color:#1C3A13}
+.info-icon{width:14px;height:14px;border-radius:50%;background:rgba(28,58,19,0.12);color:#1C3A13;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-family:'Geist Mono',monospace}
+.grade-tooltip{position:fixed;display:none;background:#1C3A13;color:#fff;font-size:11px;padding:8px 10px;border-radius:8px;width:220px;z-index:99999;line-height:1.5;pointer-events:none;box-shadow:0 8px 22px rgba(0,0,0,0.28)}
+.grade-tooltip.show{display:block}
+.grade-tooltip::after{content:'';position:absolute;top:50%;transform:translateY(-50%);border:6px solid transparent}
+.grade-tooltip[data-side='right']::after{right:100%;border-right-color:#1C3A13}
+.grade-tooltip[data-side='left']::after{left:100%;border-left-color:#1C3A13}
 .sel-bar{background:var(--green-dark);border-radius:8px;padding:10px 12px;margin:10px 0 12px;display:none}
 .sel-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .sel-bar-label{color:var(--lime);font-size:12px;font-weight:500}
@@ -575,6 +577,82 @@ function sentenceCaseLabel(v){
   return s.charAt(0).toUpperCase()+s.slice(1);
 }
 
+function escapeAttr(v){
+  return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+}
+
+let gradeTooltipEl=null;
+let activeInfoIcon=null;
+
+function ensureGradeTooltip(){
+  if(gradeTooltipEl)return gradeTooltipEl;
+  gradeTooltipEl=document.createElement('div');
+  gradeTooltipEl.id='grade-tooltip';
+  gradeTooltipEl.className='grade-tooltip';
+  document.body.appendChild(gradeTooltipEl);
+  return gradeTooltipEl;
+}
+
+function positionGradeTooltip(icon){
+  const tip=ensureGradeTooltip();
+  const r=icon.getBoundingClientRect();
+  const gap=10,pad=8;
+  tip.classList.add('show');
+  let side='right';
+  let left=r.right+gap;
+  const tRect=tip.getBoundingClientRect();
+  if(left+tRect.width+pad>window.innerWidth){
+    side='left';
+    left=r.left-gap-tRect.width;
+  }
+  left=Math.max(pad,Math.min(left,window.innerWidth-tRect.width-pad));
+  let top=r.top+(r.height/2)-(tRect.height/2);
+  top=Math.max(pad,Math.min(top,window.innerHeight-tRect.height-pad));
+  tip.style.left=`${left}px`;
+  tip.style.top=`${top}px`;
+  tip.setAttribute('data-side',side);
+}
+
+function showGradeTooltip(icon){
+  const text=icon.getAttribute('data-tooltip')||'';
+  if(!text)return;
+  const tip=ensureGradeTooltip();
+  tip.textContent=text;
+  activeInfoIcon=icon;
+  positionGradeTooltip(icon);
+}
+
+function hideGradeTooltip(){
+  if(!gradeTooltipEl)return;
+  gradeTooltipEl.classList.remove('show');
+  activeInfoIcon=null;
+}
+
+function initGradeTooltips(){
+  if(window.__gradeTooltipInit)return;
+  window.__gradeTooltipInit=true;
+  document.addEventListener('mouseover',e=>{
+    if(!window.matchMedia('(hover:hover)').matches)return;
+    const icon=e.target.closest('.info-icon');
+    if(icon)showGradeTooltip(icon);
+  });
+  document.addEventListener('mouseout',e=>{
+    if(!window.matchMedia('(hover:hover)').matches)return;
+    if(e.target.closest('.info-icon'))hideGradeTooltip();
+  });
+  document.addEventListener('click',e=>{
+    const icon=e.target.closest('.info-icon');
+    if(icon){
+      e.stopPropagation();
+      if(activeInfoIcon===icon)hideGradeTooltip();else showGradeTooltip(icon);
+      return;
+    }
+    hideGradeTooltip();
+  });
+  window.addEventListener('resize',()=>{if(activeInfoIcon)positionGradeTooltip(activeInfoIcon);});
+  window.addEventListener('scroll',()=>{if(activeInfoIcon)positionGradeTooltip(activeInfoIcon);},{passive:true});
+}
+
 function syncMobileFilters(){
   const sb=document.getElementById('sidebar');
   if(!sb)return;
@@ -605,7 +683,7 @@ function buildFilters(){
   document.getElementById('grade-filters').innerHTML=GRADES.map(g=>
     `<div class="filter-btn-wrap">
       <button class="filter-btn${activeGrade===g?' active':''}" onclick="setFilter('grade','${g}')" style="flex:1">${g}</button>
-      <div class="info-icon">i<div class="tooltip">${GRADE_INFO[g]||''}</div></div>
+      <div class="info-icon" data-tooltip="${escapeAttr(GRADE_INFO[g]||'')}" aria-label="Informacija apie ${g}">i</div>
     </div>`
   ).join('');
   document.getElementById('width-filters').innerHTML=WIDTHS.map(w=>
@@ -776,7 +854,7 @@ function exportTxt(){
   a.download='oakmeup-produktai.txt';a.click();
 }
 
-buildFilters();render();syncMobileFilters();
+buildFilters();render();syncMobileFilters();initGradeTooltips();
 window.addEventListener('resize',syncMobileFilters);
 </script>
 <div id="fab" onclick="openForm()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:90;background:#1C3A13;color:#D3FA99;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);align-items:center;gap:8px;">
