@@ -34,6 +34,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Sidebar ─────────────────────────────────── */
 .sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.mobile-filter-toggle{display:none}
 .sidebar-title{font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;margin-top:18px}
 .sidebar-title:first-child{margin-top:0}
 .search-wrap{position:relative;margin-bottom:4px}
@@ -133,13 +134,39 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .header-sub{font-size:11px}
   .layout{display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
   .sidebar{
-    position:static;
-    top:auto;
+    position:sticky;
+    top:56px;
+    z-index:45;
     height:auto;
-    max-height:none;
+    max-height:calc(100vh - 56px);
+    overflow-y:auto;
     border-right:none;
     border-bottom:1px solid var(--border);
-    padding:14px 16px;
+    padding:10px 16px;
+  }
+  .mobile-filter-toggle{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--green-dark);
+    color:var(--lime);
+    border:none;
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:12px;
+    font-family:'DM Sans',sans-serif;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .mobile-filter-chevron{transition:transform 0.2s}
+  .sidebar:not(.collapsed) .mobile-filter-chevron{transform:rotate(180deg)}
+  .sidebar.collapsed .sidebar-content{display:none}
+  .sidebar-content{padding-top:12px}
+  .sidebar-title:first-child{margin-top:0}
+  .sidebar.collapsed{
+    max-height:none;
+    overflow:visible;
   }
   .main{padding:16px}
   .main-top{margin-bottom:12px}
@@ -176,7 +203,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
 
 <div class="layout">
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar collapsed" id="sidebar">
+    <button class="mobile-filter-toggle" id="mobile-filter-toggle" onclick="toggleMobileFilters()">
+      <span>Filtrai</span>
+      <span class="mobile-filter-chevron">▼</span>
+    </button>
+    <div class="sidebar-content">
     <div class="search-wrap">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
       <input type="text" id="srch" placeholder="SKU arba pavadinimas..." oninput="render()">
@@ -200,6 +232,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
         <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą →</button>
         <button class="sel-btn sel-btn-sec" onclick="exportTxt()">Atsisiųsti sąrašą</button>
       </div>
+    </div>
     </div>
   </aside>
 
@@ -509,6 +542,23 @@ const WIDTHS=["80mm","90mm","125mm","130mm","150mm","190mm","220mm","240mm","260
 let activeCat="",activeGrade="",activeWidth="";
 const selected=new Set();
 const collapsed=new Set();
+let mobileFiltersOpen=false;
+
+function syncMobileFilters(){
+  const sb=document.getElementById('sidebar');
+  if(!sb)return;
+  if(window.innerWidth<=820){
+    sb.classList.toggle('collapsed',!mobileFiltersOpen);
+  }else{
+    sb.classList.remove('collapsed');
+  }
+}
+
+function toggleMobileFilters(){
+  if(window.innerWidth>820)return;
+  mobileFiltersOpen=!mobileFiltersOpen;
+  syncMobileFilters();
+}
 
 function buildFilters(){
   document.getElementById('cat-filters').innerHTML=CATS.map(c=>
@@ -676,7 +726,8 @@ function exportTxt(){
   a.download='oakmeup-produktai.txt';a.click();
 }
 
-buildFilters();render();
+buildFilters();render();syncMobileFilters();
+window.addEventListener('resize',syncMobileFilters);
 </script>
 </body>
 </html>
