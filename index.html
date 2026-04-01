@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oak Me Up — Produktų Katalogas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -20,7 +20,7 @@
   --muted:#777;
   --radius:10px;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{color:inherit;text-decoration:none}
 
 /* ── Header ──────────────────────────────────── */
@@ -40,20 +40,25 @@ a{color:inherit;text-decoration:none}
 .sidebar-title:first-child{margin-top:0}
 .search-wrap{position:relative;margin-bottom:4px}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);width:14px;height:14px}
-input[type=text]{width:100%;padding:8px 10px 8px 32px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);outline:none;transition:border 0.15s}
+input[type=text]{width:100%;padding:8px 10px 8px 32px;font-size:13px;font-family:'Geist',sans-serif;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);outline:none;transition:border 0.15s}
 input[type=text]:focus{border-color:var(--green-dark)}
 .filter-group{display:flex;flex-direction:column;gap:4px}
-.filter-btn{padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;text-align:left;color:var(--text);transition:all 0.12s;display:flex;justify-content:space-between;align-items:center}
+.filter-btn{padding:6px 10px;font-size:12px;font-family:'Geist',sans-serif;border:1px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;text-align:left;color:var(--text);transition:all 0.12s;display:flex;justify-content:space-between;align-items:center}
 .filter-btn:hover{background:var(--green-light);border-color:var(--green-dark)}
 .filter-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
-.filter-btn .cnt{font-size:10px;opacity:0.6;font-family:'DM Mono',monospace}
-.sel-bar{background:var(--green-dark);border-radius:8px;padding:10px 12px;margin-top:16px;display:none}
+.filter-btn .cnt{font-size:10px;opacity:0.6;font-family:'Geist Mono',monospace}
+.sel-bar{background:var(--green-dark);border-radius:8px;padding:10px 12px;margin:10px 0 12px;display:none}
 .sel-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .sel-bar-label{color:var(--lime);font-size:12px;font-weight:500}
-.sel-bar-clear{color:rgba(211,250,153,0.6);font-size:11px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif}
+.sel-bar-clear{color:rgba(211,250,153,0.6);font-size:11px;cursor:pointer;background:none;border:none;font-family:'Geist',sans-serif}
 .sel-bar-clear:hover{color:var(--lime)}
+.sel-picked{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;max-height:132px;overflow:auto}
+.sel-picked-item{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--lime);font-size:11px;background:rgba(211,250,153,0.08);border:1px solid rgba(211,250,153,0.25);border-radius:6px;padding:5px 7px}
+.sel-picked-sku{font-family:'Geist Mono',monospace}
+.sel-picked-rm{display:flex;align-items:center;justify-content:center;background:none;border:none;color:rgba(211,250,153,0.9);cursor:pointer}
+.sel-picked-rm:hover{color:var(--lime)}
 .sel-actions{display:flex;flex-direction:column;gap:6px}
-.sel-btn{padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;font-weight:500;transition:all 0.12s}
+.sel-btn{padding:7px 10px;font-size:12px;font-family:'Geist',sans-serif;border-radius:7px;cursor:pointer;font-weight:500;transition:all 0.12s}
 .sel-btn-primary{background:var(--lime);color:var(--green-dark);border:none}
 .sel-btn-primary:hover{background:#c0f070}
 .sel-btn-sec{background:transparent;color:rgba(211,250,153,0.8);border:1px solid rgba(211,250,153,0.3)}
@@ -70,7 +75,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-hdr{background:var(--green-dark);color:var(--lime);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 .cat-hdr-left{display:flex;align-items:center;gap:10px}
 .cat-hdr-name{font-size:13px;font-weight:500;letter-spacing:0.04em}
-.cat-hdr-count{font-size:11px;opacity:0.6;font-family:'DM Mono',monospace}
+.cat-hdr-count{font-size:11px;opacity:0.6;font-family:'Geist Mono',monospace}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
@@ -83,8 +88,8 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-row.selected .cb svg{display:block}
 .swatch{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
 .prod-name{font-size:12px;color:var(--text)}
-.prod-dims{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap}
-.prod-sku{font-size:10px;color:#AAA;font-family:'DM Mono',monospace;white-space:nowrap}
+.prod-dims{font-size:11px;color:var(--muted);font-family:'Geist Mono',monospace;white-space:nowrap}
+.prod-sku{font-size:10px;color:#AAA;font-family:'Geist Mono',monospace;white-space:nowrap}
 .grade{font-size:10px;padding:2px 7px;border-radius:20px;white-space:nowrap}
 .g-prime{background:var(--green-dark);color:var(--lime)}
 .g-rustic{background:#FAC775;color:#633806}
@@ -105,14 +110,14 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .chip-rm:hover{opacity:1}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
-.field input,.field textarea{width:100%;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);outline:none;transition:border 0.15s}
+.field input,.field textarea{width:100%;padding:9px 12px;font-size:13px;font-family:'Geist',sans-serif;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);outline:none;transition:border 0.15s}
 .field input:focus,.field textarea:focus{border-color:var(--green-dark)}
 .field textarea{resize:vertical;min-height:80px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-actions{display:flex;gap:8px;margin-top:18px}
-.form-btn-primary{flex:1;padding:11px;background:var(--green-dark);color:var(--lime);border:none;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:background 0.15s}
+.form-btn-primary{flex:1;padding:11px;background:var(--green-dark);color:var(--lime);border:none;border-radius:8px;font-size:13px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;transition:background 0.15s}
 .form-btn-primary:hover{background:var(--green-mid)}
-.form-btn-sec{padding:11px 16px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer}
+.form-btn-sec{padding:11px 16px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Geist',sans-serif;cursor:pointer}
 .form-btn-sec:hover{background:var(--bg)}
 .success-box{background:var(--green-light);border-radius:10px;padding:20px;text-align:center;color:var(--green-dark)}
 .success-box h3{font-size:15px;font-weight:500;margin-bottom:6px}
@@ -156,7 +161,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
     border-radius:8px;
     padding:10px 12px;
     font-size:12px;
-    font-family:'DM Sans',sans-serif;
+    font-family:'Geist',sans-serif;
     font-weight:500;
     cursor:pointer;
   }
@@ -209,6 +214,17 @@ input[type=text]:focus{border-color:var(--green-dark)}
       <span>Filtrai</span>
       <span class="mobile-filter-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span>
     </button>
+    <div class="sel-bar" id="sel-bar">
+      <div class="sel-bar-top">
+        <span class="sel-bar-label" id="sel-label">0 pasirinkta</span>
+        <button class="sel-bar-clear" onclick="clearSel()">Išvalyti</button>
+      </div>
+      <div class="sel-picked" id="sel-picked"></div>
+      <div class="sel-actions">
+        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą →</button>
+        <button class="sel-btn sel-btn-sec" onclick="exportTxt()">Atsisiųsti sąrašą</button>
+      </div>
+    </div>
     <div class="sidebar-content">
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -224,16 +240,6 @@ input[type=text]:focus{border-color:var(--green-dark)}
     <div class="sidebar-title">Plotis</div>
     <div class="filter-group" id="width-filters"></div>
 
-    <div class="sel-bar" id="sel-bar">
-      <div class="sel-bar-top">
-        <span class="sel-bar-label" id="sel-label">0 pasirinkta</span>
-        <button class="sel-bar-clear" onclick="clearSel()">Išvalyti</button>
-      </div>
-      <div class="sel-actions">
-        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą →</button>
-        <button class="sel-btn sel-btn-sec" onclick="exportTxt()">Atsisiųsti sąrašą</button>
-      </div>
-    </div>
     </div>
   </aside>
 
@@ -617,7 +623,12 @@ function render(){
 
   const sb=document.getElementById('sel-bar');
   sb.style.display=selected.size>0?'block':'none';
-  if(selected.size>0) document.getElementById('sel-label').textContent=selected.size+' pasirinkta';
+  if(selected.size>0){
+    document.getElementById('sel-label').textContent=selected.size+' pasirinkta';
+    document.getElementById('sel-picked').innerHTML=[...selected].map(sku=>
+      `<div class="sel-picked-item"><span class="sel-picked-sku">${sku}</span><button class="sel-picked-rm" onclick="removeSelected('${sku}')">${icon('x','12')}</button></div>`
+    ).join('');
+  }
 
   const byCat={},bySub={};
   filtered.forEach(p=>{
@@ -677,6 +688,7 @@ function toggleProd(sku){
 }
 
 function clearSel(){selected.clear();render();}
+function removeSelected(sku){selected.delete(sku);render();}
 
 function openForm(){
   if(!selected.size){alert('Pasirinkite bent vieną produktą');return;}
