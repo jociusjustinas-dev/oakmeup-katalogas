@@ -695,11 +695,11 @@ function toggleMobileFilters(){
 
 function buildFilters(){
   const GRADE_INFO={
-    'Prime AB':'Lygios, švarios linijos, minimalus medienos raštas. Aukščiausia kokybė.',
-    'Classic':'Natūralus medienos charakteris, vidutinio intensyvumo raštas. Populiariausias pasirinkimas.',
-    'Rustic':'Ryškus medienos raštas, mazgai, maksimalus natūralumas. Charakteringas ir šiltas.',
-    'Select':'Atrinkta mediena su subtiliu raštu. Tarpinis variantas tarp Prime ir Classic.',
-    'Antique':'Dirbtinai sendintas paviršius. Vintage ir loftinis charakteris.'
+    'Prime AB':'Švariausias pasirinkimas — minimaliai mazgų, vienoda spalva, taisyklingas grūdas. Tik apie 15% medienos atitinka šį standartą. Idealus moderniems ir minimalistiniams interjerams.',
+    'Classic':'Natūralus medienos charakteris su nedideliais mazgais ir lengvu spalvų varijavimu. Populiariausias pasirinkimas — harmoningas balansas tarp švarumo ir natūralumo.',
+    'Rustic':'Ryškus medienos charakteris — daug mazgų, spalvų varijavimas, natūralus grūdas. Mazgai gali būti užpildyti. Šiltas, organiškas jausmas. Populiariausias Europoje.',
+    'Select':'Tarp Prime ir Classic — mažiau mazgų nei Classic, daugiau charakterio nei Prime. Geras pasirinkimas tiems, kam patinka švarus vaizdas, bet su šiek tiek natūralumo.',
+    'Antique':'Specialiai sendintas paviršius — dirbtinai sukurtas senovinis efektas su įdubimais ir dažų sluoksniais. Loftiniam, industriniam ar vintage stiliui.'
   };
   const hasFilters=activeCat||activeGrade||activeWidth;
   document.getElementById('clear-filters').style.display=hasFilters?'block':'none';
