@@ -730,9 +730,18 @@ function buildFilters(){
   document.getElementById('width-filters').innerHTML=WIDTHS.map(w=>
     `<button class="filter-btn${activeWidth===w?' active':''}" onclick="setFilter('width','${w}')">${w}</button>`
   ).join('');
-  document.getElementById('finish-filters').innerHTML=FINISHES.map(f=>
-    `<button class="filter-btn${activeFinish===f?' active':''}" onclick='setFilter("finish",${JSON.stringify(f)})'>${f}</button>`
-  ).join('');
+  const FINISH_INFO={
+    'Lacquered':'Lakas sėdi ant medienos paviršiaus — suteikia stiprią apsaugą nuo drėgmės ir įbrėžimų. Lengva valyti. Matinis arba blizgus efektas. Idealus šeimoms su vaikais.',
+    'Oiled':'Alyva įsigeria į medieną — natūralus, gyvos medienos jausmas. Lengva atnaujinti vietiniais dėmėmis. Reikia periodinės priežiūros kas 1-2 metus.',
+    'Unfinished':'Apdaila nesuteikta — galite patys pasirinkti lakavimą ar alyvavimą. Leidžia sukurti unikalų, individualų grindų dizainą.',
+    'Smoked':'Mediena apdorota amoniako garais — dūminis, gelminis tamsus atspalvis, kuris išlieka net po šlifavimo. Vintage ar loftinis charakteris.',
+    'White / Grey Washed':'Mediena padengta pusiau permatoma balta arba pilka danga — ryškina grūdą, suteikia lengvumo ir moderniško jausmo. Populiaru skandinaviškuose interjeruose.',
+    'Handscraped / Distressed':'Rankomis ar mašinomis sukurtas sendintas paviršius — įdubos, randai, natūralūs netobulumai. Antikvaro ar industrinio stiliaus grindys, kurios slepia nusidėvėjimą.'
+  };
+  document.getElementById('finish-filters').innerHTML=FINISHES.map(f=>`<div class="filter-btn-wrap">
+  <button class="filter-btn${activeFinish===f?' active':''}" onclick='setFilter("finish",${JSON.stringify(f)})' style="flex:1">${f}</button>
+  <div class="info-icon" data-tooltip="${escapeAttr(FINISH_INFO[f]||'')}" aria-label="Informacija apie ${f}">i</div>
+</div>`).join('');
 }
 
 function setFilter(type,val){
