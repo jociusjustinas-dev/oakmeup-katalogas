@@ -206,11 +206,11 @@ input[type=text]:focus{border-color:var(--green-dark)}
   <aside class="sidebar collapsed" id="sidebar">
     <button class="mobile-filter-toggle" id="mobile-filter-toggle" onclick="toggleMobileFilters()">
       <span>Filtrai</span>
-      <span class="mobile-filter-chevron">▼</span>
+      <span class="mobile-filter-chevron"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span>
     </button>
     <div class="sidebar-content">
     <div class="search-wrap">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
       <input type="text" id="srch" placeholder="SKU arba pavadinimas..." oninput="render()">
     </div>
 
@@ -229,7 +229,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
         <button class="sel-bar-clear" onclick="clearSel()">Išvalyti</button>
       </div>
       <div class="sel-actions">
-        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą →</button>
+        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą ${icon('arrow-right','14')}</button>
         <button class="sel-btn sel-btn-sec" onclick="exportTxt()">Atsisiųsti sąrašą</button>
       </div>
     </div>
@@ -544,6 +544,17 @@ const selected=new Set();
 const collapsed=new Set();
 let mobileFiltersOpen=false;
 
+function icon(name,size='14'){
+  const icons={
+    search:`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>`,
+    'chevron-right':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>`,
+    'chevron-down':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>`,
+    x:`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>`,
+    'arrow-right':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`
+  };
+  return icons[name]||'';
+}
+
 function syncMobileFilters(){
   const sb=document.getElementById('sidebar');
   if(!sb)return;
@@ -629,7 +640,7 @@ function render(){
     return `<div class="cat-block">
       <div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
         <div class="cat-hdr-left">
-          <span class="cat-chevron${isCol?'':' open'}">▶</span>
+          <span class="cat-chevron${isCol?'':' open'}">${icon('chevron-right','12')}</span>
           <span class="cat-hdr-name">${cat}</span>
         </div>
         <span class="cat-hdr-count">${byCat[cat].length}</span>
@@ -671,7 +682,7 @@ function openForm(){
   if(!selected.size){alert('Pasirinkite bent vieną produktą');return;}
   document.getElementById('form-chips').innerHTML=[...selected].map(sku=>{
     const p=PRODUCTS.find(x=>x[0]===sku);
-    return p?`<div class="chip"><span>${sku} — ${p[1]}</span><span class="chip-rm" onclick="removeChip('${sku}')">×</span></div>`:'';
+    return p?`<div class="chip"><span>${sku} — ${p[1]}</span><span class="chip-rm" onclick="removeChip('${sku}')">${icon('x','12')}</span></div>`:'';
   }).join('');
   document.getElementById('form-body').innerHTML=`
     <div class="field-row">
