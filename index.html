@@ -79,8 +79,8 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-row.selected{background:#F0F9EC}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
 .prod-row.selected .cb{background:var(--green-dark);border-color:var(--green-dark)}
-.checkmark{width:8px;height:6px;border-left:1.5px solid var(--lime);border-bottom:1.5px solid var(--lime);transform:rotate(-45deg) translateY(-1px);display:none}
-.prod-row.selected .checkmark{display:block}
+.cb svg{display:none}
+.prod-row.selected .cb svg{display:block}
 .swatch{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
 .prod-name{font-size:12px;color:var(--text)}
 .prod-dims{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap}
@@ -551,7 +551,8 @@ function icon(name,size='14'){
     'chevron-right':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>`,
     'chevron-down':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>`,
     x:`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>`,
-    'arrow-right':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`
+    'arrow-right':`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`,
+    check:`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>`
   };
   return icons[name]||'';
 }
@@ -651,7 +652,7 @@ function render(){
           ${bySub[k].map(p=>{
             const sel=selected.has(p[0]);
             return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
-              <div class="cb"><div class="checkmark"></div></div>
+              <div class="cb">${icon('check','10')}</div>
               <div class="swatch" style="background:${p[6]}"></div>
               <span class="prod-name">${p[1]}</span>
               <span class="prod-dims">${p[2]}</span>
