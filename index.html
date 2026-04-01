@@ -266,7 +266,13 @@ input[type=text]:focus{border-color:var(--green-dark)}
 
     <div class="sidebar-title">Apdaila</div>
     <div class="filter-group" id="finish-filters"></div>
-    <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';activeFinish='';buildFilters();render();">Išvalyti filtrus</button>
+
+    <div class="sidebar-title">Medienos rūšis</div>
+    <div class="filter-group" id="species-filters"></div>
+
+    <div class="sidebar-title">Storis</div>
+    <div class="filter-group" id="thickness-filters"></div>
+    <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';activeFinish='';activeSpecies='';activeThickness='';buildFilters();render();">Išvalyti filtrus</button>
 
     </div>
   </aside>
@@ -575,6 +581,29 @@ const GRADES=["Prime AB","Classic","Rustic","Select","Antique"];
 const WIDTHS=["80mm","90mm","125mm","130mm","150mm","190mm","220mm","240mm","260mm","300mm","600mm","800mm"];
 const FINISHES=['Lacquered','Oiled','Unfinished','Smoked','White / Grey Washed','Handscraped / Distressed'];
 
+const SPECIES=['Engineered Oak','Solid Oak','White Oak','American Oak','American Walnut','French Oak'];
+
+function getSpecies(name){
+  const n=name;
+  if(n.includes('Am. Walnut')||n.includes('Walnut HB')) return 'American Walnut';
+  if(n.includes('Am. Oak')) return 'American Oak';
+  if(n.includes('French Oak')||n.includes('Versailles')) return 'French Oak';
+  if(n.includes('White Oak')) return 'White Oak';
+  if(n.includes('Solid Oak')) return 'Solid Oak';
+  return 'Engineered Oak';
+}
+
+const THICKNESS_GROUPS=['10–14mm (standartinis)','15–18mm (sustiprintas)','20mm+ (premium)'];
+
+function getThickness(dims){
+  const m=dims.match(/^(\d+)/);
+  if(!m) return '10–14mm (standartinis)';
+  const t=parseInt(m[1]);
+  if(t<=14) return '10–14mm (standartinis)';
+  if(t<=18) return '15–18mm (sustiprintas)';
+  return '20mm+ (premium)';
+}
+
 function getFinish(name){
   const n=name.toLowerCase();
   if(n.includes('unfinished')) return 'Unfinished';
@@ -586,7 +615,7 @@ function getFinish(name){
   return 'Lacquered';
 }
 
-let activeCat="",activeGrade="",activeWidth="",activeFinish="";
+let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="";
 const selected=new Set();
 const collapsed=new Set(['CHEVRON','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
 let mobileFiltersOpen=false;
@@ -716,7 +745,7 @@ function buildFilters(){
     'Select':'Tarp Prime ir Classic — mažiau mazgų nei Classic, daugiau charakterio nei Prime. Geras pasirinkimas tiems, kam patinka švarus vaizdas, bet su šiek tiek gyvumo.',
     'Antique':'Specialiai sendintas paviršius — dirbtinai sukurtas senovinis efektas. Loftiniam, industriniam ar vintage stiliui.'
   };
-  const hasFilters=activeCat||activeGrade||activeWidth||activeFinish;
+  const hasFilters=activeCat||activeGrade||activeWidth||activeFinish||activeSpecies||activeThickness;
   document.getElementById('clear-filters').style.display=hasFilters?'block':'none';
   document.getElementById('cat-filters').innerHTML=CATS.map(c=>
     `<button class="filter-btn${activeCat===c?' active':''}" onclick="setFilter('cat','${c}')">${sentenceCaseLabel(c)}<span class="cnt">${PRODUCTS.filter(p=>p[4]===c).length}</span></button>`
@@ -742,12 +771,21 @@ function buildFilters(){
   <button class="filter-btn${activeFinish===f?' active':''}" onclick='setFilter("finish",${JSON.stringify(f)})' style="flex:1">${f}</button>
   <div class="info-icon" data-tooltip="${escapeAttr(FINISH_INFO[f]||'')}" aria-label="Informacija apie ${f}">i</div>
 </div>`).join('');
+  document.getElementById('species-filters').innerHTML=SPECIES.map(s=>
+    `<button class="filter-btn${activeSpecies===s?' active':''}" onclick="setFilter('species','${s}')">${s}</button>`
+  ).join('');
+
+  document.getElementById('thickness-filters').innerHTML=THICKNESS_GROUPS.map(t=>
+    `<button class="filter-btn${activeThickness===t?' active':''}" onclick="setFilter('thickness','${t}')">${t}</button>`
+  ).join('');
 }
 
 function setFilter(type,val){
   if(type==='cat') activeCat=activeCat===val?'':val;
   else if(type==='grade') activeGrade=activeGrade===val?'':val;
   else if(type==='finish') activeFinish=activeFinish===val?'':val;
+  else if(type==='species') activeSpecies=activeSpecies===val?'':val;
+  else if(type==='thickness') activeThickness=activeThickness===val?'':val;
   else activeWidth=activeWidth===val?'':val;
   buildFilters();render();
 }
@@ -759,6 +797,8 @@ function getFiltered(){
     if(activeGrade&&!p[3].toLowerCase().includes(activeGrade.toLowerCase()))return false;
     if(activeWidth&&!p[2].includes('× '+activeWidth.replace('mm',''))&&!p[2].includes('× '+activeWidth))return false;
     if(activeFinish&&getFinish(p[1])!==activeFinish)return false;
+    if(activeSpecies&&getSpecies(p[1])!==activeSpecies)return false;
+    if(activeThickness&&getThickness(p[2])!==activeThickness)return false;
     if(q&&!p[0].toLowerCase().includes(q)&&!p[1].toLowerCase().includes(q))return false;
     return true;
   });
