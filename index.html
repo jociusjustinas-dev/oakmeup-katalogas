@@ -720,7 +720,7 @@ function submitForm(){
     return p?`• ${sku} — ${p[1]} (${p[2]})`:sku;
   }).join('\n');
   const txt=`Sveiki,\n\nNorėčiau gauti pasiūlymą šiems produktams:\n\n${prods}\n\nPlotas: ${document.getElementById('f-area').value||'—'} m²\nPastabos: ${document.getElementById('f-msg').value||'—'}\n\nKontaktai: ${name}, ${email}, ${document.getElementById('f-tel').value||''}`;
-  const href=`mailto:edgaras@oakmeup.lt?subject=Produktų užklausa — ${name}&body=${encodeURIComponent(txt)}`;
+  const href=`mailto:jociusjustinas@gmail.com?subject=Produktų užklausa — ${name}&body=${encodeURIComponent(txt)}`;
   document.getElementById('form-body').innerHTML=`<div class="success-box"><h3>Užklausa suformuota!</h3><p>Atidaromas el. pašto klientas su visu sąrašu.</p><a href="${href}">Spustelėkite čia jei neatsidaro</a></div>`;
   setTimeout(()=>{window.location.href=href;},400);
 }
