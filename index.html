@@ -710,11 +710,11 @@ function toggleMobileFilters(){
 
 function buildFilters(){
   const GRADE_INFO={
-    'Prime AB':'Švariausias pasirinkimas — minimaliai mazgų, vienoda spalva, taisyklingas grūdas. Tik apie 15% medienos atitinka šį standartą. Idealus moderniems ir minimalistiniams interjerams.',
-    'Classic':'Natūralus medienos charakteris su nedideliais mazgais ir lengvu spalvų varijavimu. Populiariausias pasirinkimas — harmoningas balansas tarp švarumo ir natūralumo.',
-    'Rustic':'Ryškus medienos charakteris — daug mazgų, spalvų varijavimas, natūralus grūdas. Mazgai gali būti užpildyti. Šiltas, organiškas jausmas. Populiariausias Europoje.',
-    'Select':'Tarp Prime ir Classic — mažiau mazgų nei Classic, daugiau charakterio nei Prime. Geras pasirinkimas tiems, kam patinka švarus vaizdas, bet su šiek tiek natūralumo.',
-    'Antique':'Specialiai sendintas paviršius — dirbtinai sukurtas senovinis efektas su įdubimais ir dažų sluoksniais. Loftiniam, industriniam ar vintage stiliui.'
+    'Prime AB':'Pats švaresnis pasirinkimas — beveik be mazgų, vienoda spalva, tolygus grūdas. Tik apie 15% medienos atitinka šį standartą. Puikiai tinka moderniems ir minimalistiniams interjerams.',
+    'Classic':'Natūralus medienos charakteris su nedideliais mazgais ir lengvu spalvų kintamumu. Populiariausias pasirinkimas — geras balansas tarp švarumo ir gyvumo.',
+    'Rustic':'Ryškus medienos charakteris — daug mazgų, turtingas spalvų kintamumas, natūralus grūdas. Mazgai gali būti užpildyti. Šiltas, organiškas jausmas. Populiariausias Europoje.',
+    'Select':'Tarp Prime ir Classic — mažiau mazgų nei Classic, daugiau charakterio nei Prime. Geras pasirinkimas tiems, kam patinka švarus vaizdas, bet su šiek tiek gyvumo.',
+    'Antique':'Specialiai sendintas paviršius — dirbtinai sukurtas senovinis efektas. Loftiniam, industriniam ar vintage stiliui.'
   };
   const hasFilters=activeCat||activeGrade||activeWidth||activeFinish;
   document.getElementById('clear-filters').style.display=hasFilters?'block':'none';
@@ -731,12 +731,12 @@ function buildFilters(){
     `<button class="filter-btn${activeWidth===w?' active':''}" onclick="setFilter('width','${w}')">${w}</button>`
   ).join('');
   const FINISH_INFO={
-    'Lacquered':'Lakas sėdi ant medienos paviršiaus — suteikia stiprią apsaugą nuo drėgmės ir įbrėžimų. Lengva valyti. Matinis arba blizgus efektas. Idealus šeimoms su vaikais.',
-    'Oiled':'Alyva įsigeria į medieną — natūralus, gyvos medienos jausmas. Lengva atnaujinti vietiniais dėmėmis. Reikia periodinės priežiūros kas 1-2 metus.',
-    'Unfinished':'Apdaila nesuteikta — galite patys pasirinkti lakavimą ar alyvavimą. Leidžia sukurti unikalų, individualų grindų dizainą.',
-    'Smoked':'Mediena apdorota amoniako garais — dūminis, gelminis tamsus atspalvis, kuris išlieka net po šlifavimo. Vintage ar loftinis charakteris.',
-    'White / Grey Washed':'Mediena padengta pusiau permatoma balta arba pilka danga — ryškina grūdą, suteikia lengvumo ir moderniško jausmo. Populiaru skandinaviškuose interjeruose.',
-    'Handscraped / Distressed':'Rankomis ar mašinomis sukurtas sendintas paviršius — įdubos, randai, natūralūs netobulumai. Antikvaro ar industrinio stiliaus grindys, kurios slepia nusidėvėjimą.'
+    'Lacquered':'Lakas dengia medienos paviršių iš viršaus — stipri apsauga nuo drėgmės ir įbrėžimų. Lengva valyti. Galimas matinis arba blizgus efektas. Idealus šeimoms su vaikais.',
+    'Oiled':'Alyva įsigeria į medieną — natūralus, gyvas medienos jausmas po kojomis. Vietines dėmes lengva atnaujinti. Reikia periodiškai alyvuoti kas 1–2 metus.',
+    'Unfinished':'Mediena be jokios apdailos — galite patys lakuoti ar alyvuoti pagal savo skonį. Leidžia sukurti tikrai individualias grindis.',
+    'Smoked':'Mediena apdorota amoniako garais krosnyje — dūminis, gilus tamsus atspalvis, kuris išlieka net po šlifavimo. Vintage ar loftinis charakteris.',
+    'White / Grey Washed':'Mediena padengta pusiau permatoma balta arba pilka danga — ryškinamas grūdas, sukuriamas lengvas, modernus vaizdas. Populiaru skandinaviškuose interjeruose.',
+    'Handscraped / Distressed':'Rankomis ar mašinomis sukurtas sendintas paviršius — nedidelės įdubos ir nereguliarios tekstūros. Antikvaro ar industrinio stiliaus grindys, kurios puikiai slepia nusidėvėjimą.'
   };
   document.getElementById('finish-filters').innerHTML=FINISHES.map(f=>`<div class="filter-btn-wrap">
   <button class="filter-btn${activeFinish===f?' active':''}" onclick='setFilter("finish",${JSON.stringify(f)})' style="flex:1">${f}</button>
