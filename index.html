@@ -771,13 +771,30 @@ function buildFilters(){
   <button class="filter-btn${activeFinish===f?' active':''}" onclick='setFilter("finish",${JSON.stringify(f)})' style="flex:1">${f}</button>
   <div class="info-icon" data-tooltip="${escapeAttr(FINISH_INFO[f]||'')}" aria-label="Informacija apie ${f}">i</div>
 </div>`).join('');
-  document.getElementById('species-filters').innerHTML=SPECIES.map(s=>
-    `<button class="filter-btn${activeSpecies===s?' active':''}" onclick="setFilter('species','${s}')">${s}</button>`
-  ).join('');
+  const SPECIES_INFO={
+    'Engineered Oak':'Populiariausias pasirinkimas — ąžuolo faneruotė ant daugiasluoksnio pagrindo. Stabilus, tinkamas šildomoms grindims, atsparus drėgmės svyravimams.',
+    'Solid Oak':'Vientisa ąžuolo lenta — storesnis faneruotės sluoksnis, galima šlifuoti daugiau kartų. Ilgaamžiškiausias variantas.',
+    'White Oak':'Baltasis ąžuolas — šviesesnis, su subtilesniu grūdu nei paprastas ąžuolas. Populiarus moderniuose ir skandinaviškuose interjeruose.',
+    'American Oak':'Amerikiečių ąžuolas — šiltesnis atspalvis, ryškesnis ir tiesesnis grūdas nei europinio ąžuolo. Premium linija.',
+    'American Walnut':'Amerikiečių riešutmedis — tamsus, turtingas medis su unikalia grūdo struktūra. Išsiskiriantis ir elegantiškas pasirinkimas.',
+    'French Oak':'Prancūziškas ąžuolas — naudojamas Versalio panelėms. Ypač taisyklingas grūdas, tradiciškai naudojamas reprezentacinėse erdvėse.'
+  };
 
-  document.getElementById('thickness-filters').innerHTML=THICKNESS_GROUPS.map(t=>
-    `<button class="filter-btn${activeThickness===t?' active':''}" onclick="setFilter('thickness','${t}')">${t}</button>`
-  ).join('');
+  document.getElementById('species-filters').innerHTML=SPECIES.map(s=>`<div class="filter-btn-wrap">
+  <button class="filter-btn${activeSpecies===s?' active':''}" onclick="setFilter('species','${s}')" style="flex:1">${s}</button>
+  <div class="info-icon" data-tooltip="${escapeAttr(SPECIES_INFO[s]||'')}" aria-label="Informacija apie ${s}">i</div>
+</div>`).join('');
+
+  const THICKNESS_INFO={
+    '10–14mm (standartinis)':'Tinkamiausias variantas renovacijai — nedidina grindų lygio. Galima įrengti tiesiai ant esamo pagrindo. Tinka šildomoms grindims.',
+    '15–18mm (sustiprintas)':'Storesnis pagrindas suteikia geresnį garso slopinimą ir patvaresnį jausmą po kojomis. Populiarus naujose statybose.',
+    '20mm+ (premium)':'Storiausias variantas — solidus jausmas po kojomis, puikus garso slopinimas. Galima šlifuoti daugiau kartų. Ilgaamžiškiausias pasirinkimas.'
+  };
+
+  document.getElementById('thickness-filters').innerHTML=THICKNESS_GROUPS.map(t=>`<div class="filter-btn-wrap">
+  <button class="filter-btn${activeThickness===t?' active':''}" onclick="setFilter('thickness','${t}')" style="flex:1">${t}</button>
+  <div class="info-icon" data-tooltip="${escapeAttr(THICKNESS_INFO[t]||'')}" aria-label="Informacija apie ${t}">i</div>
+</div>`).join('');
 }
 
 function setFilter(type,val){
