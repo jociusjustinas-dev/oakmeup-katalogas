@@ -807,7 +807,11 @@ function render(){
   const cats=[...new Set(filtered.map(p=>p[4]))];
   document.getElementById('list').innerHTML=cats.map(cat=>{
     const isCol=collapsed.has(cat);
-    const subs=[...new Set(byCat[cat].map(p=>p[5]))];
+    const subs=[...new Set(byCat[cat].map(p=>p[5]))].sort((a,b)=>{
+      const au=a.toLowerCase().includes('unfinished')?1:0;
+      const bu=b.toLowerCase().includes('unfinished')?1:0;
+      return au-bu;
+    });
     return `<div class="cat-block">
       <div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
         <div class="cat-hdr-left">
