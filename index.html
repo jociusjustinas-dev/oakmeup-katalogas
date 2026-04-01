@@ -820,7 +820,11 @@ function render(){
         const k=cat+'||'+sub;
         return `<div class="sub-block">
           <div class="sub-hdr">${sentenceCaseLabel(sub)}</div>
-          ${bySub[k].map(p=>{
+          ${bySub[k].slice().sort((a,b)=>{
+            const au=a[1].toLowerCase().includes('unfinished')?1:0;
+            const bu=b[1].toLowerCase().includes('unfinished')?1:0;
+            return au-bu;
+          }).map(p=>{
             const sel=selected.has(p[0]);
             return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
               <div class="cb">${icon('check','10')}</div>
