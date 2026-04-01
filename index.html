@@ -25,7 +25,8 @@ a{color:inherit;text-decoration:none}
 
 /* ── Header ──────────────────────────────────── */
 .header{background:var(--green-dark);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.logo{color:var(--lime);font-size:15px;font-weight:500;letter-spacing:0.12em}
+.logo{display:flex;align-items:center}
+.logo img{height:20px;width:auto;display:block}
 .header-sub{color:rgba(211,250,153,0.5);font-size:12px}
 
 /* ── Layout ──────────────────────────────────── */
@@ -70,7 +71,6 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-hdr-count{font-size:11px;opacity:0.6;font-family:'DM Mono',monospace}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
-.sub-block{}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
 .prod-row{display:grid;grid-template-columns:20px 26px 1fr auto auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
 .prod-row:hover{background:#FAFAF7}
@@ -121,8 +121,8 @@ input[type=text]:focus{border-color:var(--green-dark)}
 <body>
 
 <header class="header">
-  <div class="logo">OAK ME UP</div>
-  <div class="header-sub">Produktų katalogassdfg</div>
+  <div class="logo"><img src="Frame 8.svg" alt="Oak Me Up"></div>
+  <div class="header-sub">Produktų katalogas</div>
 </header>
 
 <div class="layout">
