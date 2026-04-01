@@ -588,7 +588,10 @@ function sentenceCaseLabel(v){
   if(!v)return '';
   const parts=String(v).split(/(\s*\(.*?\))/);
   return parts.map(part=>{
-    if(/^\s*\(.*\)\s*$/.test(part)) return part.toUpperCase();
+    if(/^\s*\(.*\)\s*$/.test(part)){
+      const inner=part.trim().slice(1,-1).toLowerCase();
+      return ` (${inner.charAt(0).toUpperCase()+inner.slice(1)})`;
+    }
     const s=part.toLowerCase();
     return s.charAt(0).toUpperCase()+s.slice(1);
   }).join('');
@@ -880,7 +883,7 @@ window.addEventListener('resize',syncMobileFilters);
   <span id="fab-count">0</span> pasirinkta →
 </div>
 <footer style="background:#1C3A13;color:rgba(211,250,153,0.6);text-align:center;padding:20px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
-  <span style="color:#D3FA99;font-weight:500">OAK ME UP</span>
+  <img src="Frame 8.svg" alt="Oak Me Up" style="height:22px;width:auto;display:block">
   <span>Edgaras · +370 615 69 962</span>
   <a href="mailto:edgaras@oakmeup.lt" style="color:#D3FA99">edgaras@oakmeup.lt</a>
   <a href="https://oakmeup.lt" style="color:#D3FA99">oakmeup.lt</a>
