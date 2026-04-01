@@ -99,7 +99,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
-.prod-row{display:grid;grid-template-columns:20px 26px 1fr auto auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
+.prod-row{display:grid;grid-template-columns:20px 26px 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
@@ -109,6 +109,8 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .swatch{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
 .prod-name{font-size:12px;color:var(--text)}
 .prod-dims{font-size:11px;color:var(--muted);font-family:'Geist Mono',monospace;white-space:nowrap}
+.prod-name-wrap{display:flex;flex-direction:column;gap:1px;min-width:0}
+.prod-name-wrap .prod-dims{font-size:10px;display:block;white-space:normal;color:var(--muted);font-family:'Geist Mono',monospace}
 .prod-sku{font-size:10px;color:#AAA;font-family:'Geist Mono',monospace;white-space:nowrap}
 .grade{font-size:10px;padding:2px 7px;border-radius:20px;white-space:nowrap}
 .g-prime{background:var(--green-dark);color:var(--lime)}
@@ -206,14 +208,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .main{padding:12px}
   .cat-hdr,.sub-hdr{padding-left:12px;padding-right:12px}
   .prod-row{
-    grid-template-columns:18px 20px minmax(0,1fr) auto;
+    grid-template-columns:18px 20px 1fr auto;
     gap:6px;
     padding:8px 10px;
     align-items:start;
   }
   .prod-name{font-size:11px;line-height:1.3}
-  .prod-name-wrap{display:flex;flex-direction:column;gap:2px}
-  .prod-dims{font-size:10px;display:block}
   .grade{font-size:9px;padding:2px 6px}
   .overlay{padding:20px 10px}
   .form-card{padding:16px}
