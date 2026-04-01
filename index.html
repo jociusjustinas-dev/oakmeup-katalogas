@@ -81,6 +81,8 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .sel-btn-primary:hover{background:#c0f070}
 .sel-btn-sec{background:transparent;color:rgba(211,250,153,0.8);border:1px solid rgba(211,250,153,0.3)}
 .sel-btn-sec:hover{background:rgba(211,250,153,0.1)}
+.clear-filters-btn{width:100%;margin-top:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-size:12px;font-family:'Geist',sans-serif;cursor:pointer;display:none}
+.clear-filters-btn:hover{background:var(--bg);color:var(--text)}
 
 /* ── Main ─────────────────────────────────────── */
 .main{padding:24px 28px}
@@ -257,6 +259,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 
     <div class="sidebar-title">Plotis</div>
     <div class="filter-group" id="width-filters"></div>
+    <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';buildFilters();render();">Išvalyti filtrus</button>
 
     </div>
   </aside>
@@ -583,8 +586,12 @@ function icon(name,size='14'){
 
 function sentenceCaseLabel(v){
   if(!v)return '';
-  const s=v.toLowerCase();
-  return s.charAt(0).toUpperCase()+s.slice(1);
+  const parts=String(v).split(/(\s*\(.*?\))/);
+  return parts.map(part=>{
+    if(/^\s*\(.*\)\s*$/.test(part)) return part.toUpperCase();
+    const s=part.toLowerCase();
+    return s.charAt(0).toUpperCase()+s.slice(1);
+  }).join('');
 }
 
 function escapeAttr(v){
@@ -687,6 +694,8 @@ function buildFilters(){
     'Select':'Atrinkta mediena su subtiliu raštu. Tarpinis variantas tarp Prime ir Classic.',
     'Antique':'Dirbtinai sendintas paviršius. Vintage ir loftinis charakteris.'
   };
+  const hasFilters=activeCat||activeGrade||activeWidth;
+  document.getElementById('clear-filters').style.display=hasFilters?'block':'none';
   document.getElementById('cat-filters').innerHTML=CATS.map(c=>
     `<button class="filter-btn${activeCat===c?' active':''}" onclick="setFilter('cat','${c}')">${sentenceCaseLabel(c)}<span class="cnt">${PRODUCTS.filter(p=>p[4]===c).length}</span></button>`
   ).join('');
@@ -847,7 +856,7 @@ function submitForm(){
     return p?`• ${sku} — ${p[1]} (${p[2]})`:sku;
   }).join('\n');
   const txt=`Sveiki,\n\nNorėčiau gauti pasiūlymą šiems produktams:\n\n${prods}\n\nPlotas: ${document.getElementById('f-area').value||'—'} m²\nPastabos: ${document.getElementById('f-msg').value||'—'}\n\nKontaktai: ${name}, ${email}, ${document.getElementById('f-tel').value||''}`;
-  const href=`mailto:jociusjustinas@gmail.com?subject=Produktų užklausa — ${name}&body=${encodeURIComponent(txt)}`;
+  const href=`mailto:edgaras@oakmeup.lt?subject=Produktų užklausa — ${name}&body=${encodeURIComponent(txt)}`;
   document.getElementById('form-body').innerHTML=`<div class="success-box"><h3>Užklausa suformuota!</h3><p>Atidaromas el. pašto klientas su visu sąrašu.</p><a href="${href}">Spustelėkite čia jei neatsidaro</a></div>`;
   setTimeout(()=>{window.location.href=href;},400);
 }
@@ -870,5 +879,11 @@ window.addEventListener('resize',syncMobileFilters);
 <div id="fab" onclick="openForm()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:90;background:#1C3A13;color:#D3FA99;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);align-items:center;gap:8px;">
   <span id="fab-count">0</span> pasirinkta →
 </div>
+<footer style="background:#1C3A13;color:rgba(211,250,153,0.6);text-align:center;padding:20px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
+  <span style="color:#D3FA99;font-weight:500">OAK ME UP</span>
+  <span>Edgaras · +370 615 69 962</span>
+  <a href="mailto:edgaras@oakmeup.lt" style="color:#D3FA99">edgaras@oakmeup.lt</a>
+  <a href="https://oakmeup.lt" style="color:#D3FA99">oakmeup.lt</a>
+</footer>
 </body>
 </html>
