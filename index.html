@@ -31,12 +31,13 @@ a{color:inherit;text-decoration:none}
 
 /* ── Layout ──────────────────────────────────── */
 .layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px)}
-@media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}.sel-bar{display:none!important}}
+@media(min-width:701px){#fab{display:none!important}}
 
 /* ── Sidebar ─────────────────────────────────── */
 .sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
 .mobile-filter-toggle{display:none}
-.sidebar-title{font-size:10px;font-weight:500;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;margin-top:18px}
+.sidebar-title{font-size:10px;font-weight:500;letter-spacing:0.04em;color:var(--muted);text-transform:none;margin-bottom:10px;margin-top:18px}
 .sidebar-title:first-child{margin-top:0}
 .search-wrap{position:relative;margin-bottom:4px}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);width:14px;height:14px}
@@ -563,6 +564,12 @@ function icon(name,size='14'){
   return icons[name]||'';
 }
 
+function sentenceCaseLabel(v){
+  if(!v)return '';
+  const s=v.toLowerCase();
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
 function syncMobileFilters(){
   const sb=document.getElementById('sidebar');
   if(!sb)return;
@@ -581,7 +588,7 @@ function toggleMobileFilters(){
 
 function buildFilters(){
   document.getElementById('cat-filters').innerHTML=CATS.map(c=>
-    `<button class="filter-btn${activeCat===c?' active':''}" onclick="setFilter('cat','${c}')">${c}<span class="cnt">${PRODUCTS.filter(p=>p[4]===c).length}</span></button>`
+    `<button class="filter-btn${activeCat===c?' active':''}" onclick="setFilter('cat','${c}')">${sentenceCaseLabel(c)}<span class="cnt">${PRODUCTS.filter(p=>p[4]===c).length}</span></button>`
   ).join('');
   document.getElementById('grade-filters').innerHTML=GRADES.map(g=>
     `<button class="filter-btn${activeGrade===g?' active':''}" onclick="setFilter('grade','${g}')">${g}</button>`
@@ -629,6 +636,11 @@ function render(){
       `<div class="sel-picked-item"><span class="sel-picked-sku">${sku}</span><button class="sel-picked-rm" onclick="removeSelected('${sku}')">${icon('x','12')}</button></div>`
     ).join('');
   }
+  const fab=document.getElementById('fab');
+  if(fab){
+    fab.style.display=selected.size>0?'flex':'none';
+    document.getElementById('fab-count').textContent=selected.size;
+  }
 
   const byCat={},bySub={};
   filtered.forEach(p=>{
@@ -652,14 +664,14 @@ function render(){
       <div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
         <div class="cat-hdr-left">
           <span class="cat-chevron${isCol?'':' open'}">${icon('chevron-right','12')}</span>
-          <span class="cat-hdr-name">${cat}</span>
+          <span class="cat-hdr-name">${sentenceCaseLabel(cat)}</span>
         </div>
         <span class="cat-hdr-count">${byCat[cat].length}</span>
       </div>
       ${isCol?'':subs.map(sub=>{
         const k=cat+'||'+sub;
         return `<div class="sub-block">
-          <div class="sub-hdr">${sub}</div>
+          <div class="sub-hdr">${sentenceCaseLabel(sub)}</div>
           ${bySub[k].map(p=>{
             const sel=selected.has(p[0]);
             return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
@@ -752,5 +764,8 @@ function exportTxt(){
 buildFilters();render();syncMobileFilters();
 window.addEventListener('resize',syncMobileFilters);
 </script>
+<div id="fab" onclick="openForm()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:90;background:#1C3A13;color:#D3FA99;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);align-items:center;gap:8px;">
+  <span id="fab-count">0</span> pasirinkta →
+</div>
 </body>
 </html>
