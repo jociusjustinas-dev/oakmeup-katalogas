@@ -31,6 +31,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Layout ──────────────────────────────────── */
 .layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 56px)}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}}
 
 /* ── Sidebar ─────────────────────────────────── */
 .sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
@@ -229,7 +230,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
         <button class="sel-bar-clear" onclick="clearSel()">Išvalyti</button>
       </div>
       <div class="sel-actions">
-        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą ${icon('arrow-right','14')}</button>
+        <button class="sel-btn sel-btn-primary" onclick="openForm()">Siųsti užklausą →</button>
         <button class="sel-btn sel-btn-sec" onclick="exportTxt()">Atsisiųsti sąrašą</button>
       </div>
     </div>
@@ -541,7 +542,7 @@ const WIDTHS=["80mm","90mm","125mm","130mm","150mm","190mm","220mm","240mm","260
 
 let activeCat="",activeGrade="",activeWidth="";
 const selected=new Set();
-const collapsed=new Set();
+const collapsed=new Set(['CHEVRON','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
 let mobileFiltersOpen=false;
 
 function icon(name,size='14'){
@@ -614,10 +615,8 @@ function render(){
   document.getElementById('result-count').innerHTML=`<strong>${filtered.length}</strong> produktai rodomi`;
 
   const sb=document.getElementById('sel-bar');
-  if(selected.size>0){
-    sb.style.display='block';
-    document.getElementById('sel-label').textContent=selected.size+' pasirinkta';
-  } else sb.style.display='none';
+  sb.style.display=selected.size>0?'block':'none';
+  if(selected.size>0) document.getElementById('sel-label').textContent=selected.size+' pasirinkta';
 
   const byCat={},bySub={};
   filtered.forEach(p=>{
