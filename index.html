@@ -100,13 +100,13 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
-.prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
+.prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
 .prod-row.cmp-on{background:#F3FBEE}
-.cmp-ctl{position:absolute;top:8px;right:10px;display:flex;align-items:center;gap:8px;z-index:4;user-select:none}
+.cmp-ctl{display:flex;align-items:center;gap:8px;justify-content:flex-end;user-select:none;z-index:4;white-space:nowrap}
 .cmp-scale{width:26px;height:26px;border-radius:10px;background:rgba(28,58,19,0.08);display:flex;align-items:center;justify-content:center;color:var(--green-dark);flex-shrink:0}
-.cmp-btn{border:none;border-radius:999px;padding:8px 12px;font-size:12px;font-family:'Geist',sans-serif;font-weight:700;cursor:pointer;background:rgba(211,250,153,0.15);color:rgba(28,58,19,0.95);transition:all 0.12s}
+.cmp-btn{border:none;border-radius:999px;padding:8px 12px;font-size:12px;font-family:'Geist',sans-serif;font-weight:700;cursor:pointer;background:rgba(211,250,153,0.15);color:rgba(28,58,19,0.95);transition:all 0.12s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 .cmp-btn:hover{background:rgba(211,250,153,0.28)}
 .cmp-btn.cmp-on{background:var(--green-dark);color:var(--lime)}
 .cmp-btn.cmp-locked{opacity:0.6}
@@ -248,7 +248,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .main{padding:12px}
   .cat-hdr,.sub-hdr{padding-left:12px;padding-right:12px}
   .prod-row{
-    grid-template-columns:18px calc(var(--swatch-size) + 2px) 1fr auto;
+    grid-template-columns:18px calc(var(--swatch-size) + 2px) 1fr auto auto;
     gap:6px;
     padding:8px 10px;
     align-items:start;
@@ -2256,6 +2256,14 @@ function render(){
             const cmpDisabled=!cmpOn && compareSelected.length>=compareMax;
             return `<div class="prod-row${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
               <div class="cb">${icon('check','10')}</div>
+              ${SKU_IMAGES[p[0]]
+                ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
+                : `<div class="swatch" style="background:${p[6]}"></div>`
+              }
+              <div class="prod-name-wrap">
+                <span class="prod-name">${p[1]}</span>
+                <span class="prod-dims">${p[2]}</span>
+              </div>
               <div class="cmp-ctl" onclick="event.stopPropagation()">
                 <span class="cmp-scale" aria-hidden="true">
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -2268,14 +2276,6 @@ function render(){
                 <button class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpDisabled && !cmpOn?'Galite palyginti iki 4 produktų':'Palyginti'}">
                   ${cmpOn?'Pašalinti':'Palyginti'}
                 </button>
-              </div>
-              ${SKU_IMAGES[p[0]]
-                ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
-                : `<div class="swatch" style="background:${p[6]}"></div>`
-              }
-              <div class="prod-name-wrap">
-                <span class="prod-name">${p[1]}</span>
-                <span class="prod-dims">${p[2]}</span>
               </div>
               <span class="prod-sku">${p[0]}</span>
               <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
