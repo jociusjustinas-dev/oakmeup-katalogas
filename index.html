@@ -139,6 +139,17 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .compare-meta b{color:var(--text);font-family:'Geist',sans-serif;font-weight:600}
 .compare-remove{margin-top:auto;border:none;background:transparent;border-top:1px solid rgba(0,0,0,0.06);cursor:pointer;padding:12px;color:rgba(180,30,30,0.92);font-weight:700}
 .compare-remove:hover{background:rgba(180,30,30,0.06)}
+.compare-cta{margin-top:18px;padding-top:18px;border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:stretch;gap:12px}
+.compare-cta-text{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+.compare-cta-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.compare-cta-btn{flex:1;min-width:min(100%,200px);padding:11px 16px;background:var(--green-dark);color:var(--lime);border:none;border-radius:8px;font-size:13px;font-family:'Geist',sans-serif;font-weight:600;cursor:pointer;transition:background 0.15s}
+.compare-cta-btn:hover{background:var(--green-mid)}
+.compare-inquiry{display:none;margin-top:4px;padding-top:18px;border-top:1px solid var(--border)}
+.compare-inquiry.open{display:block}
+.compare-inquiry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.compare-inquiry-title{font-size:15px;font-weight:600;line-height:1.3}
+.compare-inquiry-hide{background:transparent;border:none;color:var(--muted);font-size:12px;font-family:'Geist',sans-serif;cursor:pointer;text-decoration:underline;padding:0;flex-shrink:0}
+.compare-inquiry-hide:hover{color:var(--text)}
 @media (max-width:640px){
   .compare-overlay{padding:12px 10px;align-items:stretch}
   .compare-modal{width:100%;max-width:none;border-radius:12px;padding:14px;max-height:calc(100vh - 24px)}
@@ -2352,12 +2363,89 @@ function isCompareOpen(){
 
 function openCompare(){
   if(compareSelected.length<2){syncCompareSticky();return;}
+  const inv=document.getElementById('compare-inquiry');
+  if(inv){
+    inv.classList.remove('open');
+    const inner=document.getElementById('compare-inquiry-inner');
+    if(inner) inner.innerHTML='';
+  }
   updateCompareModal();
   document.getElementById('compare-overlay').classList.add('open');
 }
 
 function closeCompare(){
   document.getElementById('compare-overlay').classList.remove('open');
+  const inv=document.getElementById('compare-inquiry');
+  if(inv){
+    inv.classList.remove('open');
+    const inner=document.getElementById('compare-inquiry-inner');
+    if(inner) inner.innerHTML='';
+  }
+}
+
+function collapseCompareInquiry(){
+  const el=document.getElementById('compare-inquiry');
+  if(!el) return;
+  el.classList.remove('open');
+  el.setAttribute('aria-hidden','true');
+}
+
+function openCompareInquiryPanel(){
+  const el=document.getElementById('compare-inquiry');
+  if(!el || compareSelected.length<2) return;
+  el.classList.add('open');
+  el.setAttribute('aria-hidden','false');
+  renderCompareInquiryInner();
+  requestAnimationFrame(()=>{el.scrollIntoView({behavior:'smooth',block:'nearest'});});
+}
+
+function renderCompareInquiryInner(){
+  const root=document.getElementById('compare-inquiry-inner');
+  if(!root || compareSelected.length<2) return;
+  const chips=compareSelected.map(sku=>{
+    const p=PRODUCTS.find(x=>x[0]===sku);
+    return p?`<div class="chip"><span>${sku} — ${p[1]}</span><span class="chip-rm" onclick="removeCompare('${sku}');event.stopPropagation()">${icon('x','12')}</span></div>`:'';
+  }).join('');
+  root.innerHTML=`
+    <div class="compare-inquiry-head">
+      <div class="compare-inquiry-title">Užklausa dėl kainos</div>
+      <button type="button" class="compare-inquiry-hide" onclick="collapseCompareInquiry()">Slėpti formą</button>
+    </div>
+    <div class="form-sub">Šie produktai bus įtraukti į el. laišką</div>
+    <div class="sel-chips" id="compare-inquiry-chips">${chips}</div>
+    <div class="field-row">
+      <div class="field"><label>Vardas, pavardė *</label><input id="cf-name" placeholder="Vardas Pavardė" autocomplete="name"></div>
+      <div class="field"><label>El. paštas *</label><input id="cf-email" type="email" placeholder="el@pastas.lt" autocomplete="email"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Telefonas</label><input id="cf-tel" placeholder="+370..." autocomplete="tel"></div>
+      <div class="field"><label>Plotas (m²)</label><input id="cf-area" type="number" placeholder="pvz. 45"></div>
+    </div>
+    <div class="field"><label>Pastabos</label><textarea id="cf-msg" placeholder="Papildoma informacija..."></textarea></div>
+    <div class="form-actions">
+      <button type="button" class="form-btn-primary" onclick="submitCompareInquiryForm()">Siųsti užklausą</button>
+      <button type="button" class="form-btn-sec" onclick="collapseCompareInquiry()">Atšaukti</button>
+    </div>`;
+}
+
+function submitCompareInquiryForm(){
+  const name=document.getElementById('cf-name')?.value.trim()||'';
+  const email=document.getElementById('cf-email')?.value.trim()||'';
+  if(!name||!email){alert('Prašome užpildyti vardą ir el. paštą');return;}
+  const prods=compareSelected.map(sku=>{
+    const p=PRODUCTS.find(x=>x[0]===sku);
+    return p?`• ${sku} — ${p[1]} (${p[2]})`:sku;
+  }).join('\n');
+  const area=document.getElementById('cf-area')?.value||'';
+  const msg=document.getElementById('cf-msg')?.value||'';
+  const tel=document.getElementById('cf-tel')?.value||'';
+  const txt=`Sveiki,\n\nKreipiuosi dėl kainos šiems produktams (palyginimas kataloge):\n\n${prods}\n\nPlotas: ${area||'—'} m²\nPastabos: ${msg||'—'}\n\nKontaktai: ${name}, ${email}, ${tel}`;
+  const href=`mailto:edgaras@oakmeup.lt?subject=${encodeURIComponent(`Produktų užklausa (palyginimas) — ${name}`)}&body=${encodeURIComponent(txt)}`;
+  const root=document.getElementById('compare-inquiry-inner');
+  if(root){
+    root.innerHTML=`<div class="success-box"><h3>Užklausa suformuota!</h3><p>Atidaromas el. pašto klientas su visu sąrašu.</p><a href="${href}">Spustelėkite čia jei neatsidaro</a></div>`;
+  }
+  setTimeout(()=>{window.location.href=href;},400);
 }
 
 function getPrimaryImage(sku){
@@ -2411,6 +2499,9 @@ function updateCompareModal(){
     }).join('')}
   </div>`;
   body.innerHTML=html;
+  if(document.getElementById('compare-inquiry')?.classList.contains('open')){
+    renderCompareInquiryInner();
+  }
 }
 
 function cmpImgPrev(sku){
@@ -2554,6 +2645,15 @@ window.addEventListener('resize',syncMobileFilters);
       <button class="compare-close" onclick="closeCompare()">×</button>
     </div>
     <div class="compare-body" id="compare-body"></div>
+    <div class="compare-cta">
+      <p class="compare-cta-text">Norite sužinoti šių produktų kainą? Užpildykite užklausą — atsakysime su pasiūlymu.</p>
+      <div class="compare-cta-actions">
+        <button type="button" class="compare-cta-btn" onclick="openCompareInquiryPanel()">Siųsti užklausą</button>
+      </div>
+    </div>
+    <div class="compare-inquiry" id="compare-inquiry" aria-hidden="true">
+      <div id="compare-inquiry-inner"></div>
+    </div>
   </div>
 </div>
 <footer style="background:#1C3A13;color:rgba(211,250,153,0.6);text-align:center;padding:20px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
