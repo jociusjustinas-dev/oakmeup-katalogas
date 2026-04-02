@@ -104,14 +104,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
 .prod-row.cmp-on{background:#F3FBEE}
-.cmp-checkbox{position:absolute;top:8px;right:10px;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:3;user-select:none}
-.prod-row:hover .cmp-checkbox,.prod-row.cmp-on .cmp-checkbox{opacity:1;pointer-events:auto}
-.cmp-input{position:absolute;opacity:0;pointer-events:none}
-.cmp-box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center}
-.cmp-box::after{content:'';width:9px;height:5px;border-left:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(-45deg);opacity:0;transition:opacity 0.12s}
-.cmp-input:checked ~ .cmp-box{background:var(--green-dark);border-color:var(--green-dark)}
-.cmp-input:checked ~ .cmp-box::after{border-left-color:var(--lime);border-bottom-color:var(--lime);opacity:1}
-.cmp-checkbox.cmp-disabled{filter:grayscale(0.2);opacity:0.6}
+.cmp-ctl{position:absolute;top:8px;right:10px;display:flex;align-items:center;gap:8px;z-index:4;user-select:none}
+.cmp-scale{width:26px;height:26px;border-radius:10px;background:rgba(28,58,19,0.08);display:flex;align-items:center;justify-content:center;color:var(--green-dark);flex-shrink:0}
+.cmp-btn{border:none;border-radius:999px;padding:8px 12px;font-size:12px;font-family:'Geist',sans-serif;font-weight:700;cursor:pointer;background:rgba(211,250,153,0.15);color:rgba(28,58,19,0.95);transition:all 0.12s}
+.cmp-btn:hover{background:rgba(211,250,153,0.28)}
+.cmp-btn.cmp-on{background:var(--green-dark);color:var(--lime)}
+.cmp-btn.cmp-locked{opacity:0.6}
 
 /* ── Compare (sticky + modal) ───────────────────── */
 .compare-sticky{position:fixed;left:0;right:0;bottom:0;z-index:170;background:var(--green-dark);padding:12px 20px;display:flex;justify-content:center;transform:translateY(120%);opacity:0;pointer-events:none;transition:transform 0.25s ease,opacity 0.25s ease}
@@ -2258,10 +2256,19 @@ function render(){
             const cmpDisabled=!cmpOn && compareSelected.length>=compareMax;
             return `<div class="prod-row${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
               <div class="cb">${icon('check','10')}</div>
-              <label class="cmp-checkbox${cmpDisabled?' cmp-disabled':''}" title="Palyginti" onclick="event.stopPropagation();toggleCompareFromUI('${p[0]}', this)">
-                <input type="checkbox" class="cmp-input" ${cmpOn?'checked':''} ${cmpDisabled?'disabled':''}>
-                <span class="cmp-box"></span>
-              </label>
+              <div class="cmp-ctl" onclick="event.stopPropagation()">
+                <span class="cmp-scale" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18"></path>
+                    <path d="M8 7h8"></path>
+                    <path d="M6 7l-3 6h6l-3-6Z"></path>
+                    <path d="M18 7l-3 6h6l-3-6Z"></path>
+                  </svg>
+                </span>
+                <button class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpDisabled && !cmpOn?'Galite palyginti iki 4 produktų':'Palyginti'}">
+                  ${cmpOn?'Pašalinti':'Palyginti'}
+                </button>
+              </div>
               ${SKU_IMAGES[p[0]]
                 ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
                 : `<div class="swatch" style="background:${p[6]}"></div>`
