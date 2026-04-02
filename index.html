@@ -122,7 +122,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .compare-close{background:transparent;border:none;font-size:26px;line-height:1;cursor:pointer;color:var(--muted);padding:6px 10px;border-radius:10px}
 .compare-close:hover{background:rgba(0,0,0,0.04);color:var(--text)}
 .compare-body{display:block}
-.compare-grid{display:grid;gap:12px}
+.compare-grid{display:grid;gap:12px;grid-template-columns:repeat(var(--compare-cols,1),minmax(0,1fr))}
 .compare-col{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
 .compare-img{position:relative;width:100%;height:180px;background:#fff}
 .compare-img img{width:100%;height:100%;object-fit:cover;display:block}
@@ -139,6 +139,13 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .compare-meta b{color:var(--text);font-family:'Geist',sans-serif;font-weight:600}
 .compare-remove{margin-top:auto;border:none;background:transparent;border-top:1px solid rgba(0,0,0,0.06);cursor:pointer;padding:12px;color:rgba(180,30,30,0.92);font-weight:700}
 .compare-remove:hover{background:rgba(180,30,30,0.06)}
+@media (max-width:640px){
+  .compare-overlay{padding:12px 10px;align-items:stretch}
+  .compare-modal{width:100%;max-width:none;border-radius:12px;padding:14px;max-height:calc(100vh - 24px)}
+  .compare-grid{grid-template-columns:1fr;gap:14px}
+  .compare-img{height:min(240px,42vw)}
+  .compare-name{font-size:14px}
+}
 .cmp-limit-tooltip{position:fixed;z-index:999;left:50%;top:50%;transform:translate(-50%,-10px);background:#1C3A13;color:#fff;font-size:12px;padding:10px 12px;border-radius:10px;box-shadow:0 18px 45px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:opacity 0.18s ease,transform 0.18s ease}
 .cmp-limit-tooltip.show{opacity:1;transform:translate(-50%,-16px)}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
@@ -2372,8 +2379,7 @@ function updateCompareModal(){
   if(!body) return;
   const cnt=document.getElementById('compare-count');
   if(cnt) cnt.textContent=n;
-  const colsCss=`repeat(${n}, minmax(0, 1fr))`;
-  const html = `<div class="compare-grid" style="grid-template-columns:${colsCss}">
+  const html = `<div class="compare-grid" style="--compare-cols:${n}">
     ${compareSelected.map(sku=>{
       const p=PRODUCTS.find(x=>x[0]===sku);
       if(!p) return '';
