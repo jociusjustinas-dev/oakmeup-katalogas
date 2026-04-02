@@ -219,6 +219,19 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .form-card{padding:16px}
   .form-actions{flex-direction:column}
 }
+/* ── Lightbox (SKU images) ─────────────────── */
+.lb-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
+.lb-overlay.open{display:flex}
+.lb-img-wrap{position:relative;max-width:90vw;max-height:80vh}
+.lb-img-wrap img{max-width:90vw;max-height:75vh;object-fit:contain;border-radius:8px;display:block}
+.lb-close{position:fixed;top:20px;right:24px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;line-height:1;z-index:201}
+.lb-arrow{position:fixed;top:50%;transform:translateY(-50%);color:#fff;font-size:36px;cursor:pointer;background:rgba(0,0,0,0.3);border:none;padding:12px 18px;border-radius:8px;z-index:201}
+.lb-arrow-left{left:16px}
+.lb-arrow-right{right:16px}
+.lb-dots{display:flex;gap:8px;margin-top:12px;justify-content:center}
+.lb-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;border:none}
+.lb-dot.active{background:#fff}
+.lb-counter{color:rgba(255,255,255,0.6);font-size:12px;margin-top:6px;font-family:'Geist Mono',monospace}
 </style>
 </head>
 <body>
@@ -576,6 +589,57 @@ const PRODUCTS=[
 ["OSH186","Solid Oak HB Natural Brushed Matt Lac","18 × 90 × 300mm","Classic","EGLUTĖ (HERRINGBONE)","Solid Oak HB","#B8905A"],
 ];
 
+const SKU_IMAGES={
+  "HB1050":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1051":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedGreyHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedGreyHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedGreyHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB1052":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/WhiskeyHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/WhiskeyHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/WhiskeyHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB1055":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB1056":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1058":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/GoldenHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/GoldenHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB105B":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1060":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/InvisibleHerringboneOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1061":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/NaturalHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1065":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB1067":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedGreyHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/SmokedGreyHerringboneParquetOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1066":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/BlackHerringboneOakWoodFlooringHomesandFloors_3.jpg"],
+  "HB1068":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/GoldenHerringboneParquetOakWoodFlooringHomesandFloors_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/GoldenHerringboneParquetOakWoodFlooringHomesandFloors_2.jpg"],
+  "HB1480":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18490IO_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14390IBML_1_Herringbone_Oak_Invisible_14x90x450_Homes_and_Floors.jpg"],
+  "HB1483":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14290BUVO_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14290BUVO_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14290BUVO_3.jpg"],
+  "HB1485":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_1_f4462f09-1297-457b-a802-00efa8de6351.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_2_26bde50c-79fe-4cf4-b133-442923328659.jpg"],
+  "HB1489":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14290WO_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14290WO_3.jpg"],
+  "HB148G":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_1_f4462f09-1297-457b-a802-00efa8de6351.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_2_26bde50c-79fe-4cf4-b133-442923328659.jpg"],
+  "HB1424":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14325BUVO_3_HerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.png","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125BUVO_1_OxfordHerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14325BUVO_2_HerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.png"],
+  "HB1423":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14325BUVO_3_HerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.png","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125BUVO_1_OxfordHerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.jpg"],
+  "HB1425T":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_4.jpg"],
+  "HB1426":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_1_43981e42-6664-4824-b7b2-8c00e5f7848d.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_3_33de167d-a6ef-45f3-9ecd-bf2de4237fd1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_2_1e4c7834-6c7e-4f59-a491-7097027c0e12.jpg"],
+  "HB1429":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125WO_1_4892e0a0-e37d-4a48-af50-07369f420712.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125WO_2_ee650284-ff22-45e1-86ef-8efca5035616.jpg"],
+  "HB1420":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_1_43981e42-6664-4824-b7b2-8c00e5f7848d.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_3_33de167d-a6ef-45f3-9ecd-bf2de4237fd1.jpg"],
+  "HB1885V2":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380WSBML_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18380DBML_Herringbone_Dark_Oak_Wood_Flooring_Homes_and_Floors.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380WSBML_1.jpg"],
+  "HB1886V2":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380NBML_4.png","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380NBML_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380NBML_12.jpg"],
+  "HB188G1":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_4.jpg"],
+  "HB188G2":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380GR1_3.jpg"],
+  "HB1894":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_5.jpg"],
+  "HB1891":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490NL_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490NL_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490NL_5.jpg"],
+  "HB1893":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490BUVO_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490BUVO_7.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490BUVO_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490BUVO_5.jpg"],
+  "HB1895":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_2.jpg"],
+  "HB1890v2":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490IO_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490IO_1_7a88d37a-7a1d-4a7a-a836-533e49ba35db.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490IO_3.jpg"],
+  "HB1897":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_3.jpg"],
+  "HB1894P":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_6.jpg"],
+  "OSH184":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490ABU_2.jpg"],
+  "OSH180":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490IO_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490IO_1_7a88d37a-7a1d-4a7a-a836-533e49ba35db.jpg"],
+  "OSH185":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_4.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490SW_1.jpg"],
+  "OSH186":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490NL_3.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18490NL_4.jpg"],
+  "RH1250P":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_1_43981e42-6664-4824-b7b2-8c00e5f7848d.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_3_33de167d-a6ef-45f3-9ecd-bf2de4237fd1.jpg"],
+  "RH1254P":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14325BUVO_3_HerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.png","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125BUVO_1_OxfordHerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.jpg"],
+  "RH1256P":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_1_43981e42-6664-4824-b7b2-8c00e5f7848d.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125IBML_2_1e4c7834-6c7e-4f59-a491-7097027c0e12.jpg"],
+  "WH1421":["https://cdn.shopify.com/s/files/1/0624/2572/7160/products/YH18380WSBML_2.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH18380DBML_Herringbone_Dark_Oak_Wood_Flooring_Homes_and_Floors.jpg"],
+  "WH1422":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH14325BUVO_3_HerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.png","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125BUVO_1_OxfordHerringboneOakBrushedUVOiledParquet14x125x600_mm_WoodFlooringHomes_Floors.jpg"],
+  "DX1":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_3.jpg"],
+  "DX3":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_1_f4462f09-1297-457b-a802-00efa8de6351.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_2_26bde50c-79fe-4cf4-b133-442923328659.jpg"],
+  "DX4":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_1_f4462f09-1297-457b-a802-00efa8de6351.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/14mmSmoked_2_26bde50c-79fe-4cf4-b133-442923328659.jpg"],
+  "DX5":["https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_1.jpg","https://cdn.shopify.com/s/files/1/0624/2572/7160/files/YH143125ABAntiqueDistressedOakBrownHerringbone14x125x600mm_2.jpg"]
+};
+
 const CATS=["PARKETLENTĖS","CHEVRON","VERSALIO PANELĖS","EGLUTĖ (HERRINGBONE)"];
 const GRADES=["Prime AB","Classic","Rustic","Select","Antique"];
 const WIDTHS=["80mm","90mm","125mm","130mm","150mm","190mm","220mm","240mm","260mm","300mm","600mm","800mm"];
@@ -889,7 +953,10 @@ function render(){
             const sel=selected.has(p[0]);
             return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
               <div class="cb">${icon('check','10')}</div>
-              <div class="swatch" style="background:${p[6]}"></div>
+              ${SKU_IMAGES[p[0]]
+                ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
+                : `<div class="swatch" style="background:${p[6]}"></div>`
+              }
               <div class="prod-name-wrap">
                 <span class="prod-name">${p[1]}</span>
                 <span class="prod-dims">${p[2]}</span>
@@ -976,6 +1043,40 @@ function exportTxt(){
   a.download='oakmeup-produktai.txt';a.click();
 }
 
+let lbImages=[], lbIndex=0;
+
+function openLightbox(sku){
+  lbImages = SKU_IMAGES[sku] || [];
+  if(!lbImages.length) return;
+  lbIndex = 0;
+  lbRender();
+  document.getElementById('lb-overlay').classList.add('open');
+  document.addEventListener('keydown', lbKey);
+}
+
+function closeLightbox(){
+  document.getElementById('lb-overlay').classList.remove('open');
+  document.removeEventListener('keydown', lbKey);
+}
+
+function lbRender(){
+  document.getElementById('lb-img').src = lbImages[lbIndex];
+  document.getElementById('lb-counter').textContent = `${lbIndex+1} / ${lbImages.length}`;
+  const dots = document.getElementById('lb-dots');
+  dots.innerHTML = lbImages.map((_, i) =>
+    `<button class="lb-dot${i===lbIndex?' active':''}" onclick="lbGoto(${i})"></button>`
+  ).join('');
+}
+
+function lbPrev(){ lbIndex=(lbIndex-1+lbImages.length)%lbImages.length; lbRender(); }
+function lbNext(){ lbIndex=(lbIndex+1)%lbImages.length; lbRender(); }
+function lbGoto(i){ lbIndex=i; lbRender(); }
+function lbKey(e){
+  if(e.key==='ArrowLeft') lbPrev();
+  if(e.key==='ArrowRight') lbNext();
+  if(e.key==='Escape') closeLightbox();
+}
+
 buildFilters();render();syncMobileFilters();initGradeTooltips();
 window.addEventListener('resize',syncMobileFilters);
 </script>
@@ -989,5 +1090,15 @@ window.addEventListener('resize',syncMobileFilters);
   <a href="mailto:edgaras@oakmeup.lt" style="color:#D3FA99">edgaras@oakmeup.lt</a>
   <a href="https://oakmeup.lt" style="color:#D3FA99">oakmeup.lt</a>
 </footer>
+<div class="lb-overlay" id="lb-overlay" onclick="if(event.target===this)closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <button class="lb-arrow lb-arrow-left" onclick="lbPrev()">‹</button>
+  <div class="lb-img-wrap">
+    <img id="lb-img" src="" alt="">
+  </div>
+  <div class="lb-dots" id="lb-dots"></div>
+  <div class="lb-counter" id="lb-counter"></div>
+  <button class="lb-arrow lb-arrow-right" onclick="lbNext()">›</button>
+</div>
 </body>
 </html>
