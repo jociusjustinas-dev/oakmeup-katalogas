@@ -17,6 +17,7 @@
   --white:#FFFFFF;
   --border:#E2DDD6;
   --text:#1A1A1A;
+  --swatch-size:28px;
   --muted:#777;
   --radius:10px;
 }
@@ -99,14 +100,14 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
-.prod-row{display:grid;grid-template-columns:20px 26px 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
+.prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
 .prod-row.selected .cb{background:var(--green-dark);border-color:var(--green-dark);color:#d3fa99}
 .cb svg{display:none}
 .prod-row.selected .cb svg{display:block}
-.swatch{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
+.swatch{width:var(--swatch-size);height:var(--swatch-size);border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
 .prod-name{font-size:12px;color:var(--text)}
 .prod-dims{font-size:11px;color:var(--muted);font-family:'Geist Mono',monospace;white-space:nowrap}
 .prod-name-wrap{display:flex;flex-direction:column;gap:1px;min-width:0}
@@ -152,7 +153,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .logo img{height:26px}
   .layout{grid-template-columns:220px 1fr}
   .main{padding:20px}
-  .prod-row{grid-template-columns:20px 22px 1fr auto auto;gap:8px;padding:7px 12px}
+  .prod-row{grid-template-columns:20px calc(var(--swatch-size) + 2px) 1fr auto auto;gap:8px;padding:7px 12px}
   .prod-sku{display:none}
 }
 
@@ -208,7 +209,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .main{padding:12px}
   .cat-hdr,.sub-hdr{padding-left:12px;padding-right:12px}
   .prod-row{
-    grid-template-columns:18px 20px 1fr auto;
+    grid-template-columns:18px calc(var(--swatch-size) + 2px) 1fr auto;
     gap:6px;
     padding:8px 10px;
     align-items:start;
