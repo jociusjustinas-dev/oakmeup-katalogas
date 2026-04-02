@@ -100,9 +100,50 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
 .sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
-.prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s}
+.prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
+.prod-row.cmp-on{background:#F3FBEE}
+.cmp-checkbox{position:absolute;top:8px;right:10px;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:3;user-select:none}
+.prod-row:hover .cmp-checkbox,.prod-row.cmp-on .cmp-checkbox{opacity:1;pointer-events:auto}
+.cmp-input{position:absolute;opacity:0;pointer-events:none}
+.cmp-box{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center}
+.cmp-box::after{content:'';width:9px;height:5px;border-left:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(-45deg);opacity:0;transition:opacity 0.12s}
+.cmp-input:checked ~ .cmp-box{background:var(--green-dark);border-color:var(--green-dark)}
+.cmp-input:checked ~ .cmp-box::after{border-left-color:var(--lime);border-bottom-color:var(--lime);opacity:1}
+.cmp-checkbox.cmp-disabled{filter:grayscale(0.2);opacity:0.6}
+
+/* ── Compare (sticky + modal) ───────────────────── */
+.compare-sticky{position:fixed;left:0;right:0;bottom:0;z-index:170;background:var(--green-dark);padding:12px 20px;display:flex;justify-content:center;transform:translateY(120%);opacity:0;pointer-events:none;transition:transform 0.25s ease,opacity 0.25s ease}
+.compare-sticky.show{transform:translateY(0);opacity:1;pointer-events:auto}
+.compare-sticky-btn{background:var(--lime);border:none;border-radius:999px;padding:10px 18px;color:var(--green-dark);font-weight:700;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,0.25)}
+.compare-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:220;display:none;align-items:flex-start;justify-content:center;padding:26px 16px;overflow:auto}
+.compare-overlay.open{display:flex}
+.compare-modal{background:var(--white);border-radius:14px;width:min(1200px,96vw);max-height:calc(100vh - 26px);overflow:auto;padding:18px;box-shadow:0 22px 62px rgba(0,0,0,0.35)}
+.compare-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.compare-title{font-size:16px;font-weight:600}
+.compare-close{background:transparent;border:none;font-size:26px;line-height:1;cursor:pointer;color:var(--muted);padding:6px 10px;border-radius:10px}
+.compare-close:hover{background:rgba(0,0,0,0.04);color:var(--text)}
+.compare-body{display:block}
+.compare-grid{display:grid;gap:12px}
+.compare-col{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.compare-img{position:relative;width:100%;height:180px;background:#fff}
+.compare-img img{width:100%;height:100%;object-fit:cover;display:block}
+.compare-img-placeholder{width:100%;height:100%}
+.cmp-nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:18px;background:rgba(0,0,0,0.35);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cmp-nav-left{left:10px}
+.cmp-nav-right{right:10px}
+.cmp-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:8px}
+.cmp-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.45);border:none;cursor:pointer}
+.cmp-dot.active{background:#fff}
+.compare-details{padding:12px;display:flex;flex-direction:column;gap:7px}
+.compare-name{font-size:13px;font-weight:700;line-height:1.25}
+.compare-meta{font-size:12px;color:var(--muted);font-family:'Geist Mono',monospace}
+.compare-meta b{color:var(--text);font-family:'Geist',sans-serif;font-weight:600}
+.compare-remove{margin-top:auto;border:none;background:transparent;border-top:1px solid rgba(0,0,0,0.06);cursor:pointer;padding:12px;color:rgba(180,30,30,0.92);font-weight:700}
+.compare-remove:hover{background:rgba(180,30,30,0.06)}
+.cmp-limit-tooltip{position:fixed;z-index:999;left:50%;top:50%;transform:translate(-50%,-10px);background:#1C3A13;color:#fff;font-size:12px;padding:10px 12px;border-radius:10px;box-shadow:0 18px 45px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:opacity 0.18s ease,transform 0.18s ease}
+.cmp-limit-tooltip.show{opacity:1;transform:translate(-50%,-16px)}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
 .prod-row.selected .cb{background:var(--green-dark);border-color:var(--green-dark);color:#d3fa99}
 .cb svg{display:none}
@@ -1937,6 +1978,10 @@ function getFinish(name){
 
 let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="";
 const selected=new Set();
+const compareMax=4;
+let compareSelected=[];
+let compareImgIndex={}; // sku -> current image index
+let compareTooltipTimer=null;
 const collapsed=new Set(['CHEVRON','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
 let mobileFiltersOpen=false;
 
@@ -2153,6 +2198,8 @@ function render(){
   const filtered=getFiltered();
   document.getElementById('result-count').innerHTML=`<strong>${filtered.length}</strong> produktai rodomi`;
 
+  syncCompareSticky();
+
   const sb=document.getElementById('sel-bar');
   sb.style.display=selected.size>0?'block':'none';
   if(selected.size>0){
@@ -2207,8 +2254,14 @@ function render(){
             return au-bu;
           }).map(p=>{
             const sel=selected.has(p[0]);
-            return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
+            const cmpOn=compareSelected.includes(p[0]);
+            const cmpDisabled=!cmpOn && compareSelected.length>=compareMax;
+            return `<div class="prod-row${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
               <div class="cb">${icon('check','10')}</div>
+              <label class="cmp-checkbox${cmpDisabled?' cmp-disabled':''}" title="Palyginti" onclick="event.stopPropagation();toggleCompareFromUI('${p[0]}', this)">
+                <input type="checkbox" class="cmp-input" ${cmpOn?'checked':''} ${cmpDisabled?'disabled':''}>
+                <span class="cmp-box"></span>
+              </label>
               ${SKU_IMAGES[p[0]]
                 ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
                 : `<div class="swatch" style="background:${p[6]}"></div>`
@@ -2225,6 +2278,8 @@ function render(){
       }).join('')}
     </div>`;
   }).join('');
+
+  if(isCompareOpen()) updateCompareModal();
 }
 
 function toggleCat(cat){
@@ -2239,6 +2294,148 @@ function toggleProd(sku){
 
 function clearSel(){selected.clear();render();}
 function removeSelected(sku){selected.delete(sku);render();}
+
+function syncCompareSticky(){
+  const sticky=document.getElementById('compare-sticky');
+  const btn=document.getElementById('compare-sticky-btn');
+  if(!sticky||!btn) return;
+  const n=compareSelected.length;
+  btn.textContent=`Palyginti (${n})`;
+  sticky.classList.toggle('show', n>=2);
+}
+
+function showCompareLimitTooltip(anchor){
+  const t=document.getElementById('compare-tooltip');
+  if(!t) return;
+  const r=anchor.getBoundingClientRect();
+  t.textContent='Galite palyginti iki 4 produktų';
+  t.style.left=(r.left+r.width/2)+'px';
+  t.style.top=(r.top)+'px';
+  t.classList.add('show');
+  clearTimeout(compareTooltipTimer);
+  compareTooltipTimer=setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function toggleCompareFromUI(sku, anchor){
+  if(!sku) return;
+  const isOn=compareSelected.includes(sku);
+  const locked=!isOn && compareSelected.length>=compareMax;
+  if(locked){
+    showCompareLimitTooltip(anchor);
+    return;
+  }
+  if(isOn){
+    compareSelected=compareSelected.filter(x=>x!==sku);
+    delete compareImgIndex[sku];
+  }else{
+    compareSelected=[...compareSelected, sku];
+    compareImgIndex[sku]=compareImgIndex[sku] ?? 0;
+  }
+  render();
+  syncCompareSticky();
+  if(isCompareOpen()){
+    if(compareSelected.length>=2) updateCompareModal(); else closeCompare();
+  }
+}
+
+function isCompareOpen(){
+  return document.getElementById('compare-overlay')?.classList.contains('open');
+}
+
+function openCompare(){
+  if(compareSelected.length<2){syncCompareSticky();return;}
+  updateCompareModal();
+  document.getElementById('compare-overlay').classList.add('open');
+}
+
+function closeCompare(){
+  document.getElementById('compare-overlay').classList.remove('open');
+}
+
+function getPrimaryImage(sku){
+  const arr=SKU_IMAGES[sku];
+  if(!Array.isArray(arr) || !arr.length) return null;
+  const u=arr[0];
+  return (typeof u==='string' && u.trim()) ? u : null;
+}
+
+function getFinishLabelFromSku(sku){
+  const p=PRODUCTS.find(x=>x[0]===sku);
+  if(!p) return '';
+  return getFinish(p[1]);
+}
+
+function updateCompareModal(){
+  const body=document.getElementById('compare-body');
+  const n=compareSelected.length;
+  if(!body) return;
+  const cnt=document.getElementById('compare-count');
+  if(cnt) cnt.textContent=n;
+  const colsCss=`repeat(${n}, minmax(0, 1fr))`;
+  const html = `<div class="compare-grid" style="grid-template-columns:${colsCss}">
+    ${compareSelected.map(sku=>{
+      const p=PRODUCTS.find(x=>x[0]===sku);
+      if(!p) return '';
+      const imgs=SKU_IMAGES[sku];
+      const hasGallery=Array.isArray(imgs) && imgs.length>0;
+      const cur=compareImgIndex[sku] ?? 0;
+      const idx=hasGallery ? (cur % imgs.length) : 0;
+      const img=hasGallery ? imgs[idx] : null;
+      const showNav=hasGallery && imgs.length>1;
+      const finish=getFinish(p[1]);
+      return `<div class="compare-col">
+        <div class="compare-img">
+          ${img ? `<img src="${img}" alt="">` : `<div class="compare-img-placeholder" style="background:${p[6]};"></div>`}
+          ${showNav ? `<button class="cmp-nav cmp-nav-left" onclick="cmpImgPrev('${sku}');event.stopPropagation()">‹</button>
+                        <button class="cmp-nav cmp-nav-right" onclick="cmpImgNext('${sku}');event.stopPropagation()">›</button>` : ''}
+          ${showNav ? `<div class="cmp-dots">
+            ${imgs.map((_,i)=>`<button class="cmp-dot${i===idx?' active':''}" onclick="cmpImgGoto('${sku}',${i});event.stopPropagation()" aria-label="Foto ${i+1}"></button>`).join('')}
+          </div>` : ''}
+        </div>
+        <div class="compare-details">
+          <div class="compare-name">${p[1]}</div>
+          <div class="compare-meta"><b>SKU</b>: ${p[0]}</div>
+          <div class="compare-meta"><b>Matmenys</b>: ${p[2]}</div>
+          <div class="compare-meta"><b>Rūšis</b>: ${p[3]}</div>
+          <div class="compare-meta"><b>Apdaila</b>: ${finish}</div>
+        </div>
+        <button class="compare-remove" onclick="removeCompare('${sku}');event.stopPropagation()">Pašalinti</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+  body.innerHTML=html;
+}
+
+function cmpImgPrev(sku){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || !imgs.length) return;
+  const cur=compareImgIndex[sku] ?? 0;
+  compareImgIndex[sku]=(cur-1+imgs.length)%imgs.length;
+  updateCompareModal();
+}
+
+function cmpImgNext(sku){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || !imgs.length) return;
+  const cur=compareImgIndex[sku] ?? 0;
+  compareImgIndex[sku]=(cur+1)%imgs.length;
+  updateCompareModal();
+}
+
+function cmpImgGoto(sku, i){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || !imgs.length) return;
+  compareImgIndex[sku]=Number(i)||0;
+  updateCompareModal();
+}
+
+function removeCompare(sku){
+  compareSelected=compareSelected.filter(x=>x!==sku);
+  delete compareImgIndex[sku];
+  render();
+  syncCompareSticky();
+  if(compareSelected.length<2) closeCompare(); else updateCompareModal();
+}
 
 function openForm(){
   if(!selected.size){alert('Pasirinkite bent vieną produktą');return;}
@@ -2338,6 +2535,19 @@ window.addEventListener('resize',syncMobileFilters);
 </script>
 <div id="fab" onclick="openForm()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:90;background:#1C3A13;color:#D3FA99;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);align-items:center;gap:8px;">
   <span id="fab-count">0</span> pasirinkta →
+</div>
+<div class="compare-sticky" id="compare-sticky" aria-hidden="true">
+  <button class="compare-sticky-btn" id="compare-sticky-btn" onclick="openCompare()">Palyginti (0)</button>
+</div>
+<div class="cmp-limit-tooltip" id="compare-tooltip">Galite palyginti iki 4 produktų</div>
+<div class="compare-overlay" id="compare-overlay" onclick="if(event.target===this)closeCompare()">
+  <div class="compare-modal" role="dialog" aria-modal="true" aria-label="Palyginimas">
+    <div class="compare-top">
+      <div class="compare-title">Palyginti produktus (<span id="compare-count">0</span>)</div>
+      <button class="compare-close" onclick="closeCompare()">×</button>
+    </div>
+    <div class="compare-body" id="compare-body"></div>
+  </div>
 </div>
 <footer style="background:#1C3A13;color:rgba(211,250,153,0.6);text-align:center;padding:20px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
   <img src="Frame 8.svg" alt="Oak Me Up" style="height:30px;width:auto;display:block">
