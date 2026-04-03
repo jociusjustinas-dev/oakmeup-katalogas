@@ -106,9 +106,27 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-card:hover{background:#FAFAF7}
 .prod-card.selected{border-color:var(--green-dark);background:#F0F9EC;box-shadow:0 0 0 1px var(--green-dark)}
 .prod-card.cmp-on{background:#F3FBEE}
-.prod-card-media{aspect-ratio:4/3;width:100%;background:#f5f5f5;position:relative;cursor:pointer}
-.prod-card-media img{width:100%;height:100%;object-fit:cover;display:block}
-.prod-card-media-ph{width:100%;height:100%;min-height:0}
+.prod-card-pick-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(247,245,240,0.95);border-bottom:1px solid var(--border);flex-shrink:0}
+.prod-card.selected .prod-card-pick-row{background:rgba(232,245,233,0.95)}
+.prod-card .cb{width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s;background:var(--white)}
+.prod-card.selected .cb{background:var(--green-dark);border-color:var(--green-dark);color:#d3fa99}
+.prod-card .cb svg{display:none}
+.prod-card.selected .cb svg{display:block}
+.prod-card-pick-label{font-size:11px;font-weight:600;color:var(--muted);line-height:1.2}
+.prod-card.selected .prod-card-pick-label{color:var(--green-dark)}
+.prod-card-media{aspect-ratio:4/3;width:100%;background:#f5f5f5;position:relative;flex-shrink:0}
+.prod-card-slide{width:100%;height:100%;cursor:pointer;min-height:0;display:block}
+.prod-card-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.prod-card-media-ph{width:100%;height:100%;min-height:0;cursor:default}
+.card-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:16px;background:rgba(0,0,0,0.38);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3}
+.card-nav:hover{background:rgba(0,0,0,0.52)}
+.card-nav svg{display:block}
+.card-nav-left{left:6px}
+.card-nav-right{right:6px}
+.card-dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px;z-index:3;pointer-events:none}
+.card-dots .card-dot{pointer-events:auto;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.45);border:none;cursor:pointer;padding:0}
+.card-dots .card-dot.active{background:#fff}
+.prod-card-gallery-hint{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.85);text-shadow:0 1px 2px rgba(0,0,0,0.5);pointer-events:none;z-index:2}
 .prod-card-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
 .prod-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.35}
 .prod-card-dims{font-size:10px;color:var(--muted);font-family:'Geist Mono',monospace;line-height:1.3;word-break:break-word}
@@ -2046,6 +2064,7 @@ const selected=new Set();
 const compareMax=4;
 let compareSelected=[];
 let compareImgIndex={}; // sku -> current image index
+let gridImgIndex={}; // sku -> katalogo tinklelio karuselė
 let compareTooltipTimer=null;
 const collapsed=new Set(['CHEVRON (V RAŠTAS)','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
 let mobileFiltersOpen=false;
@@ -2311,10 +2330,22 @@ function formatProductItem(p){
   const cmpTitle=cmpDisabled && !cmpOn?'Galite palyginti iki 4 produktų':'Palyginti';
   if(viewMode==='grid'){
     const imgs=SKU_IMAGES[p[0]];
-    const firstImg=Array.isArray(imgs)&&imgs.length?imgs[0]:null;
+    const hasGallery=Array.isArray(imgs)&&imgs.length>0;
+    const cur=gridImgIndex[p[0]]??0;
+    const idx=hasGallery?(cur%imgs.length):0;
+    const img=hasGallery?imgs[idx]:null;
+    const showNav=hasGallery&&imgs.length>1;
+    const galleryHint=showNav?`<div class="prod-card-gallery-hint">${imgs.length} foto — rodyklės kraštuose</div>`:'';
     return `<div class="prod-card${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
-      <div class="prod-card-media" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas">
-        ${firstImg?`<img src="${escapeAttr(firstImg)}" alt="">`:`<div class="prod-card-media-ph" style="background:${p[6]}"></div>`}
+      <div class="prod-card-pick-row">
+        <div class="cb">${icon('check','10')}</div>
+        <span class="prod-card-pick-label">${sel?'Pasirinkta užklausai':'Į pasiūlymą'}</span>
+      </div>
+      <div class="prod-card-media" onclick="event.stopPropagation()">
+        ${img?`<div class="prod-card-slide" onclick="event.stopPropagation();openLightbox('${p[0]}',${idx})" title="Atidaryti nuotraukų galeriją"><img src="${escapeAttr(img)}" alt=""></div>${galleryHint}
+        ${showNav?`<button type="button" class="card-nav card-nav-left" onclick="event.stopPropagation();gridImgPrev('${p[0]}')" aria-label="Ankstesnė foto">${icon('chevron-left','16')}</button>
+        <button type="button" class="card-nav card-nav-right" onclick="event.stopPropagation();gridImgNext('${p[0]}')" aria-label="Kita foto">${icon('chevron-right','16')}</button>
+        <div class="card-dots">${imgs.map((_,i)=>`<button type="button" class="card-dot${i===idx?' active':''}" onclick="event.stopPropagation();gridImgGoto('${p[0]}',${i})" aria-label="Foto ${i+1}"></button>`).join('')}</div>`:''}`:`<div class="prod-card-slide prod-card-media-ph" style="background:${p[6]}"></div>`}
       </div>
       <div class="prod-card-body">
         <div class="prod-card-name">${p[1]}</div>
@@ -2660,6 +2691,29 @@ function cmpImgGoto(sku, i){
   updateCompareModal();
 }
 
+function gridImgPrev(sku){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || imgs.length<2) return;
+  const cur=gridImgIndex[sku]??0;
+  gridImgIndex[sku]=(cur-1+imgs.length)%imgs.length;
+  render();
+}
+
+function gridImgNext(sku){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || imgs.length<2) return;
+  const cur=gridImgIndex[sku]??0;
+  gridImgIndex[sku]=(cur+1)%imgs.length;
+  render();
+}
+
+function gridImgGoto(sku,i){
+  const imgs=SKU_IMAGES[sku];
+  if(!Array.isArray(imgs) || !imgs.length) return;
+  gridImgIndex[sku]=Number(i)||0;
+  render();
+}
+
 function removeCompare(sku){
   compareSelected=compareSelected.filter(x=>x!==sku);
   delete compareImgIndex[sku];
@@ -2729,10 +2783,11 @@ function exportTxt(){
 
 let lbImages=[], lbIndex=0;
 
-function openLightbox(sku){
+function openLightbox(sku, startAt){
   lbImages = SKU_IMAGES[sku] || [];
   if(!lbImages.length) return;
-  lbIndex = 0;
+  const n = Number(startAt);
+  lbIndex = Number.isFinite(n) && n >= 0 && n < lbImages.length ? n : 0;
   lbRender();
   document.getElementById('lb-overlay').classList.add('open');
   document.addEventListener('keydown', lbKey);
