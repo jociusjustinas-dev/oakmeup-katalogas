@@ -1983,6 +1983,19 @@ function getThickness(dims){
   return '20mm+ (premium)';
 }
 
+/** True if p[2] matmenyse po × yra tikslus plotis mm (ne substring — 80 ≠ 800). */
+function productMatchesWidth(dims,widthFilter){
+  if(!widthFilter) return true;
+  const target=parseInt(String(widthFilter).replace(/mm/gi,'').trim(),10);
+  if(!Number.isFinite(target)) return true;
+  const parts=String(dims).split(/\s*×\s*/);
+  for(let i=1;i<parts.length;i++){
+    const m=parts[i].trim().match(/^(\d+)/);
+    if(m && parseInt(m[1],10)===target) return true;
+  }
+  return false;
+}
+
 function getFinish(name){
   const n=name.toLowerCase();
   if(n.includes('unfinished')) return 'Unfinished';
@@ -2164,7 +2177,7 @@ function buildFilters(){
       const testThick  = type==='thickness' ? val : activeThickness;
       if(testCat    && p[4]!==testCat) return false;
       if(testGrade  && !p[3].toLowerCase().includes(testGrade.toLowerCase())) return false;
-      if(testWidth  && !p[2].includes('× '+testWidth.replace('mm',''))&&!p[2].includes('× '+testWidth)) return false;
+      if(testWidth  && !productMatchesWidth(p[2],testWidth)) return false;
       if(testFinish && getFinish(p[1])!==testFinish) return false;
       if(testSpecies&& getSpecies(p[1])!==testSpecies) return false;
       if(testThick  && getThickness(p[2])!==testThick) return false;
@@ -2241,7 +2254,7 @@ function getFiltered(){
   return PRODUCTS.filter(p=>{
     if(activeCat&&p[4]!==activeCat)return false;
     if(activeGrade&&!p[3].toLowerCase().includes(activeGrade.toLowerCase()))return false;
-    if(activeWidth&&!p[2].includes('× '+activeWidth.replace('mm',''))&&!p[2].includes('× '+activeWidth))return false;
+    if(activeWidth&&!productMatchesWidth(p[2],activeWidth))return false;
     if(activeFinish&&getFinish(p[1])!==activeFinish)return false;
     if(activeSpecies&&getSpecies(p[1])!==activeSpecies)return false;
     if(activeThickness&&getThickness(p[2])!==activeThickness)return false;
