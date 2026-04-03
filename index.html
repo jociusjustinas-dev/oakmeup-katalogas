@@ -128,7 +128,10 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-card-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
 .prod-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.35}
 .prod-card-dims{font-size:10px;color:var(--muted);font-family:'Geist Mono',monospace;line-height:1.3;word-break:break-word}
-.card-desc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-desc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;transition:color 0.15s}
+.card-desc:hover{color:var(--text)}
+.card-desc.expanded{display:block;-webkit-line-clamp:unset;overflow:visible;cursor:pointer}
+.card-desc.expanded:hover{color:var(--text)}
 .desc-icon{background:rgba(28,58,19,0.08);color:var(--green-dark)}
 .prod-card .grade{align-self:flex-start}
 .prod-card-foot{padding:0 12px 12px;margin-top:auto}
@@ -2320,6 +2323,14 @@ function escapeAttr(v){
   return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
 }
 
+function toggleGridCardDesc(ev,el){
+  if(ev)ev.stopPropagation();
+  el.classList.toggle('expanded');
+  const expanded=el.classList.contains('expanded');
+  el.setAttribute('aria-expanded',expanded?'true':'false');
+  el.title=expanded?'Spustelėkite, kad suskleistumėte':'Spustelėkite, kad pamatytumėte visą aprašymą';
+}
+
 let gradeTooltipEl=null;
 let activeInfoIcon=null;
 
@@ -2572,7 +2583,7 @@ function formatProductItem(p){
       <div class="prod-card-body">
         <div class="prod-card-name">${p[1]}</div>
         <div class="prod-card-dims">${p[2]}</div>
-        ${SKU_DESC[p[0]] ? `<div class="card-desc">${SKU_DESC[p[0]]}</div>` : ''}
+        ${SKU_DESC[p[0]] ? `<div class="card-desc" title="Spustelėkite, kad pamatytumėte visą aprašymą" tabindex="0" role="button" aria-expanded="false" onclick="toggleGridCardDesc(event,this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGridCardDesc(event,this)}">${SKU_DESC[p[0]]}</div>` : ''}
         <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
       </div>
       <div class="prod-card-foot">
