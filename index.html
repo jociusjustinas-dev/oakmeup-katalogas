@@ -138,8 +138,6 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .card-inquiry-link{display:none;margin-top:8px;width:100%;text-align:center;background:var(--green-dark);color:var(--lime);border:none;border-radius:8px;padding:7px 10px;font-size:11px;font-family:'Geist',sans-serif;font-weight:600;cursor:pointer;transition:background 0.15s}
 .card-desc.expanded + .card-inquiry-link{display:block}
 .card-inquiry-link:hover{background:var(--green-mid);color:var(--lime)}
-.prod-inquiry-mini{margin-top:5px;display:inline-block;background:none;border:none;padding:0;font-size:10px;color:var(--green-dark);text-decoration:underline;cursor:pointer;font-family:'Geist',sans-serif;font-weight:600;text-align:left}
-.prod-inquiry-mini:hover{color:var(--text)}
 .desc-icon{background:rgba(28,58,19,0.08);color:var(--green-dark)}
 .prod-card .grade{align-self:flex-start}
 .prod-card-foot{padding:0 12px 12px;margin-top:auto}
@@ -2629,7 +2627,6 @@ function formatProductItem(p){
         </div>
       </div>
       <span class="prod-dims">${p[2]}</span>
-      ${SKU_DESC[p[0]] ? `<button type="button" class="prod-inquiry-mini" onclick="event.stopPropagation();toggleProd('${p[0]}')">${sel?'Išimti iš pasiūlymo':'Pridėti į pasiūlymą'}</button>` : ''}
     </div>
     <span class="prod-sku">${p[0]}</span>
     <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
