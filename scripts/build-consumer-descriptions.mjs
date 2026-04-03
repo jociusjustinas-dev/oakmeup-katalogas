@@ -84,18 +84,15 @@ function firstSentences(text, max) {
   return parts.slice(0, max).join(" ").trim();
 }
 
-function closingLine(title, narrative, solid, complex) {
+function closingLine(title, narrative, _solid, complex) {
   const click = /click|5g|„click“/i.test(title + narrative);
   if (complex) {
-    return "Eglutė, chevron ir panašus raštas paprastai kelia didesnį reikalavimą meistro patirčiai. Šildomoms grindims dažnai tinka – svarbu klijai ir instrukcija. Kainą ir garantiją parašysime užklausoje.";
+    return "Tinka šildomoms grindims.";
   }
   if (click) {
-    return "Dalį variantų galima kloti ir „užsispaudžiančia“ sistema – vis tiek verta pasitarti su montuotoju. Šildomoms grindims paprastai tinka laikantis instrukcijos. Kaina ir garantija – pagal jūsų užklausą.";
+    return "Dalį variantų galima kloti ir „užsispaudžiančia“ sistema – verta pasitarti su montuotoju. Tinka šildomoms grindims.";
   }
-  if (solid && !complex) {
-    return "Šildomoms grindims dažnai tinka, jei pagrindas ir klijai parinkti teisingai. Kainą ir garantiją nurodysime individualiai.";
-  }
-  return "Šildomoms grindims dažnai tinka tinkamai sumontavus. Jei nesate tikri – geriau kreiptis į meistrą dėl klijų ir lygio. Kaina ir garantija – atsakysime į užklausą.";
+  return "Tinka šildomoms grindims.";
 }
 
 function oeNote(filterLabel, sku) {
