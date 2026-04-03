@@ -48,16 +48,55 @@ function woodWord(title) {
   return "ąžuolo";
 }
 
-function openingLine(title, dims, eng, solid) {
+/** Stabilus variantas pagal SKU, kad tekstas nesikristų kiekvieną kartą iš naujo. */
+function variantIndex(sku, len) {
+  if (len <= 1) return 0;
+  const s = String(sku);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h % len;
+}
+
+function openingLine(sku, title, dims, eng, solid, complex) {
   const d = dims.replace(/\s+/g, " ").trim();
   const wood = woodWord(title);
+  const Wood = wood.charAt(0).toUpperCase() + wood.slice(1);
+
   if (solid) {
-    return `Tai ${wood} grindys iš vientisos lentos. Kataloge nurodyti matmenys: ${d}.`;
+    const opts = [
+      `${Wood} grindys iš vientisos lentos – visas storis tos pačios medienos. Kataloge: ${d}.`,
+      `Vientisa ${wood} mediena grindims, be daugiasluoksnio pagrindo. Matmenys: ${d}.`,
+      `Masyvios ${wood} grindys, kai visa lenta „visa tikra mediena“. Kataloge nurodyta: ${d}.`,
+      `Tradicinis masyvumas: grindys iš vientisos ${wood} lentos. Dydis: ${d}.`,
+    ];
+    return opts[variantIndex(sku, opts.length)];
   }
+
   if (eng) {
-    return `Tai ${wood} grindų lentos: viršuje tikras medienos sluoksnis, apačioje kiti sluoksniai stabilumui – buityje tai įprasta ir patikima kombinacija. Matmenys: ${d}.`;
+    if (complex) {
+      const cOpts = [
+        `Raštuotos ${wood} grindys su kelių sluoksnių konstrukcija – viršuje matomas tikras medienos sluoksnis. Formatas: ${d}.`,
+        `Šis ${wood} variantas skirtas dekoratyviam raštui (eglutė, V ir pan.) ir turi stabilizuojantį pagrindą. Matmenys: ${d}.`,
+        `Įmantresnis išdėstymas, bet sandara įprasta: ${wood} paviršius ant daugiasluoksnio pagrindo. ${d}.`,
+        `${Wood} grindys su raštu – „sumuštinė“ konstrukcija dažnai stabiliau laikosi nei viena storio lenta. Kataloge: ${d}.`,
+      ];
+      return cOpts[variantIndex(sku, cOpts.length)];
+    }
+    const opts = [
+      `Šios ${wood} grindys sutvirtintos keliais sluoksniais: viršuje tikra mediena, apačia padeda išlaikyti formą. Formatas: ${d}.`,
+      `${Wood} grindų lentelės su kelių sluoksnių konstrukcija – dažnas pasirinkimas butuose ir biuruose. Matmenys: ${d}.`,
+      `Įprastas inžinerinis parketas: plonas ${wood} sluoksnis ant stabilaus pagrindo. Kataloge: ${d}.`,
+      `Parketlentės iš ${wood}: viršuje matomas medienos sluoksnis, žemiau – sluoksniai stabilumui. Nurodyta: ${d}.`,
+      `${Wood} grindų danga su pagrindu po plonu kietmedžio paviršiumi. Matmuo: ${d}.`,
+    ];
+    return opts[variantIndex(sku, opts.length)];
   }
-  return `Grindys iš ${wood}, matmenys kataloge: ${d}.`;
+
+  const fb = [
+    `Grindys iš ${wood}, matmenys kataloge: ${d}.`,
+    `Ši pozicija – ${wood} grindų danga. Kataloge: ${d}.`,
+  ];
+  return fb[variantIndex(sku, fb.length)];
 }
 
 function softenTechnicalJargon(text) {
@@ -106,7 +145,7 @@ function buildSimple(sku, title, dims, _grade, filterLabel, narrative) {
   const eng = isEngineered(title, dims);
   const solid = isSolidLine(title);
   const complex = isComplexPattern(title, filterLabel);
-  const open = openingLine(title, dims, eng, solid);
+  const open = openingLine(sku, title, dims, eng, solid, complex);
   const narr = String(narrative || "").trim();
   let soft = narr ? softenTechnicalJargon(narr) : "";
   if (eng && soft.startsWith("Lentos su keliais sluoksniais – ")) {
