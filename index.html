@@ -2409,6 +2409,8 @@ function initGradeTooltips(){
     if(!window.matchMedia('(hover:hover)').matches)return;
     if(e.target.closest('.info-icon'))hideGradeTooltip();
   });
+  // Capture phase: veikia ir ant touch, kai ikonėlė turi stopPropagation (eilutės kortelė),
+  // nes burbulas iki document kitaip nepasiektų.
   document.addEventListener('click',e=>{
     const icon=e.target.closest('.info-icon');
     if(icon){
@@ -2417,6 +2419,13 @@ function initGradeTooltips(){
       return;
     }
     hideGradeTooltip();
+  },true);
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    const icon=e.target&&e.target.closest&&e.target.closest('.info-icon');
+    if(!icon||!document.body.contains(icon))return;
+    e.preventDefault();
+    if(activeInfoIcon===icon)hideGradeTooltip();else showGradeTooltip(icon);
   });
   window.addEventListener('resize',()=>{if(activeInfoIcon)positionGradeTooltip(activeInfoIcon);});
   window.addEventListener('scroll',()=>{if(activeInfoIcon)positionGradeTooltip(activeInfoIcon);},{passive:true});
@@ -2619,7 +2628,7 @@ function formatProductItem(p){
     <div class="prod-name-wrap">
       <div class="prod-name-top">
         <span class="prod-name">${p[1]}</span>
-        ${SKU_DESC[p[0]] ? `<div class="info-icon desc-icon" data-tooltip="${escapeTooltipAttr(SKU_DESC[p[0]])}" aria-label="Aprašymas" onclick="event.stopPropagation()">${icon('info','11')}</div>` : ''}
+        ${SKU_DESC[p[0]] ? `<div class="info-icon desc-icon" data-tooltip="${escapeTooltipAttr(SKU_DESC[p[0]])}" aria-label="Aprašymas" role="button" tabindex="0">${icon('info','11')}</div>` : ''}
         <div class="cmp-ctl" onclick="event.stopPropagation()">
           <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">
             ${cmpOn?'Pašalinti':'Palyginti'}
