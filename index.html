@@ -397,12 +397,15 @@ input[type=text]:focus{border-color:var(--green-dark)}
     <div class="sidebar-title">Apdaila</div>
     <div class="filter-group" id="finish-filters"></div>
 
+    <div class="sidebar-title">Spalva</div>
+    <div class="filter-group" id="color-filters"></div>
+
     <div class="sidebar-title">Medienos rūšis</div>
     <div class="filter-group" id="species-filters"></div>
 
     <div class="sidebar-title">Storis</div>
     <div class="filter-group" id="thickness-filters"></div>
-    <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';activeFinish='';activeSpecies='';activeThickness='';buildFilters();render();">Išvalyti filtrus</button>
+    <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';activeFinish='';activeSpecies='';activeThickness='';activeColor='';buildFilters();render();">Išvalyti filtrus</button>
 
     </div>
   </aside>
@@ -2296,7 +2299,28 @@ function getFinish(name){
   return 'Lacquered';
 }
 
-let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="";
+function getColorGroup(name){
+  const n=String(name||'').toLowerCase();
+  const tamsios=[
+    'double smoked','luxe smoked','walnut stain','mississippi','bronx','putnam',
+    'twilight','hazelnut','cinnamon','mocha','coffee','espresso','antique','distressed','vintage','dark','black'
+  ];
+  for(const kw of tamsios){if(n.includes(kw)) return 'Tamsios';}
+  const pilkos=[
+    'sandy grey','rock grey','driftwood','moonstone','charcoal','graphite','gunmetal','livingston',
+    'smoke','smoked','grey','gray','dove'
+  ];
+  for(const kw of pilkos){if(n.includes(kw)) return 'Pilkos / Dūmintos';}
+  const sviesios=[
+    'whitewashed','white washed','invisible','scandi','cotton','ivory','cream','light','white','washed','natural'
+  ];
+  for(const kw of sviesios){if(n.includes(kw)) return 'Šviesios';}
+  const nat=['oiled','brushed','golden','honey','wheat','cognac','brandy','classic','rustic','warm'];
+  for(const kw of nat){if(n.includes(kw)) return 'Natūralios';}
+  return 'Natūralios';
+}
+
+let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="",activeColor="";
 const selected=new Set();
 const gridDescExpanded=new Set();
 const compareMax=4;
@@ -2477,7 +2501,7 @@ function buildFilters(){
     '20mm+ (premium)':'Storiausias variantas — solidus jausmas po kojomis, puikus garso slopinimas. Galima šlifuoti daugiau kartų. Ilgaamžiškiausias pasirinkimas.'
   };
 
-  const hasFilters=activeCat||activeGrade||activeWidth||activeFinish||activeSpecies||activeThickness;
+  const hasFilters=activeCat||activeGrade||activeWidth||activeFinish||activeSpecies||activeThickness||activeColor;
   document.getElementById('clear-filters').style.display=hasFilters?'block':'none';
 
   function countWith(type,val){
@@ -2489,12 +2513,14 @@ function buildFilters(){
       const testFinish = type==='finish'    ? val : activeFinish;
       const testSpecies= type==='species'   ? val : activeSpecies;
       const testThick  = type==='thickness' ? val : activeThickness;
+      const testColor  = type==='color'     ? val : activeColor;
       if(testCat    && p[4]!==testCat) return false;
       if(testGrade  && !p[3].toLowerCase().includes(testGrade.toLowerCase())) return false;
       if(testWidth  && !productMatchesWidth(p[2],testWidth)) return false;
       if(testFinish && getFinish(p[1])!==testFinish) return false;
       if(testSpecies&& getSpecies(p[1])!==testSpecies) return false;
       if(testThick  && getThickness(p[2])!==testThick) return false;
+      if(testColor  && getColorGroup(p[1])!==testColor) return false;
       if(q && !p[0].toLowerCase().includes(q)&&!p[1].toLowerCase().includes(q)) return false;
       return true;
     }).length;
@@ -2532,6 +2558,14 @@ function buildFilters(){
   }).join('');
   document.getElementById('finish-filters').innerHTML=finishHtml;
 
+  const COLOR_GROUPS=['Šviesios','Natūralios','Pilkos / Dūmintos','Tamsios'];
+  const colorHtml=COLOR_GROUPS.map(c=>{
+    const cnt=countWith('color',c);
+    if(cnt===0 && activeColor!==c) return '';
+    return `<button class="filter-btn${activeColor===c?' active':''}${cnt===0?' filter-empty':''}" onclick='setFilter("color", ${JSON.stringify(c)})'>${c}<span class="cnt">${cnt}</span></button>`;
+  }).join('');
+  document.getElementById('color-filters').innerHTML=colorHtml;
+
   const speciesHtml=SPECIES.map(s=>{
     const cnt=countWith('species',s);
     if(cnt===0 && activeSpecies!==s) return '';
@@ -2559,6 +2593,7 @@ function setFilter(type,val){
   else if(type==='finish') activeFinish=activeFinish===val?'':val;
   else if(type==='species') activeSpecies=activeSpecies===val?'':val;
   else if(type==='thickness') activeThickness=activeThickness===val?'':val;
+  else if(type==='color') activeColor=activeColor===val?'':val;
   else activeWidth=activeWidth===val?'':val;
   buildFilters();render();
 }
@@ -2572,6 +2607,7 @@ function getFiltered(){
     if(activeFinish&&getFinish(p[1])!==activeFinish)return false;
     if(activeSpecies&&getSpecies(p[1])!==activeSpecies)return false;
     if(activeThickness&&getThickness(p[2])!==activeThickness)return false;
+    if(activeColor&&getColorGroup(p[1])!==activeColor)return false;
     if(q&&!p[0].toLowerCase().includes(q)&&!p[1].toLowerCase().includes(q))return false;
     return true;
   });
