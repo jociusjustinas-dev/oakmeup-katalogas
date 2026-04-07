@@ -21,7 +21,7 @@ const plans = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-brand-dark px-4 py-16 text-white md:px-8 md:py-24">
+    <section id="montavimas" className="bg-brand-dark px-4 py-16 text-white md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-[1320px]">
         <h2 className="text-3xl tracking-tight md:text-5xl">Montavimas iki rakto - viena kaina</h2>
         <p className="mt-4 max-w-3xl text-white/75">

@@ -23,7 +23,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="px-4 py-16 md:px-8 md:py-24">
+    <section id="valuation-form" className="px-4 py-16 md:px-8 md:py-24">
       <div className="mx-auto grid w-full max-w-[1320px] gap-8 rounded-3xl bg-brand-soft p-6 md:grid-cols-2 md:p-10">
         <div>
           <h2 className="text-3xl tracking-tight md:text-5xl">Pasitarkime dėl jūsų grindų</h2>
@@ -43,13 +43,13 @@ export function ContactSection() {
             ) : null}
           </div>
           <div>
-            <Textarea placeholder="Žinutė" {...form.register("message")} />
+            <Textarea placeholder="Plotas, dominantis produktas ir papildoma informacija" {...form.register("message")} />
             {form.formState.errors.message ? (
               <p className="mt-1 text-xs text-red-600">{form.formState.errors.message.message}</p>
             ) : null}
           </div>
           <Button type="submit" variant="default" className="w-full">
-            Siųsti užklausą
+            Gauti sąmatą
           </Button>
           <p className="text-xs text-zinc-500">Jūsų duomenys yra saugūs. Nebus jokio šlamšto, niekada.</p>
           {submitted ? <p className="text-sm text-green-700">Ačiū! Užklausa išsiųsta.</p> : null}

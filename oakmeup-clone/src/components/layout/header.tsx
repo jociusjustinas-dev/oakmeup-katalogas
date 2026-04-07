@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "#features", label: "Kolekcijos" },
-  { href: "#how-it-works", label: "Procesas" },
-  { href: "#pricing", label: "Kainos" },
-  { href: "#faq", label: "DUK" },
+  { href: "#kolekcija", label: "Kolekcija" },
+  { href: "#procesas", label: "Procesas" },
+  { href: "#privalumai", label: "Privalumai" },
+  { href: "#montavimas", label: "Montavimas" },
+  { href: "#projektai", label: "Projektai" },
+  { href: "#valuation-form", label: "Kontaktai" },
 ];
 
 export function Header() {
@@ -40,8 +42,8 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a href="#contact">
-          <Button variant="accent">Gauti sąmatą</Button>
+        <a href="#valuation-form">
+          <Button variant="accent">Gauti sąmatą per 24 h</Button>
         </a>
       </div>
     </header>

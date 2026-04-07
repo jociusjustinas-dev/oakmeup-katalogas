@@ -33,7 +33,7 @@ const collections = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="px-4 py-16 md:px-8 md:py-24">
+    <section id="kolekcija" className="px-4 py-16 md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-[1320px]">
         <h2 className="text-3xl tracking-tight md:text-5xl">Atrinktos ąžuolo grindys - lengva išsirinkti</h2>
         <p className="mt-4 max-w-3xl text-zinc-600">

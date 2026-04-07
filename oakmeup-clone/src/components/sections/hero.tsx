@@ -35,14 +35,14 @@ export function HeroSection() {
             Padėsime išsirinkti raštą ir atspalvį, paruošime aiškią sąmatą, pristatysime ir sumontuosime.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#contact">
+            <a href="#valuation-form">
               <Button variant="accent" size="lg">
-                Gauti sąmatą
+                Gauti sąmatą per 24 h
               </Button>
             </a>
-            <a href="#pricing">
+            <a href="#kolekcija">
               <Button variant="outline" size="lg" className="border-white/35 bg-transparent text-white hover:bg-white/10">
-                Žiūrėti kainas
+                Peržiūrėti kolekciją
               </Button>
             </a>
           </div>

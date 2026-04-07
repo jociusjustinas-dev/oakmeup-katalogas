@@ -18,7 +18,7 @@ const ufh = [
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="bg-brand-dark px-4 py-16 text-white md:px-8 md:py-24">
+    <section id="procesas" className="bg-brand-dark px-4 py-16 text-white md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-[1320px]">
         <h2 className="text-3xl tracking-tight md:text-5xl">Mūsų procesas - nuo pasirinkimo iki įrengtų grindų</h2>
         <p className="mt-4 text-white/75">Aiškus planas, viena komanda, vienas atsakingas žmogus.</p>
@@ -38,7 +38,7 @@ export function HowItWorksSection() {
             </motion.article>
           ))}
         </div>
-        <div className="mt-12 rounded-2xl bg-black/20 p-6 md:p-8">
+        <div id="privalumai" className="mt-12 rounded-2xl bg-black/20 p-6 md:p-8">
           <h3 className="text-2xl">Saugus ąžuolas šildomoms grindims</h3>
           <p className="mt-2 text-sm text-white/75">
             Mūsų UFH protokolas užtikrina, kad jūsų grindys būtų įrengtos pagal aukščiausius standartus.
