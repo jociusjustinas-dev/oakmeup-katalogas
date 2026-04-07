@@ -42,10 +42,15 @@ const stripUnneededScripts = (html) => {
   return output;
 };
 
+const deFramerizeText = (text) =>
+  text
+    .replace(/\bframer-/g, "oak-")
+    .replace(/\b__framer/g, "__oak")
+    .replace(/\bdata-framer/g, "data-oak")
+    .replace(/\bframer_variant\b/g, "oak_variant");
+
 const deFramerizeMarkup = (html) => {
-  let output = html;
-  output = output.replace(/\bframer-/g, "oak-");
-  output = output.replace(/\b__framer/g, "__oak");
+  let output = deFramerizeText(html);
   output = output.replace(/\sdata-framer(?:-[\w-]+)?=(?:"[^"]*"|'[^']*'|[^\s>]+)/g, "");
   output = output.replace(/\sdata-framer(?:-[\w-]+)?(?=[\s>])/g, "");
   output = output.replace(/\sclass=""/g, "");
@@ -72,6 +77,8 @@ const toPublicHref = (absoluteAssetPath) => {
 
 const decodeHtmlUrl = (value) => value.replaceAll("&amp;", "&");
 
+const TEXT_EXTENSIONS = new Set([".mjs", ".js", ".css", ".json", ".svg", ".xml", ".html", ".txt"]);
+
 const downloadAsset = async (url, filePath) => {
   await mkdir(path.dirname(filePath), { recursive: true });
   const response = await fetch(url);
@@ -79,6 +86,22 @@ const downloadAsset = async (url, filePath) => {
     throw new Error(`Failed ${response.status} for ${url}`);
   }
   const buffer = Buffer.from(await response.arrayBuffer());
+  const contentType = response.headers.get("content-type") || "";
+  const extension = path.extname(new URL(url).pathname).toLowerCase();
+  const isText =
+    TEXT_EXTENSIONS.has(extension) ||
+    contentType.startsWith("text/") ||
+    contentType.includes("javascript") ||
+    contentType.includes("json") ||
+    contentType.includes("svg") ||
+    contentType.includes("xml");
+
+  if (isText) {
+    const text = buffer.toString("utf-8");
+    await writeFile(filePath, deFramerizeText(text), "utf-8");
+    return;
+  }
+
   await writeFile(filePath, buffer);
 };
 
