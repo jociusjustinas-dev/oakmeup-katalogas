@@ -174,7 +174,7 @@ function secondLine(name, finish, cg) {
     return `Be gamyklinės pabaigos išlieka ${th}; galėsite pasirinkti laką ar aliejų pagal interjerą.${tex}`;
   }
   if (finish === "Lakuotas") {
-    return `Matomas ${th}, paviršius apsaugotas laku — kasdienė priežiūra paprastesnė nei neapdorotai medienai.${tex}`;
+    return `Matomas ${th}, paviršius užbaigtas matiniu arba blizgiančiu laku, kuris išlaiko spalvą ir apsaugo medieną.${tex}`;
   }
   if (finish === "Aliejuotas") {
     return `Aliejumi baigtame paviršuje atsiskleidžia ${th} ir natūrali medienos šiluma.${tex}`;
@@ -191,14 +191,8 @@ function secondLine(name, finish, cg) {
   return `Paviršius paruoštas naudojimui; ${th} išlieka aiškiai matomas.${tex}`;
 }
 
-function thirdLine(finish) {
-  if (finish === "Be apdailos") {
-    return "Tinka ir šildomoms grindims; galutinę apsaugą parinksite užbaigdami grindis pasirinkta pabaiga.";
-  }
-  if (finish === "Aliejuotas") {
-    return "Tinka ir šildomoms grindims; aliejų verta periodiškai atnaujinti, kad paviršius išliktų tolygus ir apsaugotas.";
-  }
-  return "Tinka ir šildomoms grindims; valykite švelniai ir vadovaukitės lakų ar aliejų gamintojo rekomendacijomis.";
+function thirdLine() {
+  return "Tinka ir šildomoms grindims, gyvenamosioms ir komercinėms patalpoms.";
 }
 
 function buildDesc(row) {
@@ -207,7 +201,7 @@ function buildDesc(row) {
   const species = getSpecies(row.name);
   const a = firstLine(row.cat, species, row.dims);
   const b = secondLine(row.name, finish, cg);
-  const c = thirdLine(finish);
+  const c = thirdLine();
   return `${a} ${b} ${c}`.replace(/\s+/g, " ").trim();
 }
 
