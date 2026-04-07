@@ -92,6 +92,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .sel-kaina-btn:hover{opacity:0.92}
 .clear-filters-btn{width:100%;margin-top:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-size:12px;font-family:'Geist',sans-serif;cursor:pointer;display:none}
 .clear-filters-btn:hover{background:var(--bg);color:var(--text)}
+.filter-apply-btn{display:none;position:fixed;bottom:0;left:0;right:0;background:#1C3A13;color:#D3FA99;text-align:center;line-height:56px;height:56px;font-size:14px;font-family:'Geist',sans-serif;font-weight:600;z-index:1000;cursor:pointer;border:none;padding:0;padding-bottom:env(safe-area-inset-bottom,0);box-sizing:border-box}
+.filter-apply-btn .filter-apply-count{font-weight:600;opacity:0.95}
+@media (max-width:768px){
+  .filter-apply-btn.visible{display:block}
+  .sidebar.filters-open:not(.collapsed){padding-bottom:calc(56px + env(safe-area-inset-bottom,0))}
+}
 
 /* ── Main ─────────────────────────────────────── */
 .main{padding:24px 28px}
@@ -410,6 +416,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
     <button id="clear-filters" class="clear-filters-btn" onclick="activeCat='';activeGrade='';activeWidth='';activeFinish='';activeSpecies='';activeThickness='';activeColor='';buildFilters();render();">Išvalyti filtrus</button>
 
     </div>
+    <div class="filter-apply-btn" id="filter-apply" role="button" tabindex="0" onclick="applyMobileFilters()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();applyMobileFilters()}">Rodyti rezultatus <span class="filter-apply-count" id="filter-apply-count"></span></div>
   </aside>
 
   <!-- Main -->
@@ -2471,20 +2478,48 @@ function initGradeTooltips(){
   window.addEventListener('scroll',()=>{if(activeInfoIcon)positionGradeTooltip(activeInfoIcon);},{passive:true});
 }
 
+function scrollToProductList(){
+  const el=document.getElementById('list');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function updateMobileFilterApplyUI(filterCount){
+  const sb=document.getElementById('sidebar');
+  const btn=document.getElementById('filter-apply');
+  const cntEl=document.getElementById('filter-apply-count');
+  if(!sb||!btn||!cntEl) return;
+  const n=(typeof filterCount==='number')?filterCount:getFiltered().length;
+  cntEl.textContent=`(${n})`;
+  const show=window.innerWidth<=768 && mobileFiltersOpen && sb.classList.contains('filters-open') && !sb.classList.contains('collapsed');
+  btn.classList.toggle('visible',show);
+}
+
 function syncMobileFilters(){
   const sb=document.getElementById('sidebar');
   if(!sb)return;
   if(window.innerWidth<=820){
     sb.classList.toggle('collapsed',!mobileFiltersOpen);
+    sb.classList.toggle('filters-open',mobileFiltersOpen);
   }else{
     sb.classList.remove('collapsed');
+    sb.classList.remove('filters-open');
   }
+  updateMobileFilterApplyUI();
+}
+
+function applyMobileFilters(){
+  if(window.innerWidth>820) return;
+  mobileFiltersOpen=false;
+  syncMobileFilters();
+  scrollToProductList();
 }
 
 function toggleMobileFilters(){
   if(window.innerWidth>820)return;
+  const wasOpen=mobileFiltersOpen;
   mobileFiltersOpen=!mobileFiltersOpen;
   syncMobileFilters();
+  if(wasOpen) scrollToProductList();
 }
 
 function buildFilters(){
@@ -2780,6 +2815,7 @@ function render(){
   }).join('');
 
   if(isCompareOpen()) updateCompareModal();
+  updateMobileFilterApplyUI(filtered.length);
 }
 
 function toggleCat(cat){
