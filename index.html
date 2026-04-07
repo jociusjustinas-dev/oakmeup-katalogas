@@ -219,6 +219,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .swatch{width:var(--swatch-size);height:var(--swatch-size);border-radius:50%;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
 .prod-dims{font-size:11px;color:var(--muted);font-family:'Geist Mono',monospace;white-space:nowrap}
 .prod-name{font-size:12px;color:var(--text);flex:0 1 auto;min-width:0}
+.prod-subtitle{font-size:11px;color:var(--muted);display:block;margin-top:2px}
 .prod-name-wrap{display:flex;flex-direction:column;gap:1px;min-width:0;justify-content:center}
 .prod-name-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px 10px}
 .prod-name-wrap .prod-dims{font-size:10px;display:block;white-space:normal;color:var(--muted);font-family:'Geist Mono',monospace}
@@ -2248,18 +2249,18 @@ const SKU_DESC={
 const CATS=["PARKETLENTĖS","CHEVRON (V RAŠTAS)","VERSALIO PANELĖS","EGLUTĖ (HERRINGBONE)"];
 const GRADES=["Prime AB","Classic","Rustic","Select","Antique"];
 const WIDTHS=["80mm","90mm","125mm","130mm","150mm","190mm","220mm","240mm","260mm","300mm","600mm","800mm"];
-const FINISHES=['Lacquered','Oiled','Unfinished','Smoked','White / Grey Washed','Handscraped / Distressed'];
+const FINISHES=['Lakuotas','Aliejuotas','Be apdailos','Dūmintas','Baltas / Pilkas skalavimas','Sendintas'];
 
-const SPECIES=['Engineered Oak','Solid Oak','White Oak','American Oak','American Walnut','French Oak'];
+const SPECIES=['Daugiasluoksnis ąžuolas','Masyvas ąžuolas','Baltasis ąžuolas','Amerikiečių ąžuolas','Amerikiečių riešutmedis','Prancūziškas ąžuolas'];
 
 function getSpecies(name){
   const n=name;
-  if(n.includes('Am. Walnut')||n.includes('Walnut HB')) return 'American Walnut';
-  if(n.includes('Am. Oak')) return 'American Oak';
-  if(n.includes('French Oak')||n.includes('Versailles')) return 'French Oak';
-  if(n.includes('White Oak')) return 'White Oak';
-  if(n.includes('Solid Oak')) return 'Solid Oak';
-  return 'Engineered Oak';
+  if(n.includes('Am. Walnut')||n.includes('Walnut HB')) return 'Amerikiečių riešutmedis';
+  if(n.includes('Am. Oak')) return 'Amerikiečių ąžuolas';
+  if(n.includes('French Oak')||n.includes('Versailles')) return 'Prancūziškas ąžuolas';
+  if(n.includes('White Oak')) return 'Baltasis ąžuolas';
+  if(n.includes('Solid Oak')) return 'Masyvas ąžuolas';
+  return 'Daugiasluoksnis ąžuolas';
 }
 
 const THICKNESS_GROUPS=['10–14mm (standartinis)','15–18mm (sustiprintas)','20mm+ (premium)'];
@@ -2288,13 +2289,27 @@ function productMatchesWidth(dims,widthFilter){
 
 function getFinish(name){
   const n=name.toLowerCase();
-  if(n.includes('unfinished')) return 'Unfinished';
-  if(n.includes('smoked')) return 'Smoked';
-  if(n.includes('white washed')||n.includes('whitewashed')||n.includes('cotton white')||n.includes('grey washed')) return 'White / Grey Washed';
-  if(n.includes('handscraped')||n.includes('hand scraped')||n.includes('distressed')||n.includes('antique')||n.includes('vintage')) return 'Handscraped / Distressed';
-  if(n.includes('oil')||n.includes('oiled')||n.includes('hard wax')) return 'Oiled';
-  if(n.includes('lac')||n.includes('lacquered')||n.includes('lacq')) return 'Lacquered';
-  return 'Lacquered';
+  if(n.includes('unfinished')) return 'Be apdailos';
+  if(n.includes('smoked')) return 'Dūmintas';
+  if(n.includes('white washed')||n.includes('whitewashed')||n.includes('cotton white')||n.includes('grey washed')) return 'Baltas / Pilkas skalavimas';
+  if(n.includes('handscraped')||n.includes('hand scraped')||n.includes('distressed')||n.includes('antique')||n.includes('vintage')) return 'Sendintas';
+  if(n.includes('oil')||n.includes('oiled')||n.includes('hard wax')) return 'Aliejuotas';
+  if(n.includes('lac')||n.includes('lacquered')||n.includes('lacq')) return 'Lakuotas';
+  return 'Lakuotas';
+}
+
+function getSimpleLabel(name,dims){
+  const parts=[];
+  const finish=getFinish(name);
+  const species=getSpecies(name);
+  
+  // Medienos rūšis (tik jei ne standartinis daugiasluoksnis)
+  if(species!=='Daugiasluoksnis ąžuolas') parts.push(species);
+  
+  // Apdaila
+  parts.push(finish);
+  
+  return parts.join(', ');
 }
 
 let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="";
@@ -2448,20 +2463,20 @@ function buildFilters(){
     'Antique':'Specialiai sendintas paviršius — dirbtinai sukurtas senovinis efektas. Loftiniam, industriniam ar vintage stiliui.'
   };
   const FINISH_INFO={
-    'Lacquered':'Lakas dengia medienos paviršių iš viršaus — stipri apsauga nuo drėgmės ir įbrėžimų. Lengva valyti. Galimas matinis arba blizgus efektas. Idealus šeimoms su vaikais.',
-    'Oiled':'Alyva įsigeria į medieną — natūralus, gyvas medienos jausmas po kojomis. Vietines dėmes lengva atnaujinti. Reikia periodiškai alyvuoti kas 1–2 metus.',
-    'Unfinished':'Mediena be jokios apdailos — galite patys lakuoti ar alyvuoti pagal savo skonį. Leidžia sukurti tikrai individualias grindis.',
-    'Smoked':'Mediena apdorota amoniako garais krosnyje — dūminis, gilus tamsus atspalvis, kuris išlieka net po šlifavimo. Vintage ar loftinis charakteris.',
-    'White / Grey Washed':'Mediena padengta pusiau permatoma balta arba pilka danga — ryškinamas medienos raštas, sukuriamas lengvas, modernus vaizdas. Populiaru skandinaviškuose interjeruose.',
-    'Handscraped / Distressed':'Rankomis ar mašinomis sukurtas sendintas paviršius — nedidelės įdubos ir nereguliarios tekstūros. Antikvaro ar industrinio stiliaus grindys, kurios puikiai slepia nusidėvėjimą.'
+    'Lakuotas':'Lakas dengia medienos paviršių iš viršaus — stipri apsauga nuo drėgmės ir įbrėžimų. Lengva valyti. Galimas matinis arba blizgus efektas. Idealus šeimoms su vaikais.',
+    'Aliejuotas':'Alyva įsigeria į medieną — natūralus, gyvas medienos jausmas po kojomis. Vietines dėmes lengva atnaujinti. Reikia periodiškai alyvuoti kas 1–2 metus.',
+    'Be apdailos':'Mediena be jokios apdailos — galite patys lakuoti ar alyvuoti pagal savo skonį. Leidžia sukurti tikrai individualias grindis.',
+    'Dūmintas':'Mediena apdorota amoniako garais krosnyje — dūminis, gilus tamsus atspalvis, kuris išlieka net po šlifavimo. Vintage ar loftinis charakteris.',
+    'Baltas / Pilkas skalavimas':'Mediena padengta pusiau permatoma balta arba pilka danga — ryškinamas medienos raštas, sukuriamas lengvas, modernus vaizdas. Populiaru skandinaviškuose interjeruose.',
+    'Sendintas':'Rankomis ar mašinomis sukurtas sendintas paviršius — nedidelės įdubos ir nereguliarios tekstūros. Antikvaro ar industrinio stiliaus grindys, kurios puikiai slepia nusidėvėjimą.'
   };
   const SPECIES_INFO={
-    'Engineered Oak':'Populiariausias pasirinkimas — ąžuolo faneruotė ant daugiasluoksnio pagrindo. Stabilus, tinkamas šildomoms grindims, atsparus drėgmės svyravimams.',
-    'Solid Oak':'Vientisa ąžuolo lenta — storesnis faneruotės sluoksnis, galima šlifuoti daugiau kartų. Ilgaamžiškiausias variantas.',
-    'White Oak':'Baltasis ąžuolas — šviesesnis, su subtiliu medienos raštu. Populiarus moderniuose ir skandinaviškuose interjeruose.',
-    'American Oak':'Amerikiečių ąžuolas — šiltesnis atspalvis, ryškesnis ir tiesesnis medienos raštas nei europinio ąžuolo. Premium linija.',
-    'American Walnut':'Amerikiečių riešutmedis — tamsus, turtingas medis su unikalia medienos tekstūra. Išsiskiriantis ir elegantiškas pasirinkimas.',
-    'French Oak':'Prancūziškas ąžuolas — naudojamas Versalio panelėms. Ypač taisyklingas medienos raštas, tradiciškai naudojamas reprezentacinėse erdvėse.'
+    'Daugiasluoksnis ąžuolas':'Populiariausias pasirinkimas — ąžuolo faneruotė ant daugiasluoksnio pagrindo. Stabilus, tinkamas šildomoms grindims, atsparus drėgmės svyravimams.',
+    'Masyvas ąžuolas':'Vientisa ąžuolo lenta — storesnis faneruotės sluoksnis, galima šlifuoti daugiau kartų. Ilgaamžiškiausias variantas.',
+    'Baltasis ąžuolas':'Baltasis ąžuolas — šviesesnis, su subtiliu medienos raštu. Populiarus moderniuose ir skandinaviškuose interjeruose.',
+    'Amerikiečių ąžuolas':'Amerikiečių ąžuolas — šiltesnis atspalvis, ryškesnis ir tiesesnis medienos raštas nei europinio ąžuolo. Premium linija.',
+    'Amerikiečių riešutmedis':'Amerikiečių riešutmedis — tamsus, turtingas medis su unikalia medienos tekstūra. Išsiskiriantis ir elegantiškas pasirinkimas.',
+    'Prancūziškas ąžuolas':'Prancūziškas ąžuolas — naudojamas Versalio panelėms. Ypač taisyklingas medienos raštas, tradiciškai naudojamas reprezentacinėse erdvėse.'
   };
   const THICKNESS_INFO={
     '10–14mm (standartinis)':'Tinkamiausias variantas renovacijai — nedidina grindų lygio. Galima įrengti tiesiai ant esamo pagrindo. Tinka šildomoms grindims.',
@@ -2602,6 +2617,7 @@ function formatProductItem(p){
       </div>
       <div class="prod-card-body">
         <div class="prod-card-name">${p[1]}</div>
+        <span class="prod-subtitle">${getSimpleLabel(p[1],p[2])}</span>
         <div class="prod-card-dims">${p[2]}</div>
         ${SKU_DESC[p[0]] ? `<div class="card-desc${gridDescExpanded.has(p[0])?' expanded':''}" title="${gridDescExpanded.has(p[0])?'Spustelėkite, kad suskleistumėte':'Spustelėkite, kad pamatytumėte visą aprašymą'}" tabindex="0" role="button" aria-expanded="${gridDescExpanded.has(p[0])?'true':'false'}" onclick="toggleGridCardDesc(event,this,'${p[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGridCardDesc(event,this,'${p[0]}')}">${SKU_DESC[p[0]]}</div><button type="button" class="card-inquiry-link" onclick="event.stopPropagation();toggleProd('${p[0]}')">${sel?'Išimti iš pasiūlymo':'Pridėti į pasiūlymą'}</button>` : ''}
         <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
@@ -2627,6 +2643,7 @@ function formatProductItem(p){
           </button>
         </div>
       </div>
+      <span class="prod-subtitle">${getSimpleLabel(p[1],p[2])}</span>
       <span class="prod-dims">${p[2]}</span>
     </div>
     <span class="prod-sku">${p[0]}</span>
