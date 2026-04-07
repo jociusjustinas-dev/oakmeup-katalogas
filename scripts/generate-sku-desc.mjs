@@ -26,7 +26,7 @@ function getFinish(name) {
     n.includes("cotton white") ||
     n.includes("grey washed")
   )
-    return "Baltas / Pilkas skalavimas";
+    return "Baltas ir pilkas tonas";
   if (
     n.includes("handscraped") ||
     n.includes("hand scraped") ||
@@ -182,8 +182,8 @@ function secondLine(name, finish, cg) {
   if (finish === "Dūmintas") {
     return `Dūminis atspalvis suteikia gylio ir prabangos įspūdį; derės tiek šiuolaikiniame, tiek klasikiniame interjere.${tex}`;
   }
-  if (finish === "Baltas / Pilkas skalavimas") {
-    return `Baltas / pilkas skalavimas suteikia lengvą, gaivų stilių ir švelniai praskaidrina bendrą kambario vaizdą.${tex}`;
+  if (finish === "Baltas ir pilkas tonas") {
+    return `Baltas ir pilkas tonas suteikia lengvą, gaivų stilių ir švelniai praskaidrina bendrą kambario vaizdą.${tex}`;
   }
   if (finish === "Sendintas") {
     return `Sendintas paviršius sukuria gyvą tekstūrą ir geriau slepia smulkius kasdienius pėdsakus.${tex}`;
