@@ -72,9 +72,6 @@ function injectGridInquiryRow(html: string) {
 /** Lexical `let`/`const` catalog globals are not on `window`; Framer compare script reads `window.*`. */
 function injectCatalogGlobalBridge(html: string) {
     if (html.includes("__omuCatalogGlobalsBridged")) return html
-    const needle =
-        "let compareImgIndex={}; // sku -> current image index\nlet gridImgIndex={}; // sku -> katalogo tinklelio karuselė"
-    if (!html.includes(needle)) return html
     const bridge = `let compareImgIndex={}; // sku -> current image index
 try{
   window.__omuCatalogGlobalsBridged=1;
@@ -85,7 +82,14 @@ try{
   Object.defineProperty(window,'SKU_IMAGES',{get(){return SKU_IMAGES;},configurable:true});
 }catch(_e){}
 let gridImgIndex={}; // sku -> katalogo tinklelio karuselė`
-    return html.replace(needle, bridge)
+    const needles = [
+        "let compareImgIndex={}; // sku -> current image index\nlet gridImgIndex={}; // sku -> katalogo tinklelio karuselė",
+        "let compareImgIndex={}; // sku -> current image index\r\nlet gridImgIndex={}; // sku -> katalogo tinklelio karuselė",
+    ]
+    for (const needle of needles) {
+        if (html.includes(needle)) return html.replace(needle, bridge)
+    }
+    return html
 }
 
 /** Self-contained compare UI for Framer iframe (native fixed bar/modal often off-screen when iframe height = full document). */
@@ -682,7 +686,7 @@ export default function KolekcijosCatalogEmbed(props: Props) {
 
             try {
                 const response = await fetch(dataUrl || DEFAULT_DATA_URL, {
-                    cache: "force-cache",
+                    cache: "no-cache",
                 })
 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`)
