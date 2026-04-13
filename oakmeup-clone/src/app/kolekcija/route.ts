@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { isProduktaiSubdomain, produktaiRedirectResponse } from "@/lib/produktai-subdomain";
+
 const CATALOG_HTML_PATH = path.join(process.cwd(), "..", "index.html");
 
 const PAGE_SHELL_STYLES = `
@@ -104,7 +106,11 @@ const applyDesiredShell = (catalogHtml: string) => {
   return output;
 };
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (isProduktaiSubdomain(request.headers.get("host"))) {
+    return produktaiRedirectResponse();
+  }
+
   try {
     const catalogHtml = await readFile(CATALOG_HTML_PATH, "utf-8");
     const shelledHtml = applyDesiredShell(catalogHtml);

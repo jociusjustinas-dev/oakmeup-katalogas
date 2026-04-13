@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { isProduktaiSubdomain, produktaiRedirectResponse } from "@/lib/produktai-subdomain";
+
 const SOURCE_HTML_PATH = path.join(process.cwd(), "source", "index.frozen.html");
 const CATALOG_PATH = "/kolekcija";
 
@@ -90,7 +92,11 @@ const injectCollectionRouting = (html: string) => {
   return html.replace("</body>", `${clientPatch}</body>`);
 };
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (isProduktaiSubdomain(request.headers.get("host"))) {
+    return produktaiRedirectResponse();
+  }
+
   try {
     const html = await readFile(SOURCE_HTML_PATH, "utf-8");
     const linkedHtml = html.replace(/href="#kolekcija"/g, `href="${CATALOG_PATH}"`);

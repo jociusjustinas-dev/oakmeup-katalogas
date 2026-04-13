@@ -1,0 +1,8 @@
+# Visas srautas į šį Netlify site (pvz. produktai.oakmeup.lt) → pagrindinė kolekcijų skiltis.
+# Hostinger: palikite subdomeno DNS kaip dabar (CNAME į xxx.netlify.app arba Netlify nurodytus įrašus).
+
+[[redirects]]
+  from = "/*"
+  to = "https://oakmeup.lt/kolekcijos"
+  status = 301
+  force = true
