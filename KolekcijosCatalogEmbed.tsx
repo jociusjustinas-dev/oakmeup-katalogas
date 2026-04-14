@@ -61,10 +61,13 @@ function prepareHtml(
     const logoUrl = `${baseUrl}Frame%208.svg`
     const cols = Math.max(1, Math.min(6, Math.round(cardsPerRow || 4)))
 
-    // ── CSS overrides injected into <head> ────────────────────────────────
-    // Only adjust sizing / layout. Do NOT touch z-indexes of overlays.
-    // position:fixed elements (overlay, lightbox) work fine inside same-origin
-    // iframes as long as <html> has overflow:visible (Chrome requirement).
+    // ── CSS overrides ────────────────────────────────────────────────────
+    // KEY FIX: position:fixed inside a full-height iframe is fixed to the
+    // iframe document (which can be 5000px tall), NOT to the user's visible
+    // area. The parent React component sends the current scroll offset via
+    // postMessage every rAF. We store it in --omu-vp-top / --omu-vp-h CSS
+    // custom properties and use position:absolute so overlays land exactly
+    // where the user is looking.
     const overrides = `<style id="omu-embed-overrides">
 html{height:auto!important;overflow:visible!important}
 body{height:auto!important;min-height:0!important;overflow-x:clip;overflow-y:visible!important}
@@ -74,6 +77,19 @@ body{height:auto!important;min-height:0!important;overflow-x:clip;overflow-y:vis
 @media(max-width:1180px){.catalog-root--grid .sub-block{grid-template-columns:repeat(${Math.min(cols,3)},minmax(0,1fr))!important}}
 @media(max-width:900px){.catalog-root--grid .sub-block{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:640px){.catalog-root--grid .sub-block{grid-template-columns:1fr!important}}
+/* ── Modal viewport fix ─────────────────────────────────────────────── */
+/* Overlays become position:absolute offset to the currently-visible slice */
+#overlay.overlay{position:absolute!important;top:var(--omu-vp-top,0px)!important;height:var(--omu-vp-h,100vh)!important;overflow-y:auto!important}
+.lb-overlay{position:absolute!important;top:var(--omu-vp-top,0px)!important;height:var(--omu-vp-h,100vh)!important}
+.compare-overlay{position:absolute!important;top:var(--omu-vp-top,0px)!important;height:var(--omu-vp-h,100vh)!important;overflow:auto!important}
+/* lb buttons: make them absolute inside the overlay (no longer fixed to iframe) */
+.lb-close{position:absolute!important;top:20px!important;right:24px!important;z-index:1!important}
+.lb-arrow-left{position:absolute!important;top:50%!important;left:16px!important;transform:translateY(-50%)!important;z-index:1!important}
+.lb-arrow-right{position:absolute!important;top:50%!important;right:16px!important;transform:translateY(-50%)!important;z-index:1!important}
+/* FAB + compare sticky: anchor to bottom of the visible viewport slice */
+#fab{bottom:auto!important;top:calc(var(--omu-vp-top,0px) + var(--omu-vp-h,100vh) - 88px)!important}
+#compare-sticky,#compare-sticky.show{bottom:auto!important;top:calc(var(--omu-vp-top,0px) + var(--omu-vp-h,100vh) - 64px)!important}
+.filter-apply-btn{bottom:auto!important;top:calc(var(--omu-vp-top,0px) + var(--omu-vp-h,100vh) - 56px)!important}
 /* Dark card style for Framer */
 .catalog-root--grid .prod-card{background:#1C3A13!important;color:#FBFAF9!important;border:0!important;border-radius:8px!important;min-height:470px!important;overflow:visible!important}
 .catalog-root--grid .prod-card:hover{transform:translateY(-2px)!important}
@@ -92,43 +108,33 @@ body{height:auto!important;min-height:0!important;overflow-x:clip;overflow-y:vis
 .catalog-root--grid .card-dot.active{background:#D3FA99!important}
 </style>`
 
-    // ── Tiny embed script: height reporting + scroll-to-top on modal open ─
-    // When a modal opens, the overlay is position:fixed inside the iframe.
-    // The iframe is as tall as its content, so fixed = top of iframe.
-    // We notify the parent to scroll up so the user can see the modal.
+    // ── Embed script: height reporting + consume viewport messages ───────
     const embedScript = `<script id="omu-embed-script">
 (function(){
-var _pending=false;
+var _ph=false;
 function _h(){
   var d=document.documentElement,b=document.body;
   return Math.ceil(Math.max(d?d.scrollHeight:0,d?d.offsetHeight:0,b?b.scrollHeight:0,b?b.offsetHeight:0));
 }
 function postH(){ if(window.parent) window.parent.postMessage({type:'omu-catalog-height',height:_h()},'*'); }
-function postScroll(){ if(window.parent) window.parent.postMessage({type:'omu-scroll-to-iframe'},'*'); }
-function wrap(name){
-  var fn=window[name];
-  if(typeof fn!=='function'||fn.__omuW) return;
-  var orig=fn;
-  window[name]=function(){ postScroll(); return orig.apply(this,arguments); };
-  window[name].__omuW=true;
-}
-function setup(){
-  wrap('openForm');
-  wrap('openLightbox');
-  wrap('openCompare');
-  postH();
-}
-document.addEventListener('DOMContentLoaded',setup);
-window.addEventListener('load',setup);
-setTimeout(setup,80);
-setTimeout(postH,400);
-setTimeout(postH,1200);
+// Receive viewport offset from parent and update CSS vars
+window.addEventListener('message',function(e){
+  var d=e.data;
+  if(d&&d.type==='omu-vp'){
+    document.documentElement.style.setProperty('--omu-vp-top',d.top+'px');
+    document.documentElement.style.setProperty('--omu-vp-h',d.h+'px');
+  }
+});
+var _pending=false;
 var _mo=new MutationObserver(function(){
-  if(_pending)return; _pending=true;
-  requestAnimationFrame(function(){ _pending=false; postH(); });
+  if(_pending)return;_pending=true;
+  requestAnimationFrame(function(){_pending=false;postH();});
 });
 _mo.observe(document.documentElement,{childList:true,subtree:true,attributes:false,characterData:false});
 if(window.ResizeObserver) new ResizeObserver(postH).observe(document.documentElement);
+document.addEventListener('DOMContentLoaded',postH);
+window.addEventListener('load',postH);
+setTimeout(postH,80);setTimeout(postH,400);setTimeout(postH,1200);
 })();
 </script>`
 
@@ -235,20 +241,42 @@ export default function KolekcijosCatalogEmbed(props: Props) {
         return () => { cancelled = true }
     }, [dataUrl])
 
-    // Listen for messages from iframe
+    // Listen for height messages from iframe
     useEffect(() => {
         function onMessage(ev: MessageEvent) {
             const d = ev.data as { type?: string; height?: number } | undefined
             if (!d) return
             if (d.type === "omu-catalog-height" && typeof d.height === "number" && Number.isFinite(d.height)) {
                 setFrameHeight(Math.max(1, Math.ceil(d.height)))
-            } else if (d.type === "omu-scroll-to-iframe") {
-                // Scroll parent so user sees the top of the iframe (where the modal opens)
-                iframeRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
             }
         }
         window.addEventListener("message", onMessage)
         return () => window.removeEventListener("message", onMessage)
+    }, [])
+
+    // Send viewport offset to iframe every animation frame so overlays position correctly.
+    // position:fixed inside a full-height iframe is fixed to the iframe document top,
+    // NOT to the user's visible area. We tell the iframe where the user is looking via CSS vars.
+    useEffect(() => {
+        let rafId = 0
+        let lastTop = -1
+        let lastH = -1
+        function tick() {
+            const iframe = iframeRef.current
+            if (iframe?.contentWindow) {
+                const rect = iframe.getBoundingClientRect()
+                const top = Math.round(Math.max(0, -rect.top))
+                const h = window.innerHeight
+                if (top !== lastTop || h !== lastH) {
+                    lastTop = top
+                    lastH = h
+                    iframe.contentWindow.postMessage({ type: "omu-vp", top, h }, "*")
+                }
+            }
+            rafId = requestAnimationFrame(tick)
+        }
+        rafId = requestAnimationFrame(tick)
+        return () => cancelAnimationFrame(rafId)
     }, [])
 
     const documentHtml = useMemo(() => {
