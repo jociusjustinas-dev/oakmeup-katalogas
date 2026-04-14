@@ -129,6 +129,8 @@ body{overflow-x:hidden;overflow-y:visible;height:auto!important;min-height:0!imp
 .catalog-root--grid .omu-inline-inquiry{order:10!important;margin-top:auto!important;width:100%!important;display:flex!important;visibility:visible!important;padding-top:10px!important}
 .catalog-root--grid .omu-inline-inquiry .omu-inquiry-btn{display:flex!important;visibility:visible!important;pointer-events:auto!important;box-shadow:0 1px 0 rgba(0,0,0,.04)!important}
 .catalog-root--grid .card-nav{z-index:5!important;background:rgba(28,58,19,.64)!important;color:#D3FA99!important;border:1px solid rgba(211,250,153,.24)!important;backdrop-filter:blur(16px)!important}.catalog-root--grid .card-dots{z-index:5!important;bottom:10px!important}.catalog-root--grid .card-dot{background:rgba(255,255,255,.52)!important}.catalog-root--grid .card-dot.active{background:#D3FA99!important}
+/* Subsection row (e.g. „Su apdaila — 14/3 × 125mm“): no mint strip — neutralises old CDN / cached CSS */
+.catalog-root--grid .sub-hdr{background:transparent!important;background-color:transparent!important;color:var(--text,#1a1a1a)!important;border-top:1px solid var(--border,#E2DDD6)!important;border-bottom:none!important;box-shadow:none!important}
 #compare-sticky,#compare-overlay,#compare-tooltip,.compare-sticky,.compare-overlay,.cmp-limit-tooltip{display:none!important;visibility:hidden!important;pointer-events:none!important}
 .catalog-root .cmp-btn,.catalog-root .cmp-ctl,.prod-card-foot .cmp-btn{display:none!important;visibility:hidden!important;pointer-events:none!important}
 @supports (height:100dvh){.sidebar{height:auto!important;max-height:none!important;overflow:visible!important}}

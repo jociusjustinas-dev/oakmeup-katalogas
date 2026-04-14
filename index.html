@@ -110,7 +110,15 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .view-toggle-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
 .view-toggle-btn svg{display:block;flex-shrink:0}
 .catalog-root--grid .sub-block{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:12px 16px 16px}
-.catalog-root--grid .sub-hdr{grid-column:1/-1}
+.catalog-root--grid .sub-hdr{
+  grid-column:1/-1;
+  background:transparent!important;
+  background-color:transparent!important;
+  color:var(--text)!important;
+  border-top:1px solid var(--border)!important;
+  border-bottom:none!important;
+  box-shadow:none!important;
+}
 .prod-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);cursor:pointer;transition:background 0.12s,border-color 0.12s,box-shadow 0.12s;display:flex;flex-direction:column;min-width:0}
 .prod-card:hover{background:#FAFAF7}
 .prod-card.selected{border-color:var(--green-dark);background:#F0F9EC;box-shadow:0 0 0 1px var(--green-dark)}
