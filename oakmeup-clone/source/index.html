@@ -114,7 +114,6 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);cursor:pointer;transition:background 0.12s,border-color 0.12s,box-shadow 0.12s;display:flex;flex-direction:column;min-width:0}
 .prod-card:hover{background:#FAFAF7}
 .prod-card.selected{border-color:var(--green-dark);background:#F0F9EC;box-shadow:0 0 0 1px var(--green-dark)}
-.prod-card.cmp-on{background:#F3FBEE}
 .prod-card-pick-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--green-dark);border-bottom:1px solid rgba(211,250,153,0.18);flex-shrink:0}
 .prod-card.selected .prod-card-pick-row{background:var(--green-dark);border-bottom-color:rgba(211,250,153,0.28)}
 .prod-card .cb{width:16px;height:16px;border:1.5px solid rgba(211,250,153,0.85);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s;background:rgba(255,255,255,0.06)}
@@ -147,7 +146,9 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .desc-icon{background:rgba(28,58,19,0.08);color:var(--green-dark)}
 .prod-card .grade{align-self:flex-start}
 .prod-card-foot{padding:0 12px 12px;margin-top:auto}
-.prod-card-foot .cmp-btn{width:100%;justify-content:center}
+.prod-card-add-inquiry{width:100%;border:none;border-radius:999px;padding:10px 14px;font-size:12px;font-family:'Geist',sans-serif;font-weight:700;cursor:pointer;background:var(--green-dark);color:var(--lime);transition:background 0.12s}
+.prod-card-add-inquiry:hover{background:var(--green-mid)}
+.prod-card-add-inquiry.prod-card-add-inquiry--on{background:var(--lime);color:var(--green-dark)}
 
 /* ── Category blocks ─────────────────────────── */
 .cat-block{margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white)}
@@ -161,63 +162,6 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
-.prod-row.cmp-on{background:#F3FBEE}
-.cmp-ctl{display:flex;align-items:center;gap:0;justify-content:flex-end;user-select:none;z-index:4;white-space:nowrap}
-.cmp-btn{border:none;border-radius:999px;padding:8px 12px;font-size:12px;font-family:'Geist',sans-serif;font-weight:700;cursor:pointer;background:rgba(211,250,153,0.15);color:rgba(28,58,19,0.95);transition:all 0.12s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
-.cmp-btn:hover{background:rgba(211,250,153,0.28)}
-.cmp-btn.cmp-on{background:var(--green-dark);color:var(--lime)}
-.cmp-btn.cmp-locked{opacity:0.6}
-
-/* ── Compare (sticky + modal) ───────────────────── */
-.compare-sticky{position:fixed;left:0;right:0;bottom:0;z-index:170;background:var(--green-dark);padding:12px 20px;display:flex;justify-content:center;transform:translateY(120%);opacity:0;pointer-events:none;transition:transform 0.25s ease,opacity 0.25s ease}
-.compare-sticky.show{transform:translateY(0);opacity:1;pointer-events:auto}
-.compare-sticky-btn{background:var(--lime);border:none;border-radius:999px;padding:10px 18px;color:var(--green-dark);font-weight:700;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,0.25)}
-.compare-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:220;display:none;align-items:flex-start;justify-content:center;padding:26px 16px;overflow:auto}
-.compare-overlay.open{display:flex}
-.compare-modal{background:var(--white);border-radius:14px;width:min(1200px,96vw);max-height:calc(100vh - 26px);overflow:auto;padding:18px;box-shadow:0 22px 62px rgba(0,0,0,0.35)}
-.compare-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.compare-title{font-size:16px;font-weight:600}
-.compare-close{background:transparent;border:none;line-height:1;cursor:pointer;color:var(--muted);padding:6px 10px;border-radius:10px;display:flex;align-items:center;justify-content:center}
-.compare-close:hover{background:rgba(0,0,0,0.04);color:var(--text)}
-.compare-close svg{display:block}
-.compare-body{display:block}
-.compare-grid{display:grid;gap:12px;grid-template-columns:repeat(var(--compare-cols,1),minmax(0,1fr))}
-.compare-col{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
-.compare-img{position:relative;width:100%;height:180px;background:#fff}
-.compare-img img{width:100%;height:100%;object-fit:cover;display:block}
-.compare-img-placeholder{width:100%;height:100%}
-.cmp-nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:18px;background:rgba(0,0,0,0.35);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.cmp-nav-left{left:10px}
-.cmp-nav-right{right:10px}
-.cmp-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:8px}
-.cmp-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.45);border:none;cursor:pointer}
-.cmp-dot.active{background:#fff}
-.compare-details{padding:12px;display:flex;flex-direction:column;gap:7px}
-.compare-name{font-size:13px;font-weight:700;line-height:1.25}
-.compare-meta{font-size:12px;color:var(--muted);font-family:'Geist Mono',monospace}
-.compare-meta b{color:var(--text);font-family:'Geist',sans-serif;font-weight:600}
-.compare-remove{margin-top:auto;border:none;background:transparent;border-top:1px solid rgba(0,0,0,0.06);cursor:pointer;padding:12px;color:rgba(180,30,30,0.92);font-weight:700}
-.compare-remove:hover{background:rgba(180,30,30,0.06)}
-.compare-cta{margin-top:18px;padding-top:18px;border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:stretch;gap:12px}
-.compare-cta-text{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
-.compare-cta-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.compare-cta-btn{flex:1;min-width:min(100%,200px);padding:11px 16px;background:var(--green-dark);color:var(--lime);border:none;border-radius:8px;font-size:13px;font-family:'Geist',sans-serif;font-weight:600;cursor:pointer;transition:background 0.15s}
-.compare-cta-btn:hover{background:var(--green-mid)}
-.compare-inquiry{display:none;margin-top:4px;padding-top:18px;border-top:1px solid var(--border)}
-.compare-inquiry.open{display:block}
-.compare-inquiry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
-.compare-inquiry-title{font-size:15px;font-weight:600;line-height:1.3}
-.compare-inquiry-hide{background:transparent;border:none;color:var(--muted);font-size:12px;font-family:'Geist',sans-serif;cursor:pointer;text-decoration:underline;padding:0;flex-shrink:0}
-.compare-inquiry-hide:hover{color:var(--text)}
-@media (max-width:640px){
-  .compare-overlay{padding:12px 10px;align-items:stretch}
-  .compare-modal{width:100%;max-width:none;border-radius:12px;padding:14px;max-height:calc(100vh - 24px)}
-  .compare-grid{grid-template-columns:1fr;gap:14px}
-  .compare-img{height:min(240px,42vw)}
-  .compare-name{font-size:14px}
-}
-.cmp-limit-tooltip{position:fixed;z-index:999;left:50%;top:50%;transform:translate(-50%,-10px);background:#1C3A13;color:#fff;font-size:12px;padding:10px 12px;border-radius:10px;box-shadow:0 18px 45px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:opacity 0.18s ease,transform 0.18s ease}
-.cmp-limit-tooltip.show{opacity:1;transform:translate(-50%,-16px)}
 .cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.12s}
 .prod-row.selected .cb{background:var(--green-dark);border-color:var(--green-dark);color:#d3fa99}
 .cb svg{display:none}
@@ -2354,19 +2298,13 @@ function getColorGroup(name){
 let activeCat="",activeGrade="",activeWidth="",activeFinish="",activeSpecies="",activeThickness="",activeColor="";
 const selected=new Set();
 const gridDescExpanded=new Set();
-const compareMax=4;
-let compareSelected=[];
-let compareImgIndex={}; // sku -> current image index
 try{
   window.__omuCatalogGlobalsBridged=1;
   Object.defineProperty(window,'selected',{get(){return selected;},configurable:true});
-  Object.defineProperty(window,'compareSelected',{get(){return compareSelected;},set(v){compareSelected=v;},configurable:true});
-  Object.defineProperty(window,'compareImgIndex',{get(){return compareImgIndex;},set(v){compareImgIndex=v;},configurable:true});
   Object.defineProperty(window,'PRODUCTS',{get(){return PRODUCTS;},configurable:true});
   Object.defineProperty(window,'SKU_IMAGES',{get(){return SKU_IMAGES;},configurable:true});
 }catch(_e){}
 let gridImgIndex={}; // sku -> katalogo tinklelio karuselė
-let compareTooltipTimer=null;
 const collapsed=new Set(['CHEVRON (V RAŠTAS)','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
 let mobileFiltersOpen=false;
 let viewMode='list';
@@ -2690,9 +2628,6 @@ function gradeClass(g){
 
 function formatProductItem(p){
   const sel=selected.has(p[0]);
-  const cmpOn=compareSelected.includes(p[0]);
-  const cmpDisabled=!cmpOn && compareSelected.length>=compareMax;
-  const cmpTitle=cmpDisabled && !cmpOn?'Galite palyginti iki 4 produktų':'Palyginti';
   if(viewMode==='grid'){
     const imgs=SKU_IMAGES[p[0]];
     const hasGallery=Array.isArray(imgs)&&imgs.length>0;
@@ -2700,7 +2635,7 @@ function formatProductItem(p){
     const idx=hasGallery?(cur%imgs.length):0;
     const img=hasGallery?imgs[idx]:null;
     const showNav=hasGallery&&imgs.length>1;
-    return `<div class="prod-card${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
+    return `<div class="prod-card${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
       <div class="prod-card-pick-row">
         <div class="cb">${icon('check','10')}</div>
         <span class="prod-card-pick-label">${sel?'Pasirinkta užklausai':'Į pasiūlymą'}</span>
@@ -2719,11 +2654,11 @@ function formatProductItem(p){
         <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
       </div>
       <div class="prod-card-foot">
-        <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">${cmpOn?'Pašalinti':'Palyginti'}</button>
+        <button type="button" class="prod-card-add-inquiry${sel?' prod-card-add-inquiry--on':''}" onclick="event.stopPropagation();toggleProd('${p[0]}')">${sel?'Išimti iš pasiūlymo':'Pridėti į pasiūlymą'}</button>
       </div>
     </div>`;
   }
-  return `<div class="prod-row${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
+  return `<div class="prod-row${sel?' selected':''}" onclick="toggleProd('${p[0]}')">
     <div class="cb">${icon('check','10')}</div>
     ${SKU_IMAGES[p[0]]
       ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
@@ -2733,11 +2668,6 @@ function formatProductItem(p){
       <div class="prod-name-top">
         <span class="prod-name">${p[1]}</span>
         ${SKU_DESC[p[0]] ? `<div class="info-icon desc-icon" data-tooltip="${escapeTooltipAttr(SKU_DESC[p[0]])}" aria-label="Aprašymas" role="button" tabindex="0">${icon('info','11')}</div>` : ''}
-        <div class="cmp-ctl" onclick="event.stopPropagation()">
-          <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">
-            ${cmpOn?'Pašalinti':'Palyginti'}
-          </button>
-        </div>
       </div>
       <span class="prod-subtitle">${getSimpleLabel(p[1],p[2])}</span>
       <span class="prod-dims">${p[2]}</span>
@@ -2765,8 +2695,6 @@ function setView(mode){
 function render(){
   const filtered=getFiltered();
   document.getElementById('result-count').innerHTML=`<strong>${filtered.length}</strong> produktai rodomi`;
-
-  syncCompareSticky();
 
   const sb=document.getElementById('sel-bar');
   sb.style.display=selected.size>0?'block':'none';
@@ -2830,7 +2758,6 @@ function render(){
     </div>`;
   }).join('');
 
-  if(isCompareOpen()) updateCompareModal();
   updateMobileFilterApplyUI(filtered.length);
 }
 
@@ -2846,219 +2773,6 @@ function toggleProd(sku){
 
 function clearSel(){selected.clear();render();}
 function removeSelected(sku){selected.delete(sku);render();}
-
-function syncCompareSticky(){
-  const sticky=document.getElementById('compare-sticky');
-  const btn=document.getElementById('compare-sticky-btn');
-  if(!sticky||!btn) return;
-  const n=compareSelected.length;
-  btn.textContent=`Palyginti (${n})`;
-  sticky.classList.toggle('show', n>=2);
-}
-
-function showCompareLimitTooltip(anchor){
-  const t=document.getElementById('compare-tooltip');
-  if(!t) return;
-  const r=anchor.getBoundingClientRect();
-  t.textContent='Galite palyginti iki 4 produktų';
-  t.style.left=(r.left+r.width/2)+'px';
-  t.style.top=(r.top)+'px';
-  t.classList.add('show');
-  clearTimeout(compareTooltipTimer);
-  compareTooltipTimer=setTimeout(()=>t.classList.remove('show'), 1800);
-}
-
-function toggleCompareFromUI(sku, anchor){
-  if(!sku) return;
-  const isOn=compareSelected.includes(sku);
-  const locked=!isOn && compareSelected.length>=compareMax;
-  if(locked){
-    showCompareLimitTooltip(anchor);
-    return;
-  }
-  if(isOn){
-    compareSelected=compareSelected.filter(x=>x!==sku);
-    delete compareImgIndex[sku];
-  }else{
-    compareSelected=[...compareSelected, sku];
-    compareImgIndex[sku]=compareImgIndex[sku] ?? 0;
-  }
-  render();
-  syncCompareSticky();
-  if(isCompareOpen()){
-    if(compareSelected.length>=2) updateCompareModal(); else closeCompare();
-  }
-}
-
-function isCompareOpen(){
-  return document.getElementById('compare-overlay')?.classList.contains('open');
-}
-
-function openCompare(){
-  if(compareSelected.length<2){syncCompareSticky();return;}
-  const inv=document.getElementById('compare-inquiry');
-  if(inv){
-    inv.classList.remove('open');
-    const inner=document.getElementById('compare-inquiry-inner');
-    if(inner) inner.innerHTML='';
-  }
-  updateCompareModal();
-  document.getElementById('compare-overlay').classList.add('open');
-}
-
-function closeCompare(){
-  document.getElementById('compare-overlay').classList.remove('open');
-  const inv=document.getElementById('compare-inquiry');
-  if(inv){
-    inv.classList.remove('open');
-    const inner=document.getElementById('compare-inquiry-inner');
-    if(inner) inner.innerHTML='';
-  }
-}
-
-function collapseCompareInquiry(){
-  const el=document.getElementById('compare-inquiry');
-  if(!el) return;
-  el.classList.remove('open');
-  el.setAttribute('aria-hidden','true');
-}
-
-function openCompareInquiryPanel(){
-  const el=document.getElementById('compare-inquiry');
-  if(!el || compareSelected.length<2) return;
-  el.classList.add('open');
-  el.setAttribute('aria-hidden','false');
-  renderCompareInquiryInner();
-  requestAnimationFrame(()=>{el.scrollIntoView({behavior:'smooth',block:'nearest'});});
-}
-
-function renderCompareInquiryInner(){
-  const root=document.getElementById('compare-inquiry-inner');
-  if(!root || compareSelected.length<2) return;
-  const chips=compareSelected.map(sku=>{
-    const p=PRODUCTS.find(x=>x[0]===sku);
-    return p?`<div class="chip"><span>${sku} — ${p[1]}</span><span class="chip-rm" onclick="removeCompare('${sku}');event.stopPropagation()">${icon('x','12')}</span></div>`:'';
-  }).join('');
-  root.innerHTML=`
-    <div class="compare-inquiry-head">
-      <div class="compare-inquiry-title">Užklausa dėl kainos</div>
-      <button type="button" class="compare-inquiry-hide" onclick="collapseCompareInquiry()">Slėpti formą</button>
-    </div>
-    <div class="form-sub">Šie produktai bus įtraukti į el. laišką</div>
-    <div class="sel-chips" id="compare-inquiry-chips">${chips}</div>
-    <div class="field-row">
-      <div class="field"><label>Vardas, pavardė *</label><input id="cf-name" placeholder="Vardas Pavardė" autocomplete="name"></div>
-      <div class="field"><label>El. paštas *</label><input id="cf-email" type="email" placeholder="el@pastas.lt" autocomplete="email"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Telefonas</label><input id="cf-tel" placeholder="+370..." autocomplete="tel"></div>
-      <div class="field"><label>Plotas (m²)</label><input id="cf-area" type="number" placeholder="pvz. 45"></div>
-    </div>
-    <div class="field"><label>Pastabos</label><textarea id="cf-msg" placeholder="Papildoma informacija..."></textarea></div>
-    <div class="form-actions">
-      <button type="button" class="form-btn-primary" onclick="submitCompareInquiryForm()">Siųsti užklausą</button>
-      <button type="button" class="form-btn-sec" onclick="collapseCompareInquiry()">Atšaukti</button>
-    </div>`;
-}
-
-function submitCompareInquiryForm(){
-  const name=document.getElementById('cf-name')?.value.trim()||'';
-  const email=document.getElementById('cf-email')?.value.trim()||'';
-  if(!name||!email){alert('Prašome užpildyti vardą ir el. paštą');return;}
-  const prods=compareSelected.map(sku=>{
-    const p=PRODUCTS.find(x=>x[0]===sku);
-    return p?`• ${sku} — ${p[1]} (${p[2]})`:sku;
-  }).join('\n');
-  const area=document.getElementById('cf-area')?.value||'';
-  const msg=document.getElementById('cf-msg')?.value||'';
-  const tel=document.getElementById('cf-tel')?.value||'';
-  const txt=`Sveiki,\n\nKreipiuosi dėl kainos šiems produktams (palyginimas kataloge):\n\n${prods}\n\nPlotas: ${area||'—'} m²\nPastabos: ${msg||'—'}\n\nKontaktai: ${name}, ${email}, ${tel}`;
-  const href=`mailto:edgaras@oakmeup.lt?subject=${encodeURIComponent(`Produktų užklausa (palyginimas) — ${name}`)}&body=${encodeURIComponent(txt)}`;
-  const root=document.getElementById('compare-inquiry-inner');
-  if(root){
-    root.innerHTML=`<div class="success-box"><h3>Užklausa suformuota!</h3><p>Atidaromas el. pašto klientas su visu sąrašu.</p><a href="${href}">Spustelėkite čia jei neatsidaro</a></div>`;
-  }
-  setTimeout(()=>{window.location.href=href;},400);
-}
-
-function getPrimaryImage(sku){
-  const arr=SKU_IMAGES[sku];
-  if(!Array.isArray(arr) || !arr.length) return null;
-  const u=arr[0];
-  return (typeof u==='string' && u.trim()) ? u : null;
-}
-
-function getFinishLabelFromSku(sku){
-  const p=PRODUCTS.find(x=>x[0]===sku);
-  if(!p) return '';
-  return getFinish(p[1]);
-}
-
-function updateCompareModal(){
-  const body=document.getElementById('compare-body');
-  const n=compareSelected.length;
-  if(!body) return;
-  const cnt=document.getElementById('compare-count');
-  if(cnt) cnt.textContent=n;
-  const html = `<div class="compare-grid" style="--compare-cols:${n}">
-    ${compareSelected.map(sku=>{
-      const p=PRODUCTS.find(x=>x[0]===sku);
-      if(!p) return '';
-      const imgs=SKU_IMAGES[sku];
-      const hasGallery=Array.isArray(imgs) && imgs.length>0;
-      const cur=compareImgIndex[sku] ?? 0;
-      const idx=hasGallery ? (cur % imgs.length) : 0;
-      const img=hasGallery ? imgs[idx] : null;
-      const showNav=hasGallery && imgs.length>1;
-      const finish=getFinish(p[1]);
-      return `<div class="compare-col">
-        <div class="compare-img">
-          ${img ? `<img src="${img}" alt="">` : `<div class="compare-img-placeholder" style="background:${p[6]};"></div>`}
-          ${showNav ? `<button type="button" class="cmp-nav cmp-nav-left" onclick="cmpImgPrev('${sku}');event.stopPropagation()" aria-label="Ankstesnė">${icon('chevron-left','18')}</button>
-                        <button type="button" class="cmp-nav cmp-nav-right" onclick="cmpImgNext('${sku}');event.stopPropagation()" aria-label="Kita">${icon('chevron-right','18')}</button>` : ''}
-          ${showNav ? `<div class="cmp-dots">
-            ${imgs.map((_,i)=>`<button class="cmp-dot${i===idx?' active':''}" onclick="cmpImgGoto('${sku}',${i});event.stopPropagation()" aria-label="Foto ${i+1}"></button>`).join('')}
-          </div>` : ''}
-        </div>
-        <div class="compare-details">
-          <div class="compare-name">${p[1]}</div>
-          <div class="compare-meta"><b>SKU</b>: ${p[0]}</div>
-          <div class="compare-meta"><b>Matmenys</b>: ${p[2]}</div>
-          <div class="compare-meta"><b>Rūšis</b>: ${p[3]}</div>
-          <div class="compare-meta"><b>Apdaila</b>: ${finish}</div>
-        </div>
-        <button class="compare-remove" onclick="removeCompare('${sku}');event.stopPropagation()">Pašalinti</button>
-      </div>`;
-    }).join('')}
-  </div>`;
-  body.innerHTML=html;
-  if(document.getElementById('compare-inquiry')?.classList.contains('open')){
-    renderCompareInquiryInner();
-  }
-}
-
-function cmpImgPrev(sku){
-  const imgs=SKU_IMAGES[sku];
-  if(!Array.isArray(imgs) || !imgs.length) return;
-  const cur=compareImgIndex[sku] ?? 0;
-  compareImgIndex[sku]=(cur-1+imgs.length)%imgs.length;
-  updateCompareModal();
-}
-
-function cmpImgNext(sku){
-  const imgs=SKU_IMAGES[sku];
-  if(!Array.isArray(imgs) || !imgs.length) return;
-  const cur=compareImgIndex[sku] ?? 0;
-  compareImgIndex[sku]=(cur+1)%imgs.length;
-  updateCompareModal();
-}
-
-function cmpImgGoto(sku, i){
-  const imgs=SKU_IMAGES[sku];
-  if(!Array.isArray(imgs) || !imgs.length) return;
-  compareImgIndex[sku]=Number(i)||0;
-  updateCompareModal();
-}
 
 function gridImgPrev(sku){
   const imgs=SKU_IMAGES[sku];
@@ -3081,14 +2795,6 @@ function gridImgGoto(sku,i){
   if(!Array.isArray(imgs) || !imgs.length) return;
   gridImgIndex[sku]=Number(i)||0;
   render();
-}
-
-function removeCompare(sku){
-  compareSelected=compareSelected.filter(x=>x!==sku);
-  delete compareImgIndex[sku];
-  render();
-  syncCompareSticky();
-  if(compareSelected.length<2) closeCompare(); else updateCompareModal();
 }
 
 function openForm(){
@@ -3190,28 +2896,6 @@ window.addEventListener('resize',syncMobileFilters);
 </script>
 <div id="fab" onclick="openForm()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:90;background:#1C3A13;color:#D3FA99;border:none;border-radius:50px;padding:14px 20px;font-size:14px;font-family:'Geist',sans-serif;font-weight:500;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);align-items:center;gap:8px;flex-wrap:nowrap">
   <span id="fab-count">0</span> pasirinkta<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-</div>
-<div class="compare-sticky" id="compare-sticky" aria-hidden="true">
-  <button class="compare-sticky-btn" id="compare-sticky-btn" onclick="openCompare()">Palyginti (0)</button>
-</div>
-<div class="cmp-limit-tooltip" id="compare-tooltip">Galite palyginti iki 4 produktų</div>
-<div class="compare-overlay" id="compare-overlay" onclick="if(event.target===this)closeCompare()">
-  <div class="compare-modal" role="dialog" aria-modal="true" aria-label="Palyginimas">
-    <div class="compare-top">
-      <div class="compare-title">Palyginti produktus (<span id="compare-count">0</span>)</div>
-      <button type="button" class="compare-close" onclick="closeCompare()" aria-label="Uždaryti"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-    </div>
-    <div class="compare-body" id="compare-body"></div>
-    <div class="compare-cta">
-      <p class="compare-cta-text">Norite sužinoti šių produktų kainą? Užpildykite užklausą — atsakysime su pasiūlymu.</p>
-      <div class="compare-cta-actions">
-        <button type="button" class="compare-cta-btn" onclick="openCompareInquiryPanel()">Siųsti užklausą</button>
-      </div>
-    </div>
-    <div class="compare-inquiry" id="compare-inquiry" aria-hidden="true">
-      <div id="compare-inquiry-inner"></div>
-    </div>
-  </div>
 </div>
 <footer style="background:#1C3A13;color:rgba(211,250,153,0.6);text-align:center;padding:20px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap">
   <img src="Frame 8.svg" alt="Oak Me Up" style="height:30px;width:auto;display:block">
