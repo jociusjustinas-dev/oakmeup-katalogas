@@ -157,7 +157,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .cat-hdr-count{font-size:11px;opacity:0.6;font-family:'Geist Mono',monospace}
 .cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
 .cat-chevron.open{transform:rotate(90deg)}
-.sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
+.sub-hdr{background:transparent;color:var(--text);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid var(--border)}
 .prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
@@ -2357,6 +2357,14 @@ const gridDescExpanded=new Set();
 const compareMax=4;
 let compareSelected=[];
 let compareImgIndex={}; // sku -> current image index
+try{
+  window.__omuCatalogGlobalsBridged=1;
+  Object.defineProperty(window,'selected',{get(){return selected;},configurable:true});
+  Object.defineProperty(window,'compareSelected',{get(){return compareSelected;},set(v){compareSelected=v;},configurable:true});
+  Object.defineProperty(window,'compareImgIndex',{get(){return compareImgIndex;},set(v){compareImgIndex=v;},configurable:true});
+  Object.defineProperty(window,'PRODUCTS',{get(){return PRODUCTS;},configurable:true});
+  Object.defineProperty(window,'SKU_IMAGES',{get(){return SKU_IMAGES;},configurable:true});
+}catch(_e){}
 let gridImgIndex={}; // sku -> katalogo tinklelio karuselė
 let compareTooltipTimer=null;
 const collapsed=new Set(['CHEVRON (V RAŠTAS)','VERSALIO PANELĖS','EGLUTĖ (HERRINGBONE)']);
