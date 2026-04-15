@@ -98,11 +98,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .filter-apply-btn.visible{display:block}
   .sidebar.filters-open:not(.collapsed){padding-bottom:calc(56px + env(safe-area-inset-bottom,0))}
 }
-/* Embedded in Framer (or any parent frame): keep filter sheet above host chrome */
-@media (max-width:820px){
-  html.omu-embed .sidebar{z-index:99998!important}
-  html.omu-embed .filter-apply-btn{z-index:99999!important}
-}
+/* Embedded overrides live in <body> (after Framer-injected head CSS) — see #omu-embed-host-fix */
 
 /* ── Main ─────────────────────────────────────── */
 .main{padding:24px 28px}
@@ -369,6 +365,29 @@ try{
   if(window.self!==window.top||window.frameElement)document.documentElement.classList.add('omu-embed');
 }catch(_e){}
 </script>
+<style id="omu-embed-host-fix">
+/* After KolekcijosCatalogEmbed injects omu-framer-overrides (end of <head>), this wins in cascade.
+   Embed sets @700px .sidebar{position:relative!important} which breaks sticky — restore sticky inside iframe so "Filtrai" stays visible after "Rodyti rezultatus" scroll. */
+@media (max-width:820px){
+  html.omu-embed .sidebar{
+    position:sticky!important;
+    top:0!important;
+    max-height:100vh!important;
+    height:auto!important;
+    overflow-y:auto!important;
+    z-index:99998!important;
+  }
+  html.omu-embed .filter-apply-btn{z-index:99999!important}
+}
+@media (max-width:700px){
+  html.omu-embed .sidebar{
+    position:sticky!important;
+    top:0!important;
+    max-height:100vh!important;
+    overflow-y:auto!important;
+  }
+}
+</style>
 
 <header class="header">
   <div class="logo"><img src="Frame 8.svg" alt="Oak Me Up"></div>
@@ -3239,5 +3258,21 @@ window.addEventListener('resize',syncMobileFilters);
   <div class="lb-counter" id="lb-counter"></div>
   <button type="button" class="lb-arrow lb-arrow-right" onclick="lbNext()" aria-label="Kita"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
 </div>
+<script>
+/* KolekcijosCatalogEmbed injects @700px .sidebar{position:relative!important} — breaks sticky; filter row then scrolls under the host (Framer) header after "Rodyti rezultatus". Strip that rule when embedded. */
+(function fixFramerEmbedSidebarCss(){
+  function run(){
+    if(!document.documentElement.classList.contains('omu-embed')) return;
+    var bad=/@media\(max-width:700px\)\{\.sidebar\{position:relative!important;top:auto!important;height:auto!important;overflow:visible!important\}/g;
+    document.querySelectorAll('style').forEach(function(st){
+      var t=st.textContent||'';
+      if(st.id!=='omu-framer-overrides' && t.indexOf('omu-framer-overrides')===-1) return;
+      if(!bad.test(t)) return;
+      st.textContent=t.replace(bad,'@media(max-width:700px){');
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+</script>
 </body>
 </html>
