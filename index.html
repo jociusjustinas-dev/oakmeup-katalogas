@@ -105,13 +105,12 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .main-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
 .result-count{font-size:13px;color:var(--muted)}
 .result-count strong{color:var(--text);font-weight:500}
-.view-toggle{display:flex;align-items:center;gap:8px}
+.view-toggle{display:none}
 .view-toggle-btn{padding:6px 10px;min-width:38px;display:flex;align-items:center;justify-content:center;font-size:12px;font-family:'Geist',sans-serif;border:1px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;color:var(--text);transition:all 0.12s}
 .view-toggle-btn:hover{background:var(--green-light);border-color:var(--green-dark)}
 .view-toggle-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
 .view-toggle-btn svg{display:block;flex-shrink:0}
-.catalog-root--grid .sub-block{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:12px 16px 16px}
-.catalog-root--grid .sub-hdr{grid-column:1/-1}
+.catalog-root--grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .prod-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);cursor:pointer;transition:background 0.12s,border-color 0.12s,box-shadow 0.12s;display:flex;flex-direction:column;min-width:0}
 .prod-card:hover{background:#FAFAF7}
 .prod-card.selected{border-color:var(--green-dark);background:#F0F9EC;box-shadow:0 0 0 1px var(--green-dark)}
@@ -135,9 +134,9 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .card-dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px;z-index:3;pointer-events:none}
 .card-dots .card-dot{pointer-events:auto;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.45);border:none;cursor:pointer;padding:0}
 .card-dots .card-dot.active{background:#fff}
-.prod-card-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
-.prod-card-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.35}
-.prod-card-dims{font-size:10px;color:var(--muted);font-family:'Geist Mono',monospace;line-height:1.3;word-break:break-word}
+.prod-card-body{padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.prod-card-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.3}
+.prod-card-finish,.prod-card-dims{font-size:11px;color:var(--lime);font-family:'Geist Mono',monospace;line-height:1.35;word-break:break-word}
 .card-desc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;transition:color 0.15s;word-break:break-word}
 .card-desc:hover{color:var(--text)}
 .card-desc.expanded{display:block;-webkit-line-clamp:unset;overflow:visible;cursor:pointer;white-space:pre-line}
@@ -146,19 +145,10 @@ input[type=text]:focus{border-color:var(--green-dark)}
 .card-desc.expanded + .card-inquiry-link{display:block}
 .card-inquiry-link:hover{background:var(--green-mid);color:var(--lime)}
 .desc-icon{background:rgba(28,58,19,0.08);color:var(--green-dark)}
-.prod-card .grade{align-self:flex-start}
+.prod-card .grade{align-self:flex-start;margin-top:2px}
 .prod-card-foot{padding:0 12px 12px;margin-top:auto}
 .prod-card-foot .cmp-btn{width:100%;justify-content:center}
 
-/* ── Category blocks ─────────────────────────── */
-.cat-block{margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white)}
-.cat-hdr{background:var(--green-dark);color:var(--lime);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.cat-hdr-left{display:flex;align-items:center;gap:10px}
-.cat-hdr-name{font-size:13px;font-weight:500;letter-spacing:0.04em}
-.cat-hdr-count{font-size:11px;opacity:0.6;font-family:'Geist Mono',monospace}
-.cat-chevron{transition:transform 0.2s;font-size:11px;opacity:0.6}
-.cat-chevron.open{transform:rotate(90deg)}
-.sub-hdr{background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:500;padding:5px 16px;border-top:1px solid rgba(28,58,19,0.08)}
 .prod-row{display:grid;grid-template-columns:20px calc(var(--swatch-size) + 6px) 1fr auto auto;align-items:center;gap:10px;padding:7px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background 0.1s;position:relative}
 .prod-row:hover{background:#FAFAF7}
 .prod-row.selected{background:#F0F9EC}
@@ -274,6 +264,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .logo img{height:26px}
   .layout{grid-template-columns:220px 1fr}
   .main{padding:20px}
+  .catalog-root--grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .prod-row{grid-template-columns:20px calc(var(--swatch-size) + 2px) 1fr auto auto;gap:8px;padding:7px 12px}
   .prod-sku{display:none}
 }
@@ -329,7 +320,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .logo img{height:44px}
   .header-sub{font-size:10px}
   .main{padding:12px}
-  .cat-hdr,.sub-hdr{padding-left:12px;padding-right:12px}
+  .catalog-root--grid{grid-template-columns:1fr;gap:12px}
   .prod-row{
     grid-template-columns:18px calc(var(--swatch-size) + 2px) 1fr auto;
     gap:6px;
@@ -2721,71 +2712,47 @@ function formatProductItem(p){
   const cmpOn=compareSelected.includes(p[0]);
   const cmpDisabled=!cmpOn && compareSelected.length>=compareMax;
   const cmpTitle=cmpDisabled && !cmpOn?'Galite palyginti iki 4 produktų':'Palyginti';
-  if(viewMode==='grid'){
-    const imgs=SKU_IMAGES[p[0]];
-    const hasGallery=Array.isArray(imgs)&&imgs.length>0;
-    const cur=gridImgIndex[p[0]]??0;
-    const idx=hasGallery?(cur%imgs.length):0;
-    const img=hasGallery?imgs[idx]:null;
-    const showNav=hasGallery&&imgs.length>1;
-    return `<div class="prod-card${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
-      <div class="prod-card-pick-row">
-        <div class="cb">${icon('check','10')}</div>
-        <span class="prod-card-pick-label">${sel?'Pasirinkta užklausai':'Į pasiūlymą'}</span>
-      </div>
-      <div class="prod-card-media" onclick="event.stopPropagation()">
-        ${img?`<div class="prod-card-slide" onclick="event.stopPropagation();openLightbox('${p[0]}',${idx})" title="Atidaryti nuotraukų galeriją"><img src="${escapeAttr(img)}" alt=""></div>
-        ${showNav?`<button type="button" class="card-nav card-nav-left" onclick="event.stopPropagation();gridImgPrev('${p[0]}')" aria-label="Ankstesnė foto">${icon('chevron-left','16')}</button>
-        <button type="button" class="card-nav card-nav-right" onclick="event.stopPropagation();gridImgNext('${p[0]}')" aria-label="Kita foto">${icon('chevron-right','16')}</button>
-        <div class="card-dots">${imgs.map((_,i)=>`<button type="button" class="card-dot${i===idx?' active':''}" onclick="event.stopPropagation();gridImgGoto('${p[0]}',${i})" aria-label="Foto ${i+1}"></button>`).join('')}</div>`:''}`:`<div class="prod-card-slide prod-card-media-ph" style="background:${p[6]}"></div>`}
-      </div>
-      <div class="prod-card-body">
-        <div class="prod-card-name">${p[1]}</div>
-        <span class="prod-subtitle">${getSimpleLabel(p[1],p[2])}</span>
-        <div class="prod-card-dims">${p[2]}</div>
-        ${SKU_DESC[p[0]] ? `<div class="card-desc${gridDescExpanded.has(p[0])?' expanded':''}" title="${gridDescExpanded.has(p[0])?'Spustelėkite, kad suskleistumėte':'Spustelėkite, kad pamatytumėte visą aprašymą'}" tabindex="0" role="button" aria-expanded="${gridDescExpanded.has(p[0])?'true':'false'}" onclick="toggleGridCardDesc(event,this,'${p[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGridCardDesc(event,this,'${p[0]}')}">${SKU_DESC[p[0]]}</div><button type="button" class="card-inquiry-link" onclick="event.stopPropagation();toggleProd('${p[0]}')">${sel?'Išimti iš pasiūlymo':'Pridėti į pasiūlymą'}</button>` : ''}
-        <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
-      </div>
-      <div class="prod-card-foot">
-        <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">${cmpOn?'Pašalinti':'Palyginti'}</button>
-      </div>
-    </div>`;
-  }
-  return `<div class="prod-row${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
-    <div class="cb">${icon('check','10')}</div>
-    ${SKU_IMAGES[p[0]]
-      ? `<div class="swatch swatch-img" style="background:${p[6]};background-image:url('${SKU_IMAGES[p[0]][0]}');background-size:cover;background-position:center;cursor:pointer;" onclick="event.stopPropagation();openLightbox('${p[0]}')" title="Žiūrėti nuotraukas"></div>`
-      : `<div class="swatch" style="background:${p[6]}"></div>`
-    }
-    <div class="prod-name-wrap">
-      <div class="prod-name-top">
-        <span class="prod-name">${p[1]}</span>
-        ${SKU_DESC[p[0]] ? `<div class="info-icon desc-icon" data-tooltip="${escapeTooltipAttr(SKU_DESC[p[0]])}" aria-label="Aprašymas" role="button" tabindex="0">${icon('info','11')}</div>` : ''}
-        <div class="cmp-ctl" onclick="event.stopPropagation()">
-          <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">
-            ${cmpOn?'Pašalinti':'Palyginti'}
-          </button>
-        </div>
-      </div>
-      <span class="prod-subtitle">${getSimpleLabel(p[1],p[2])}</span>
-      <span class="prod-dims">${p[2]}</span>
+  const imgs=SKU_IMAGES[p[0]];
+  const hasGallery=Array.isArray(imgs)&&imgs.length>0;
+  const cur=gridImgIndex[p[0]]??0;
+  const idx=hasGallery?(cur%imgs.length):0;
+  const img=hasGallery?imgs[idx]:null;
+  const showNav=hasGallery&&imgs.length>1;
+  return `<div class="prod-card${sel?' selected':''}${cmpOn?' cmp-on':''}" onclick="toggleProd('${p[0]}')">
+    <div class="prod-card-pick-row">
+      <div class="cb">${icon('check','10')}</div>
+      <span class="prod-card-pick-label">${sel?'Pasirinkta užklausai':'Į pasiūlymą'}</span>
     </div>
-    <span class="prod-sku">${p[0]}</span>
-    <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
+    <div class="prod-card-media" onclick="event.stopPropagation()">
+      ${img?`<div class="prod-card-slide" onclick="event.stopPropagation();openLightbox('${p[0]}',${idx})" title="Atidaryti nuotraukų galeriją"><img src="${escapeAttr(img)}" alt=""></div>
+      ${showNav?`<button type="button" class="card-nav card-nav-left" onclick="event.stopPropagation();gridImgPrev('${p[0]}')" aria-label="Ankstesnė foto">${icon('chevron-left','16')}</button>
+      <button type="button" class="card-nav card-nav-right" onclick="event.stopPropagation();gridImgNext('${p[0]}')" aria-label="Kita foto">${icon('chevron-right','16')}</button>
+      <div class="card-dots">${imgs.map((_,i)=>`<button type="button" class="card-dot${i===idx?' active':''}" onclick="event.stopPropagation();gridImgGoto('${p[0]}',${i})" aria-label="Foto ${i+1}"></button>`).join('')}</div>`:''}`:`<div class="prod-card-slide prod-card-media-ph" style="background:${p[6]}"></div>`}
+    </div>
+    <div class="prod-card-body">
+      <div class="prod-card-finish">${getSimpleLabel(p[1],p[2])}</div>
+      <div class="prod-card-name">${p[1]}</div>
+      <div class="prod-card-dims">${p[2]}</div>
+      ${SKU_DESC[p[0]] ? `<div class="card-desc${gridDescExpanded.has(p[0])?' expanded':''}" title="${gridDescExpanded.has(p[0])?'Spustelėkite, kad suskleistumėte':'Spustelėkite, kad pamatytumėte visą aprašymą'}" tabindex="0" role="button" aria-expanded="${gridDescExpanded.has(p[0])?'true':'false'}" onclick="toggleGridCardDesc(event,this,'${p[0]}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGridCardDesc(event,this,'${p[0]}')}">${SKU_DESC[p[0]]}</div>` : ''}
+      <span class="grade ${gradeClass(p[3])}">${p[3]}</span>
+    </div>
+    <div class="prod-card-foot">
+      <button type="button" class="cmp-btn${cmpOn?' cmp-on':''}${cmpDisabled?' cmp-locked':''}" onclick="toggleCompareFromUI('${p[0]}', this);event.stopPropagation()" title="${cmpTitle}">${cmpOn?'Pašalinti':'Palyginti'}</button>
+    </div>
   </div>`;
 }
 
 function setView(mode){
-  viewMode=mode;
+  viewMode='grid';
   const bl=document.getElementById('view-list');
   const bg=document.getElementById('view-grid');
   if(bl){
-    bl.classList.toggle('active',mode==='list');
-    bl.setAttribute('aria-pressed',mode==='list'?'true':'false');
+    bl.classList.remove('active');
+    bl.setAttribute('aria-pressed','false');
   }
   if(bg){
-    bg.classList.toggle('active',mode==='grid');
-    bg.setAttribute('aria-pressed',mode==='grid'?'true':'false');
+    bg.classList.add('active');
+    bg.setAttribute('aria-pressed','true');
   }
   render();
 }
@@ -2810,15 +2777,6 @@ function render(){
     document.getElementById('fab-count').textContent=selected.size;
   }
 
-  const byCat={},bySub={};
-  filtered.forEach(p=>{
-    if(!byCat[p[4]])byCat[p[4]]=[];
-    byCat[p[4]].push(p);
-    const k=p[4]+'||'+p[5];
-    if(!bySub[k])bySub[k]=[];
-    bySub[k].push(p);
-  });
-
   const listEl=document.getElementById('list');
   if(!filtered.length){
     listEl.className='';
@@ -2826,45 +2784,11 @@ function render(){
     return;
   }
 
-  listEl.className=viewMode==='grid'?'catalog-root catalog-root--grid':'catalog-root';
-
-  const cats=[...new Set(filtered.map(p=>p[4]))];
-  listEl.innerHTML=cats.map(cat=>{
-    const isCol=collapsed.has(cat);
-    const subs=[...new Set(byCat[cat].map(p=>p[5]))].sort((a,b)=>{
-      const au=/unfinished|be apdailos/i.test(a)?1:0;
-      const bu=/unfinished|be apdailos/i.test(b)?1:0;
-      return au-bu;
-    });
-    return `<div class="cat-block">
-      <div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
-        <div class="cat-hdr-left">
-          <span class="cat-chevron${isCol?'':' open'}">${icon('chevron-right','12')}</span>
-          <span class="cat-hdr-name">${sentenceCaseLabel(cat)}</span>
-        </div>
-        <span class="cat-hdr-count">${byCat[cat].length}</span>
-      </div>
-      ${isCol?'':subs.map(sub=>{
-        const k=cat+'||'+sub;
-        return `<div class="sub-block">
-          <div class="sub-hdr">${sentenceCaseLabel(sub)}</div>
-          ${bySub[k].slice().sort((a,b)=>{
-            const au=a[1].toLowerCase().includes('unfinished')?1:0;
-            const bu=b[1].toLowerCase().includes('unfinished')?1:0;
-            return au-bu;
-          }).map(formatProductItem).join('')}
-        </div>`;
-      }).join('')}
-    </div>`;
-  }).join('');
+  listEl.className='catalog-root catalog-root--grid';
+  listEl.innerHTML=filtered.slice().map(formatProductItem).join('');
 
   if(isCompareOpen()) updateCompareModal();
   updateMobileFilterApplyUI(filtered.length);
-}
-
-function toggleCat(cat){
-  if(collapsed.has(cat))collapsed.delete(cat);else collapsed.add(cat);
-  render();
 }
 
 function toggleProd(sku){
