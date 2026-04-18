@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Oak Me Up - Shop With Sidebar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --brand: #1c3a13;
+      --accent: #d3fa99;
+      --warm: #fbfaf9;
+      --muted-bg: #f2f3ee;
+      --text-sec: #666666;
+      --line: #e7e7e9;
+      --line-strong: #d9d9d9;
+      --link: #0099ff;
+      --radius-sm: 8px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-pill: 200px;
+      --shadow: 0 14px 28px rgba(10, 16, 8, 0.08);
+      --fs-h1: 46px;
+      --fs-h2: 38px;
+      --fs-h3: 26px;
+      --fs-h4: 20px;
+      --fs-h5: 16px;
+      --fs-h6: 14px;
+      --fs-body: 16px;
+      --fs-body-sm: 13px;
+      --fs-ui: 14px;
+      --fs-mono: 11px;
+      --lh-body: 1.5em;
+      --shell-max: 1440px;
+      --sidebar-w: 296px;
+      --gap: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--white);
+      color: var(--black);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+    }
+
+    .site-head {
+      background: var(--brand);
+      color: var(--white);
+    }
+    .site-head-inner {
+      max-width: var(--shell-max);
+      margin: 0 auto;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 16px;
+    }
+    .brand img { height: 34px; width: auto; display: block; }
+    .head-right { color: rgba(255,255,255,0.72); font-size: var(--fs-ui); }
+
+    .note {
+      background: var(--accent);
+      color: var(--brand);
+      font-size: var(--fs-ui);
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.35;
+      padding: 10px 14px;
+    }
+
+    .shell {
+      max-width: var(--shell-max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      gap: var(--gap);
+      padding: 16px;
+      align-items: start;
+      background: var(--white);
+    }
+
+    .sidebar {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      padding: 14px;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+    }
+    .mobile-filter-toggle {
+      display: none;
+      width: 100%;
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: var(--brand);
+      color: var(--accent);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      font-weight: 600;
+      padding: 12px 14px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .search {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--warm);
+      padding: 0 14px;
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      color: var(--black);
+      outline: 0;
+    }
+    .search::placeholder { color: rgb(153,153,153); }
+
+    .facet {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+    .facet:first-of-type {
+      margin-top: 14px;
+    }
+    .facet-title {
+      margin: 0 0 8px;
+      font-size: var(--fs-body-sm);
+      font-weight: 600;
+      color: #73737d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .facet-items {
+      display: grid;
+      gap: 8px;
+    }
+
+    .f-item {
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      min-height: 40px;
+    }
+    .f-item.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: var(--accent);
+    }
+    .f-item-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-size: var(--fs-ui);
+      line-height: 1.25;
+    }
+    .f-item-label input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--brand);
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .f-item-count {
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono);
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+    .clear-btn {
+      margin-top: 12px;
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      color: #5d5d65;
+      font-size: var(--fs-body-sm);
+      cursor: pointer;
+    }
+
+    .main { min-width: 0; }
+    .toolbar {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .result {
+      font-size: var(--fs-body-sm);
+      color: var(--text-sec);
+      font-weight: 500;
+    }
+    .result strong { color: var(--black); font-weight: 600; }
+
+    .toolbar-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sort {
+      height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--black);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body-sm);
+      padding: 0 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .card-media {
+      position: relative;
+      aspect-ratio: 4/3;
+      background: var(--muted-bg);
+    }
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-sku {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(28, 58, 19, 0.8);
+      color: var(--accent);
+      padding: 4px 9px;
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .card-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 230px;
+      background: var(--white);
+    }
+    .card-finish {
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono);
+      color: var(--brand);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .card-name {
+      margin: 0;
+      font-size: var(--fs-h5);
+      line-height: 1.25;
+      font-weight: 600;
+      color: var(--black);
+    }
+    .card-dims {
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono);
+      color: #5b7064;
+      line-height: 1.3;
+    }
+    .card-desc {
+      color: var(--text-sec);
+      font-size: var(--fs-body-sm);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      overflow: hidden;
+    }
+    .card-meta {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+      border: 1px solid transparent;
+    }
+    .pill-grade {
+      background: var(--muted-bg);
+      color: #212121;
+      border-color: #d9d9d9;
+    }
+    .pill-category {
+      background: rgba(28, 58, 19, 0.1);
+      color: var(--brand);
+      border-color: rgba(28, 58, 19, 0.12);
+    }
+
+    .card-cta {
+      margin-top: 10px;
+      height: 38px;
+      border: 0;
+      border-radius: var(--radius-pill);
+      background: var(--brand);
+      color: var(--white);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .card-cta:hover { opacity: 0.9; }
+
+    .empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-md);
+      background: var(--warm);
+      color: var(--text-sec);
+      text-align: center;
+      padding: 38px 16px;
+      font-size: var(--fs-body-sm);
+    }
+
+    @media (min-width: 810px) and (max-width: 1439.98px) {
+      :root {
+        --fs-h1: 37px;
+        --fs-h2: 30px;
+        --fs-h3: 24px;
+      }
+      .shell {
+        grid-template-columns: 252px 1fr;
+        gap: 14px;
+        padding: 14px;
+      }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 809.98px) {
+      :root {
+        --fs-h1: 34px;
+        --fs-h2: 28px;
+        --fs-h3: 22px;
+      }
+
+      .site-head-inner {
+        min-height: 52px;
+        padding: 8px 12px;
+      }
+      .brand img { height: 30px; }
+      .head-right { font-size: 12px; }
+      .note { padding: 8px 10px; font-size: var(--fs-body-sm); }
+
+      .shell {
+        display: block;
+        padding: 12px;
+      }
+      .sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 12px;
+      }
+      .mobile-filter-toggle { display: inline-flex; }
+      .sidebar.collapsed .filters-content { display: none; }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .card-body { min-height: 210px; }
+      .card-desc { -webkit-line-clamp: 3; }
+    }
+
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; gap: 10px; }
+      .toolbar { margin-bottom: 10px; }
+      .card-body { min-height: 0; }
+      .card-name { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="brand" href="https://oakmeup.lt/" target="_top" rel="noopener noreferrer">
+        <img src="../Frame 8.svg" alt="Oak Me Up" />
+      </a>
+      <div class="head-right">Shop with sidebar</div>
+    </div>
+  </header>
+
+  <div class="note">Pasirinkite produktus is saraso ir siuskite uzklausa - susisieksime per 24h su kainomis ir prieinamumu.</div>
+
+  <div class="shell">
+    <aside class="sidebar collapsed" id="sidebar">
+      <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button">Filtrai <span id="mfIcon">+</span></button>
+      <div class="filters-content" id="filtersContent">
+        <input id="search" class="search" type="text" placeholder="SKU arba pavadinimas..." />
+
+        <section class="facet" data-facet="category">
+          <h3 class="facet-title" data-facet-title>Kategorija</h3>
+          <div class="facet-items" id="fCats"></div>
+        </section>
+
+        <section class="facet" data-facet="grade">
+          <h3 class="facet-title" data-facet-title>Rusis</h3>
+          <div class="facet-items" id="fGrades"></div>
+        </section>
+
+        <section class="facet" data-facet="finish">
+          <h3 class="facet-title" data-facet-title>Apdaila</h3>
+          <div class="facet-items" id="fFinish"></div>
+        </section>
+
+        <section class="facet" data-facet="color">
+          <h3 class="facet-title" data-facet-title>Spalva</h3>
+          <div class="facet-items" id="fColor"></div>
+        </section>
+
+        <button class="clear-btn" id="clearFilters" type="button">Isvalyti filtrus</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="toolbar">
+        <div class="result" id="result"><strong>0</strong> produktai rodomi</div>
+        <div class="toolbar-right">
+          <select class="sort" id="sort">
+            <option value="default">Rikiuoti: pagal nutylejima</option>
+            <option value="name-asc">Pavadinimas A-Z</option>
+            <option value="name-desc">Pavadinimas Z-A</option>
+            <option value="sku-asc">SKU A-Z</option>
+            <option value="sku-desc">SKU Z-A</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" style="display:none"></div>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      products: [],
+      skuImages: {},
+      skuDesc: {},
+      search: "",
+      sort: "default",
+      filters: {
+        category: new Set(),
+        grade: new Set(),
+        finish: new Set(),
+        colorGroup: new Set(),
+      },
+    };
+
+    const el = {
+      sidebar: document.getElementById("sidebar"),
+      mobileFilterToggle: document.getElementById("mobileFilterToggle"),
+      mfIcon: document.getElementById("mfIcon"),
+      search: document.getElementById("search"),
+      sort: document.getElementById("sort"),
+      fCats: document.getElementById("fCats"),
+      fGrades: document.getElementById("fGrades"),
+      fFinish: document.getElementById("fFinish"),
+      fColor: document.getElementById("fColor"),
+      clear: document.getElementById("clearFilters"),
+      result: document.getElementById("result"),
+      grid: document.getElementById("grid"),
+      empty: document.getElementById("empty"),
+    };
+
+    const esc = (s) =>
+      String(s || "").replace(/[&<>\"']/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '\"': "&quot;", "'": "&#39;" })[c]
+      );
+
+    function parseConstLiteral(source, name) {
+      const marker = `const ${name}=`;
+      const start = source.indexOf(marker);
+      if (start < 0) throw new Error(`Missing ${name}`);
+      let i = start + marker.length;
+      while (i < source.length && /\s/.test(source[i])) i += 1;
+
+      let depth = 0;
+      let quote = "";
+      let escaped = false;
+      let out = "";
+
+      for (; i < source.length; i += 1) {
+        const ch = source[i];
+        out += ch;
+
+        if (quote) {
+          if (escaped) {
+            escaped = false;
+            continue;
+          }
+          if (ch === "\\") {
+            escaped = true;
+            continue;
+          }
+          if (ch === quote) quote = "";
+          continue;
+        }
+
+        if (ch === '"' || ch === "'" || ch === "`") {
+          quote = ch;
+          continue;
+        }
+
+        if (ch === "[" || ch === "{" || ch === "(") {
+          depth += 1;
+          continue;
+        }
+
+        if (ch === "]" || ch === "}" || ch === ")") {
+          depth -= 1;
+          continue;
+        }
+
+        if (ch === ";" && depth === 0) {
+          out = out.slice(0, -1);
+          break;
+        }
+      }
+
+      return out.trim();
+    }
+
+    function evalLiteral(lit) {
+      return Function(`\"use strict\";return (${lit});`)();
+    }
+
+    function getFinish(name) {
+      const n = String(name || "").toLowerCase();
+      if (n.includes("unfinished") || n.includes("be apdailos")) return "Be apdailos";
+      if (n.includes("lac") || n.includes("lakuot")) return "Lakuotas";
+      if (n.includes("oiled") || n.includes("aliejuot")) return "Aliejuotas";
+      if (n.includes("smoked") || n.includes("dumint")) return "Dumintas";
+      if (n.includes("white") || n.includes("grey") || n.includes("bal") || n.includes("pilk")) return "Baltas ir pilkas tonas";
+      return "Kita";
+    }
+
+    function getColorGroup(name) {
+      const n = String(name || "").toLowerCase();
+      if (n.includes("white") || n.includes("bal")) return "Sviesios";
+      if (n.includes("grey") || n.includes("smoked") || n.includes("pilk") || n.includes("dum")) return "Pilkos / Dumintos";
+      if (n.includes("dark") || n.includes("brown") || n.includes("walnut") || n.includes("juod") || n.includes("tams")) return "Tamsios";
+      return "Naturalios";
+    }
+
+    function decorateProduct(raw) {
+      return {
+        sku: raw[0],
+        name: raw[1],
+        dims: raw[2],
+        grade: raw[3],
+        category: raw[4],
+        subtype: raw[5],
+        swatch: raw[6],
+        finish: getFinish(raw[1]),
+        colorGroup: getColorGroup(raw[1]),
+      };
+    }
+
+    function matchesFilters(p) {
+      if (state.filters.category.size && !state.filters.category.has(p.category)) return false;
+      if (state.filters.grade.size && !state.filters.grade.has(p.grade)) return false;
+      if (state.filters.finish.size && !state.filters.finish.has(p.finish)) return false;
+      if (state.filters.colorGroup.size && !state.filters.colorGroup.has(p.colorGroup)) return false;
+
+      const q = state.search.trim().toLowerCase();
+      if (!q) return true;
+      return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+    }
+
+    function filteredProducts() {
+      const out = state.products.filter(matchesFilters);
+      switch (state.sort) {
+        case "name-asc":
+          out.sort((a, b) => a.name.localeCompare(b.name, "lt"));
+          break;
+        case "name-desc":
+          out.sort((a, b) => b.name.localeCompare(a.name, "lt"));
+          break;
+        case "sku-asc":
+          out.sort((a, b) => a.sku.localeCompare(b.sku, "lt"));
+          break;
+        case "sku-desc":
+          out.sort((a, b) => b.sku.localeCompare(a.sku, "lt"));
+          break;
+        default:
+          break;
+      }
+      return out;
+    }
+
+    function countFacet(key, value) {
+      return state.products.filter((p) => {
+        if (key !== "category" && state.filters.category.size && !state.filters.category.has(p.category)) return false;
+        if (key !== "grade" && state.filters.grade.size && !state.filters.grade.has(p.grade)) return false;
+        if (key !== "finish" && state.filters.finish.size && !state.filters.finish.has(p.finish)) return false;
+        if (key !== "colorGroup" && state.filters.colorGroup.size && !state.filters.colorGroup.has(p.colorGroup)) return false;
+        if (value && p[key] !== value) return false;
+
+        const q = state.search.trim().toLowerCase();
+        if (!q) return true;
+        return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+      }).length;
+    }
+
+    function toggleSetValue(setObj, value) {
+      if (setObj.has(value)) setObj.delete(value);
+      else setObj.add(value);
+    }
+
+    function renderFacet(container, values, setObj, key) {
+      container.innerHTML = values
+        .map((v) => {
+          const cnt = countFacet(key, v);
+          const checked = setObj.has(v);
+          return `<label class=\"f-item${checked ? " active" : ""}\">\n            <span class=\"f-item-label\">\n              <input type=\"checkbox\" ${checked ? "checked" : ""} data-v=\"${esc(v)}\" />\n              <span>${esc(v)}</span>\n            </span>\n            <span class=\"f-item-count\">${cnt}</span>\n          </label>`;
+        })
+        .join("");
+
+      container.querySelectorAll("input[type='checkbox']").forEach((input) => {
+        input.addEventListener("change", () => {
+          const value = input.getAttribute("data-v") || "";
+          toggleSetValue(setObj, value);
+          render();
+        });
+      });
+    }
+
+    function renderCards(items) {
+      if (!items.length) {
+        el.grid.innerHTML = "";
+        el.empty.style.display = "block";
+        el.empty.textContent = "Pagal pasirinktus filtrus produktu nerasta.";
+        return;
+      }
+
+      el.empty.style.display = "none";
+      el.grid.innerHTML = items
+        .map((p) => {
+          const img = Array.isArray(state.skuImages[p.sku]) && state.skuImages[p.sku].length ? state.skuImages[p.sku][0] : "";
+          const desc = state.skuDesc[p.sku] || "";
+          return `<article class=\"card\">\n            <div class=\"card-media\">${img ? `<img src=\"${esc(img)}\" alt=\"${esc(p.name)}\" loading=\"lazy\" />` : ""}<span class=\"card-sku\">${esc(p.sku)}</span></div>\n            <div class=\"card-body\">\n              <div class=\"card-finish\">${esc(p.finish)}</div>\n              <h3 class=\"card-name\">${esc(p.name)}</h3>\n              <div class=\"card-dims\">${esc(p.dims)}</div>\n              <div class=\"card-desc\">${esc(desc)}</div>\n              <div class=\"card-meta\">\n                <span class=\"pill pill-grade\">${esc(p.grade)}</span>\n                <span class=\"pill pill-category\">${esc(p.category)}</span>\n              </div>\n              <button class=\"card-cta\" type=\"button\">I pasiulyma</button>\n            </div>\n          </article>`;
+        })
+        .join("");
+    }
+
+    function render() {
+      const cats = [...new Set(state.products.map((p) => p.category))];
+      const grades = [...new Set(state.products.map((p) => p.grade))];
+      const finishes = [...new Set(state.products.map((p) => p.finish))];
+      const colors = [...new Set(state.products.map((p) => p.colorGroup))];
+
+      renderFacet(el.fCats, cats, state.filters.category, "category");
+      renderFacet(el.fGrades, grades, state.filters.grade, "grade");
+      renderFacet(el.fFinish, finishes, state.filters.finish, "finish");
+      renderFacet(el.fColor, colors, state.filters.colorGroup, "colorGroup");
+
+      const filtered = filteredProducts();
+      el.result.innerHTML = `<strong>${filtered.length}</strong> produktai rodomi`;
+      renderCards(filtered);
+    }
+
+    function clearAll() {
+      state.search = "";
+      state.sort = "default";
+      state.filters.category.clear();
+      state.filters.grade.clear();
+      state.filters.finish.clear();
+      state.filters.colorGroup.clear();
+      el.search.value = "";
+      el.sort.value = "default";
+      render();
+    }
+
+    function attachUi() {
+      el.search.addEventListener("input", () => {
+        state.search = el.search.value;
+        render();
+      });
+
+      el.sort.addEventListener("change", () => {
+        state.sort = el.sort.value;
+        render();
+      });
+
+      el.clear.addEventListener("click", clearAll);
+
+      el.mobileFilterToggle.addEventListener("click", () => {
+        el.sidebar.classList.toggle("collapsed");
+        el.mfIcon.textContent = el.sidebar.classList.contains("collapsed") ? "+" : "-";
+      });
+
+      if (window.innerWidth > 809.98) {
+        el.sidebar.classList.remove("collapsed");
+        el.mfIcon.textContent = "-";
+      }
+    }
+
+    async function loadData() {
+      const res = await fetch("../index.html", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load source: ${res.status}`);
+      const src = await res.text();
+
+      const products = evalLiteral(parseConstLiteral(src, "PRODUCTS"));
+      const skuImages = evalLiteral(parseConstLiteral(src, "SKU_IMAGES"));
+      const skuDesc = evalLiteral(parseConstLiteral(src, "SKU_DESC"));
+
+      state.products = products.map(decorateProduct);
+      state.skuImages = skuImages;
+      state.skuDesc = skuDesc;
+    }
+
+    async function boot() {
+      try {
+        await loadData();
+        attachUi();
+        render();
+      } catch (err) {
+        el.empty.style.display = "block";
+        el.empty.textContent = `Nepavyko uzkrauti katalogo duomenu: ${err && err.message ? err.message : "unknown error"}`;
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
