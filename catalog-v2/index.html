@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oak Me Up - Katalogas v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --green-dark:#1c3a13;
+      --green-mid:#2a5420;
+      --lime:#d3fa99;
+      --bg:#f7f7f4;
+      --text:#1a1a1a;
+      --muted:#6a6a6a;
+      --line:#deded8;
+      --card:#ffffff;
+      --r:14px;
+      --shadow:0 14px 28px rgba(9,20,7,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Geist,sans-serif}
+    .header{background:linear-gradient(90deg,var(--green-dark),var(--green-mid));color:var(--lime);display:flex;justify-content:space-between;align-items:center;padding:14px 20px;min-height:64px}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{height:42px;width:auto;display:block}
+    .top-note{background:var(--lime);color:var(--green-dark);text-align:center;padding:10px 16px;font-weight:600}
+    .wrap{max-width:1400px;margin:0 auto;padding:18px;display:grid;grid-template-columns:280px 1fr;gap:18px}
+
+    .sidebar{position:sticky;top:14px;align-self:start;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;max-height:calc(100vh - 28px);overflow:auto}
+    .mobile-filter-toggle{display:none}
+    .f-title{margin:10px 0 8px;font-weight:700;color:var(--muted);font-size:13px;letter-spacing:.02em}
+    .search{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:18px;background:#fbfbfa}
+    .f-group{display:grid;gap:8px}
+    .f-btn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-size:17px;text-align:left}
+    .f-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
+    .f-cnt{font-family:'Geist Mono',monospace;font-size:13px;opacity:.75}
+    .clear-btn{width:100%;margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer}
+
+    .main{min-width:0}
+    .top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+    .result{font-size:20px;font-weight:600}
+    .result span{color:var(--muted);font-weight:500}
+
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .card{background:var(--green-dark);color:#e8f2e1;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0}
+    .media{position:relative;aspect-ratio:4/3;background:#0f200b}
+    .media img{width:100%;height:100%;object-fit:cover;display:block}
+    .sku{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.45);color:#fff;padding:4px 8px;border-radius:999px;font-size:12px;font-family:'Geist Mono',monospace}
+    .body{padding:12px 13px 14px;display:flex;flex-direction:column;gap:8px;min-height:260px}
+    .finish{order:1;color:var(--lime);font-family:'Geist Mono',monospace;font-size:12px;line-height:1.35}
+    .name{order:2;font-size:22px;line-height:1.12;font-weight:700;color:#fff}
+    .dims{order:3;color:var(--lime);font-family:'Geist Mono',monospace;font-size:12px;line-height:1.35}
+    .desc{order:4;color:#d5dfd1;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+    .meta{order:5;display:flex;gap:8px;flex-wrap:wrap}
+    .tag{font-size:12px;border-radius:999px;padding:4px 10px;font-weight:600}
+    .grade{background:#f0ede8;color:#454545}
+    .cat{background:#2f5a22;color:var(--lime)}
+
+    .state{padding:44px;border:1px dashed var(--line);border-radius:14px;background:#fff;color:var(--muted);text-align:center}
+
+    @media (max-width:1200px){
+      .wrap{grid-template-columns:250px 1fr}
+      .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .name{font-size:19px}
+    }
+    @media (max-width:920px){
+      .wrap{display:block;padding:12px}
+      .sidebar{position:relative;top:0;max-height:none;margin-bottom:12px}
+      .mobile-filter-toggle{display:flex;width:100%;justify-content:space-between;align-items:center;padding:12px;border:none;border-radius:12px;background:var(--green-dark);color:var(--lime);font-size:20px;font-weight:600}
+      .sidebar.collapsed .filters-content{display:none}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:560px){
+      .header{padding:10px 12px;min-height:58px}
+      .logo img{height:34px}
+      .top-note{padding:8px 10px;font-size:14px}
+      .wrap{padding:10px}
+      .grid{grid-template-columns:1fr;gap:10px}
+      .result{font-size:18px}
+      .name{font-size:17px}
+      .desc{font-size:13px;-webkit-line-clamp:3}
+      .f-btn{font-size:16px;padding:9px 10px}
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <img src="../Frame 8.svg" alt="Oak Me Up" />
+    </div>
+    <div>Produktu katalogas v2</div>
+  </header>
+  <div class="top-note">Naujas svarus katalogo puslapis - duomenys kraunami is pagrindinio saltinio</div>
+
+  <div class="wrap">
+    <aside class="sidebar collapsed" id="sidebar">
+      <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button">Filtrai <span id="mfIcon">+</span></button>
+      <div class="filters-content" id="filtersContent">
+        <input id="search" class="search" type="text" placeholder="SKU arba pavadinimas..." />
+
+        <div class="f-title">Kategorija</div>
+        <div id="fCats" class="f-group"></div>
+
+        <div class="f-title">Rusis</div>
+        <div id="fGrades" class="f-group"></div>
+
+        <div class="f-title">Apdaila</div>
+        <div id="fFinish" class="f-group"></div>
+
+        <div class="f-title">Spalva</div>
+        <div id="fColor" class="f-group"></div>
+
+        <button id="clearFilters" type="button" class="clear-btn">Isvalyti filtrus</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="top-row">
+        <div id="result" class="result">0 <span>produktai rodomi</span></div>
+      </div>
+      <div id="grid" class="grid"></div>
+      <div id="state" class="state" style="display:none"></div>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      products: [],
+      skuImages: {},
+      skuDesc: {},
+      search: '',
+      cat: '',
+      grade: '',
+      finish: '',
+      color: ''
+    };
+
+    const el = {
+      grid: document.getElementById('grid'),
+      state: document.getElementById('state'),
+      result: document.getElementById('result'),
+      search: document.getElementById('search'),
+      fCats: document.getElementById('fCats'),
+      fGrades: document.getElementById('fGrades'),
+      fFinish: document.getElementById('fFinish'),
+      fColor: document.getElementById('fColor'),
+      clear: document.getElementById('clearFilters'),
+      sidebar: document.getElementById('sidebar'),
+      mobileToggle: document.getElementById('mobileFilterToggle'),
+      mfIcon: document.getElementById('mfIcon')
+    };
+
+    const esc = (s) => String(s || '').replace(/[&<>\"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+
+    function parseConstLiteral(source, name){
+      const marker = `const ${name}=`;
+      const start = source.indexOf(marker);
+      if(start < 0) throw new Error(`Missing ${name}`);
+      let i = start + marker.length;
+      while(i < source.length && /\s/.test(source[i])) i += 1;
+      let depth = 0;
+      let quote = '';
+      let out = '';
+      let escaped = false;
+      for(; i < source.length; i += 1){
+        const ch = source[i];
+        out += ch;
+        if(quote){
+          if(escaped){ escaped = false; continue; }
+          if(ch === '\\'){ escaped = true; continue; }
+          if(ch === quote) quote = '';
+          continue;
+        }
+        if(ch === '"' || ch === "'" || ch === '`'){ quote = ch; continue; }
+        if(ch === '[' || ch === '{' || ch === '('){ depth += 1; continue; }
+        if(ch === ']' || ch === '}' || ch === ')'){ depth -= 1; continue; }
+        if(ch === ';' && depth === 0){
+          out = out.slice(0, -1);
+          break;
+        }
+      }
+      return out.trim();
+    }
+
+    function evalLiteral(lit){
+      return Function(`\"use strict\"; return (${lit});`)();
+    }
+
+    function getFinish(name){
+      const n = String(name || '').toLowerCase();
+      if(n.includes('unfinished') || n.includes('be apdailos')) return 'Be apdailos';
+      if(n.includes('lac') || n.includes('lakuot')) return 'Lakuotas';
+      if(n.includes('oiled') || n.includes('aliejuot')) return 'Aliejuotas';
+      if(n.includes('smoked') || n.includes('dumint')) return 'Dumintas';
+      if(n.includes('white') || n.includes('grey') || n.includes('bal') || n.includes('pilk')) return 'Baltas/pilkas tonas';
+      return 'Kita';
+    }
+
+    function getColorGroup(name){
+      const n = String(name || '').toLowerCase();
+      if(n.includes('white') || n.includes('bal')) return 'Sviesios';
+      if(n.includes('grey') || n.includes('smoked') || n.includes('pilk') || n.includes('dum')) return 'Pilkos/dumintos';
+      if(n.includes('dark') || n.includes('brown') || n.includes('walnut') || n.includes('juod') || n.includes('tams')) return 'Tamsios';
+      return 'Naturalios';
+    }
+
+    function decorateProduct(raw){
+      return {
+        sku: raw[0],
+        name: raw[1],
+        dims: raw[2],
+        grade: raw[3],
+        category: raw[4],
+        subtype: raw[5],
+        swatch: raw[6],
+        finish: getFinish(raw[1]),
+        colorGroup: getColorGroup(raw[1])
+      };
+    }
+
+    function currentFiltered(){
+      const q = state.search.trim().toLowerCase();
+      return state.products.filter((p) => {
+        if(state.cat && p.category !== state.cat) return false;
+        if(state.grade && p.grade !== state.grade) return false;
+        if(state.finish && p.finish !== state.finish) return false;
+        if(state.color && p.colorGroup !== state.color) return false;
+        if(!q) return true;
+        return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+      });
+    }
+
+    function countBy(key, value){
+      const q = state.search.trim().toLowerCase();
+      return state.products.filter((p) => {
+        if(key !== 'category' && state.cat && p.category !== state.cat) return false;
+        if(key !== 'grade' && state.grade && p.grade !== state.grade) return false;
+        if(key !== 'finish' && state.finish && p.finish !== state.finish) return false;
+        if(key !== 'colorGroup' && state.color && p.colorGroup !== state.color) return false;
+        if(value && p[key] !== value) return false;
+        if(!q) return true;
+        return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+      }).length;
+    }
+
+    function renderFilterButtons(container, values, active, onPick, key){
+      container.innerHTML = values.map((v) => {
+        const cnt = countBy(key, v);
+        const isActive = active === v;
+        return `<button type="button" class="f-btn${isActive ? ' active' : ''}" data-v="${esc(v)}"><span>${esc(v)}</span><span class="f-cnt">${cnt}</span></button>`;
+      }).join('');
+      container.querySelectorAll('.f-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const v = btn.getAttribute('data-v') || '';
+          onPick(v === active ? '' : v);
+        });
+      });
+    }
+
+    function renderCards(items){
+      if(!items.length){
+        el.grid.innerHTML = '';
+        el.state.style.display = 'block';
+        el.state.textContent = 'Pagal pasirinktus filtrus produktu nerasta.';
+        return;
+      }
+      el.state.style.display = 'none';
+      el.grid.innerHTML = items.map((p) => {
+        const img = Array.isArray(state.skuImages[p.sku]) && state.skuImages[p.sku].length ? state.skuImages[p.sku][0] : '';
+        const desc = state.skuDesc[p.sku] || '';
+        return `<article class="card">
+          <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(p.name)}" />` : ''}<span class="sku">${esc(p.sku)}</span></div>
+          <div class="body">
+            <div class="finish">${esc(p.finish)}</div>
+            <div class="name">${esc(p.name)}</div>
+            <div class="dims">${esc(p.dims)}</div>
+            <div class="desc">${esc(desc)}</div>
+            <div class="meta">
+              <span class="tag grade">${esc(p.grade)}</span>
+              <span class="tag cat">${esc(p.category)}</span>
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    function render(){
+      const cats = [...new Set(state.products.map((p) => p.category))];
+      const grades = [...new Set(state.products.map((p) => p.grade))];
+      const finishes = [...new Set(state.products.map((p) => p.finish))];
+      const colors = [...new Set(state.products.map((p) => p.colorGroup))];
+
+      renderFilterButtons(el.fCats, cats, state.cat, (v) => { state.cat = v; render(); }, 'category');
+      renderFilterButtons(el.fGrades, grades, state.grade, (v) => { state.grade = v; render(); }, 'grade');
+      renderFilterButtons(el.fFinish, finishes, state.finish, (v) => { state.finish = v; render(); }, 'finish');
+      renderFilterButtons(el.fColor, colors, state.color, (v) => { state.color = v; render(); }, 'colorGroup');
+
+      const filtered = currentFiltered();
+      el.result.innerHTML = `${filtered.length} <span>produktai rodomi</span>`;
+      renderCards(filtered);
+    }
+
+    function attachUi(){
+      el.search.addEventListener('input', () => { state.search = el.search.value; render(); });
+      el.clear.addEventListener('click', () => {
+        state.search = '';
+        state.cat = '';
+        state.grade = '';
+        state.finish = '';
+        state.color = '';
+        el.search.value = '';
+        render();
+      });
+      el.mobileToggle.addEventListener('click', () => {
+        el.sidebar.classList.toggle('collapsed');
+        el.mfIcon.textContent = el.sidebar.classList.contains('collapsed') ? '+' : '-';
+      });
+      if(window.innerWidth > 920){
+        el.sidebar.classList.remove('collapsed');
+        el.mfIcon.textContent = '-';
+      }
+    }
+
+    async function loadData(){
+      const res = await fetch('../index.html', { cache: 'no-store' });
+      if(!res.ok) throw new Error(`Failed to load source: ${res.status}`);
+      const src = await res.text();
+
+      const products = evalLiteral(parseConstLiteral(src, 'PRODUCTS'));
+      const skuImages = evalLiteral(parseConstLiteral(src, 'SKU_IMAGES'));
+      const skuDesc = evalLiteral(parseConstLiteral(src, 'SKU_DESC'));
+
+      state.products = products.map(decorateProduct);
+      state.skuImages = skuImages;
+      state.skuDesc = skuDesc;
+    }
+
+    async function boot(){
+      try{
+        await loadData();
+        attachUi();
+        render();
+      }catch(err){
+        el.grid.innerHTML = '';
+        el.state.style.display = 'block';
+        el.state.textContent = `Nepavyko uzkrauti katalogo duomenu: ${err && err.message ? err.message : 'unknown error'}`;
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
