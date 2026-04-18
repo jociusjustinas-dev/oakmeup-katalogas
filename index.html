@@ -348,6 +348,36 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .form-card{padding:16px}
   .form-actions{flex-direction:column}
 }
+
+@media (max-width: 560px) and (max-height: 720px){
+  .header{min-height:52px;padding:8px 10px}
+  .logo img{height:38px}
+  .header-sub{font-size:9px}
+  .mobile-filter-toggle{padding:9px 11px;font-size:11px}
+  .sidebar{top:52px;max-height:calc(100vh - 52px);padding:8px 12px}
+  .sidebar-content{padding-top:10px}
+  .main{padding:10px}
+  .catalog-root--grid{gap:10px}
+  .prod-card-media{aspect-ratio:1.7/1}
+  .prod-card-pick-row{padding:7px 8px}
+  .prod-card-pick-label{font-size:10px}
+  .prod-card-body{padding:8px 10px;gap:6px}
+  .prod-card-name{font-size:13px;line-height:1.2}
+  .prod-card-finish,.prod-card-dims{font-size:10px;line-height:1.25}
+  .card-desc{font-size:11px;line-height:1.4;-webkit-line-clamp:2}
+  .grade{font-size:9px;padding:2px 6px}
+  .prod-card-foot{padding:0 10px 10px}
+  .prod-card-foot .cmp-btn{padding:10px 12px;font-size:13px;min-height:42px}
+  .filter-apply-btn.visible{line-height:52px;height:52px;font-size:13px}
+  .compare-overlay{padding:calc(16px + env(safe-area-inset-top,0)) 8px calc(12px + env(safe-area-inset-bottom,0))}
+  .compare-modal{padding:12px;border-radius:10px;max-height:calc(100svh - 28px - env(safe-area-inset-top,0) - env(safe-area-inset-bottom,0))}
+  .compare-top{margin-bottom:10px}
+  .compare-title{font-size:14px}
+  .compare-img{height:min(170px,32vh)}
+  .compare-details{padding:10px;gap:6px}
+  .overlay{padding:calc(16px + env(safe-area-inset-top,0)) 8px calc(12px + env(safe-area-inset-bottom,0))}
+  .form-card{padding:14px;max-height:calc(100svh - 28px - env(safe-area-inset-top,0) - env(safe-area-inset-bottom,0))}
+}
 /* ── Lightbox (SKU images) ─────────────────── */
 .lb-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2147483100;display:none;align-items:center;justify-content:center;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0)) 12px calc(12px + env(safe-area-inset-bottom,0))}
 .lb-overlay.open{display:flex}
