@@ -376,9 +376,14 @@ try{
     max-height:100vh!important;
     height:auto!important;
     overflow-y:auto!important;
-    z-index:99998!important;
+    z-index:45!important;
   }
-  html.omu-embed .filter-apply-btn{z-index:99999!important}
+  html.omu-embed .filter-apply-btn{z-index:1000!important}
+  html.omu-embed.modal-open .sidebar,
+  html.omu-embed.modal-open .filter-apply-btn{
+    z-index:1!important;
+    pointer-events:none!important;
+  }
 }
 @media (max-width:700px){
   html.omu-embed .sidebar{
