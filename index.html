@@ -278,7 +278,7 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .sidebar{
     position:sticky;
     top:56px;
-    z-index:45;
+    z-index:10;
     height:auto;
     max-height:calc(100vh - 56px);
     overflow-y:auto;
@@ -316,6 +316,10 @@ input[type=text]:focus{border-color:var(--green-dark)}
   .field-row{grid-template-columns:1fr}
   html.modal-open .sidebar,
   body.modal-open .sidebar,
+  html.modal-open .mobile-filter-toggle,
+  body.modal-open .mobile-filter-toggle,
+  html.modal-open .sidebar-content,
+  body.modal-open .sidebar-content,
   html.modal-open .filter-apply-btn,
   body.modal-open .filter-apply-btn,
   html.modal-open .compare-sticky,
@@ -377,13 +381,16 @@ try{
     max-height:100vh!important;
     height:auto!important;
     overflow-y:auto!important;
-    z-index:45!important;
+    z-index:10!important;
   }
   html.omu-embed .filter-apply-btn{z-index:1000!important}
   html.omu-embed.modal-open .sidebar,
+  html.omu-embed.modal-open .mobile-filter-toggle,
+  html.omu-embed.modal-open .sidebar-content,
   html.omu-embed.modal-open .filter-apply-btn{
     z-index:1!important;
     pointer-events:none!important;
+    visibility:hidden!important;
   }
 }
 @media (max-width:700px){
