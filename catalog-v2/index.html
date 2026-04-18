@@ -3,125 +3,569 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oak Me Up - Katalogas v2</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Oak Me Up - Katalogas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    :root{
-      --green-dark:#1c3a13;
-      --green-mid:#2a5420;
-      --lime:#d3fa99;
-      --bg:#f7f7f4;
-      --text:#1a1a1a;
-      --muted:#6a6a6a;
-      --line:#deded8;
-      --card:#ffffff;
-      --r:14px;
-      --shadow:0 14px 28px rgba(9,20,7,.08);
+    :root {
+      --brand-green: #1c3a13;
+      --brand-green-rgb: 28, 58, 19;
+      --accent-lime: #d3fa99;
+      --warm-bg: #fbfaf9;
+      --muted-bg: #f2f3ee;
+      --white: #ffffff;
+      --black: #000000;
+      --text-secondary: #666666;
+      --text-muted: #5d5d65;
+      --text-muted-alt: #73737d;
+      --line: #e7e7e9;
+      --line-strong: #d9d9d9;
+      --link: #0099ff;
+
+      --r-sm: 4px;
+      --r-md: 8px;
+      --r-lg: 10px;
+      --r-pill: 200px;
+      --r-card: 20px;
+
+      --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.06);
+      --surface: var(--white);
+
+      --fs-h1: 46px;
+      --fs-h2: 38px;
+      --fs-h3: 26px;
+      --fs-h4: 20px;
+      --fs-h5: 16px;
+      --fs-h6: 14px;
+
+      --fs-body: 16px;
+      --fs-body-sm: 13px;
+      --fs-ui: 14px;
+      --fs-mono-sm: 11px;
+      --fs-mono-xs: 9px;
+
+      --lh-h1: 1.1em;
+      --lh-h2: 1.3em;
+      --lh-h3: 1.2em;
+      --lh-h4: 1.2em;
+      --lh-h5: 1.2em;
+      --lh-h6: 1.3em;
+      --lh-body: 1.5em;
+
+      --layout-max: 1440px;
+      --sidebar-w: 292px;
+      --gap: 18px;
+      --pad-shell: 16px;
+      --pad-section: 16px;
+      --card-media-ratio: 4 / 3;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Geist,sans-serif}
-    .header{background:linear-gradient(90deg,var(--green-dark),var(--green-mid));color:var(--lime);display:flex;justify-content:space-between;align-items:center;padding:10px 16px;min-height:56px}
-    .logo{display:flex;align-items:center;gap:12px}
-    .logo img{height:34px;width:auto;display:block}
-    .top-note{background:var(--lime);color:var(--green-dark);text-align:center;padding:8px 12px;font-weight:600;font-size:13px;line-height:1.35}
-    .wrap{max-width:1400px;margin:0 auto;padding:14px;display:grid;grid-template-columns:260px 1fr;gap:14px}
 
-    .sidebar{position:sticky;top:12px;align-self:start;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px;max-height:calc(100vh - 24px);overflow:auto}
-    .mobile-filter-toggle{display:none}
-    .f-title{margin:10px 0 8px;font-weight:700;color:var(--muted);font-size:12px;letter-spacing:.02em}
-    .search{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:12px;font-size:13px;background:#fbfbfa}
-    .f-group{display:grid;gap:8px}
-    .f-btn{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;cursor:pointer;font-size:13px;text-align:left}
-    .f-btn.active{background:var(--green-dark);color:var(--lime);border-color:var(--green-dark)}
-    .f-cnt{font-family:'Geist Mono',monospace;font-size:12px;opacity:.75}
-    .clear-btn{width:100%;margin-top:10px;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px}
+    * { box-sizing: border-box; }
 
-    .main{min-width:0}
-    .top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-    .result{font-size:13px;font-weight:600}
-    .result span{color:var(--muted);font-weight:500}
-
-    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .card{background:var(--green-dark);color:#e8f2e1;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0}
-    .media{position:relative;aspect-ratio:4/3;background:#0f200b}
-    .media img{width:100%;height:100%;object-fit:cover;display:block}
-    .sku{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.45);color:#fff;padding:3px 7px;border-radius:999px;font-size:10px;font-family:'Geist Mono',monospace}
-    .body{padding:10px 11px 12px;display:flex;flex-direction:column;gap:7px;min-height:220px}
-    .finish{order:1;color:var(--lime);font-family:'Geist Mono',monospace;font-size:11px;line-height:1.3}
-    .name{order:2;font-size:15px;line-height:1.22;font-weight:600;color:#fff}
-    .dims{order:3;color:var(--lime);font-family:'Geist Mono',monospace;font-size:11px;line-height:1.3}
-    .desc{order:4;color:#d5dfd1;font-size:12px;line-height:1.45;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
-    .meta{order:5;display:flex;gap:8px;flex-wrap:wrap}
-    .tag{font-size:11px;border-radius:999px;padding:3px 9px;font-weight:600}
-    .grade{background:#f0ede8;color:#454545}
-    .cat{background:#2f5a22;color:var(--lime)}
-
-    .state{padding:44px;border:1px dashed var(--line);border-radius:14px;background:#fff;color:var(--muted);text-align:center}
-
-    @media (max-width:1200px){
-      .wrap{grid-template-columns:240px 1fr}
-      .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .name{font-size:14px}
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--white);
+      color: var(--black);
+      font-family: "Geist", "Geist Placeholder", sans-serif;
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
     }
-    @media (max-width:920px){
-      .wrap{display:block;padding:10px}
-      .sidebar{position:relative;top:0;max-height:none;margin-bottom:12px}
-      .mobile-filter-toggle{display:flex;width:100%;justify-content:space-between;align-items:center;padding:10px;border:none;border-radius:12px;background:var(--green-dark);color:var(--lime);font-size:14px;font-weight:600}
-      .sidebar.collapsed .filters-content{display:none}
-      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+    a { color: var(--link); }
+
+    .site-head {
+      background: var(--brand-green);
+      color: var(--white);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
-    @media (max-width:560px){
-      .header{padding:8px 10px;min-height:52px}
-      .logo img{height:30px}
-      .top-note{padding:7px 9px;font-size:12px}
-      .wrap{padding:10px}
-      .grid{grid-template-columns:1fr;gap:10px}
-      .result{font-size:13px}
-      .name{font-size:14px}
-      .desc{font-size:12px;-webkit-line-clamp:3}
-      .f-btn{font-size:13px;padding:8px 9px}
+
+    .site-head-inner {
+      max-width: var(--layout-max);
+      margin: 0 auto;
+      min-height: 56px;
+      padding: 8px var(--pad-shell);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .brand img {
+      display: block;
+      width: auto;
+      height: 34px;
+    }
+
+    .head-note {
+      font-size: var(--fs-body-sm);
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+    }
+
+    .top-banner {
+      background: var(--accent-lime);
+      color: var(--brand-green);
+      font-size: var(--fs-ui);
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: center;
+      padding: 10px var(--pad-shell);
+    }
+
+    .shell {
+      max-width: var(--layout-max);
+      margin: 0 auto;
+      padding: var(--pad-shell);
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap: var(--gap);
+      align-items: start;
+      background: var(--white);
+    }
+
+    .sidebar {
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      background: var(--surface);
+      padding: 14px;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+      box-shadow: none;
+    }
+
+    .mobile-filter-toggle {
+      display: none;
+      width: 100%;
+      border: none;
+      border-radius: var(--r-md);
+      background: var(--brand-green);
+      color: var(--accent-lime);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      font-weight: 600;
+      line-height: 1;
+      padding: 12px 14px;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .search {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--warm-bg);
+      color: var(--black);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      outline: none;
+    }
+
+    .search::placeholder {
+      color: rgb(153, 153, 153);
+    }
+
+    .group-title {
+      margin: 14px 0 8px;
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body-sm);
+      font-weight: 600;
+      color: var(--text-muted-alt);
+      letter-spacing: 0.01em;
+    }
+
+    .filter-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--white);
+      color: var(--black);
+      padding: 9px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-ui);
+      line-height: 1.25;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--warm-bg);
+    }
+
+    .filter-btn.active {
+      background: var(--brand-green);
+      color: var(--accent-lime);
+      border-color: var(--brand-green);
+    }
+
+    .filter-count {
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono-sm);
+      font-weight: 500;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    .clear-btn {
+      width: 100%;
+      margin-top: 12px;
+      height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--r-lg);
+      background: var(--white);
+      color: var(--text-muted);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body-sm);
+      cursor: pointer;
+    }
+
+    .clear-btn:hover {
+      background: var(--warm-bg);
+      color: var(--black);
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .toolbar {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .result {
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .result strong {
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      background: var(--brand-green);
+      color: var(--white);
+      min-width: 0;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-media {
+      position: relative;
+      aspect-ratio: var(--card-media-ratio);
+      background: #142810;
+      overflow: hidden;
+    }
+
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-sku {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      border-radius: var(--r-pill);
+      padding: 3px 8px;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono-xs);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      min-height: 220px;
+    }
+
+    .card-finish {
+      order: 1;
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono-sm);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--accent-lime);
+    }
+
+    .card-name {
+      order: 2;
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-h5);
+      font-weight: 600;
+      line-height: var(--lh-h5);
+      letter-spacing: 0;
+      color: #fff;
+      margin: 0;
+    }
+
+    .card-dims {
+      order: 3;
+      font-family: "Geist Mono", monospace;
+      font-size: var(--fs-mono-sm);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--accent-lime);
+    }
+
+    .card-desc {
+      order: 4;
+      color: rgba(255, 255, 255, 0.82);
+      font-family: "Geist", sans-serif;
+      font-size: var(--fs-body-sm);
+      font-weight: 400;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      order: 5;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .pill {
+      border-radius: var(--r-pill);
+      padding: 4px 10px;
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
+    .pill-grade {
+      background: var(--muted-bg);
+      color: #333;
+    }
+
+    .pill-category {
+      background: rgba(var(--brand-green-rgb), 0.8);
+      color: var(--accent-lime);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .empty {
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--r-lg);
+      background: var(--warm-bg);
+      color: var(--text-secondary);
+      font-size: var(--fs-body-sm);
+      text-align: center;
+      padding: 42px 18px;
+    }
+
+    /* >=1440px */
+    @media (min-width: 1440px) {
+      .shell {
+        grid-template-columns: 296px 1fr;
+        gap: 20px;
+        padding: 18px;
+      }
+
+      .grid {
+        gap: 16px;
+      }
+    }
+
+    /* 810px - 1439.98px */
+    @media (min-width: 810px) and (max-width: 1439.98px) {
+      :root {
+        --fs-h1: 37px;
+        --fs-h2: 30px;
+        --fs-h3: 24px;
+      }
+
+      .shell {
+        grid-template-columns: 252px 1fr;
+        gap: 14px;
+        padding: 14px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* <=809.98px */
+    @media (max-width: 809.98px) {
+      :root {
+        --fs-h1: 34px;
+        --fs-h2: 28px;
+        --fs-h3: 22px;
+      }
+
+      .site-head-inner {
+        min-height: 52px;
+        padding: 8px 12px;
+      }
+
+      .brand img {
+        height: 30px;
+      }
+
+      .head-note {
+        font-size: 12px;
+      }
+
+      .top-banner {
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+
+      .shell {
+        display: block;
+        padding: 12px;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 12px;
+      }
+
+      .mobile-filter-toggle {
+        display: flex;
+      }
+
+      .sidebar.collapsed .filters-content {
+        display: none;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .card-body {
+        min-height: 204px;
+        padding: 11px;
+      }
+
+      .card-desc {
+        -webkit-line-clamp: 3;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .card-body {
+        min-height: 0;
+      }
+
+      .card-name {
+        font-size: 15px;
+      }
+
+      .card-desc {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="logo">
-      <img src="../Frame 8.svg" alt="Oak Me Up" />
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="brand" href="https://oakmeup.lt/" target="_top" rel="noopener noreferrer">
+        <img src="../Frame 8.svg" alt="Oak Me Up" />
+      </a>
+      <div class="head-note">Produktu katalogas</div>
     </div>
-    <div>Produktu katalogas v2</div>
   </header>
-  <div class="top-note">Naujas svarus katalogo puslapis - duomenys kraunami is pagrindinio saltinio</div>
 
-  <div class="wrap">
+  <div class="top-banner">Pasirinkite produktus is saraso ir siuskite uzklausa - susisieksime per 24h su kainomis ir prieinamumu.</div>
+
+  <div class="shell">
     <aside class="sidebar collapsed" id="sidebar">
       <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button">Filtrai <span id="mfIcon">+</span></button>
+
       <div class="filters-content" id="filtersContent">
         <input id="search" class="search" type="text" placeholder="SKU arba pavadinimas..." />
 
-        <div class="f-title">Kategorija</div>
-        <div id="fCats" class="f-group"></div>
+        <div class="group-title">Kategorija</div>
+        <div id="fCats" class="filter-group"></div>
 
-        <div class="f-title">Rusis</div>
-        <div id="fGrades" class="f-group"></div>
+        <div class="group-title">Rusis</div>
+        <div id="fGrades" class="filter-group"></div>
 
-        <div class="f-title">Apdaila</div>
-        <div id="fFinish" class="f-group"></div>
+        <div class="group-title">Apdaila</div>
+        <div id="fFinish" class="filter-group"></div>
 
-        <div class="f-title">Spalva</div>
-        <div id="fColor" class="f-group"></div>
+        <div class="group-title">Spalva</div>
+        <div id="fColor" class="filter-group"></div>
 
         <button id="clearFilters" type="button" class="clear-btn">Isvalyti filtrus</button>
       </div>
     </aside>
 
     <main class="main">
-      <div class="top-row">
-        <div id="result" class="result">0 <span>produktai rodomi</span></div>
+      <div class="toolbar">
+        <div id="result" class="result"><strong>0</strong> produktai rodomi</div>
       </div>
+
       <div id="grid" class="grid"></div>
-      <div id="state" class="state" style="display:none"></div>
+      <div id="empty" class="empty" style="display:none"></div>
     </main>
   </div>
 
@@ -130,83 +574,110 @@
       products: [],
       skuImages: {},
       skuDesc: {},
-      search: '',
-      cat: '',
-      grade: '',
-      finish: '',
-      color: ''
+      search: "",
+      cat: "",
+      grade: "",
+      finish: "",
+      color: "",
     };
 
     const el = {
-      grid: document.getElementById('grid'),
-      state: document.getElementById('state'),
-      result: document.getElementById('result'),
-      search: document.getElementById('search'),
-      fCats: document.getElementById('fCats'),
-      fGrades: document.getElementById('fGrades'),
-      fFinish: document.getElementById('fFinish'),
-      fColor: document.getElementById('fColor'),
-      clear: document.getElementById('clearFilters'),
-      sidebar: document.getElementById('sidebar'),
-      mobileToggle: document.getElementById('mobileFilterToggle'),
-      mfIcon: document.getElementById('mfIcon')
+      grid: document.getElementById("grid"),
+      empty: document.getElementById("empty"),
+      result: document.getElementById("result"),
+      search: document.getElementById("search"),
+      fCats: document.getElementById("fCats"),
+      fGrades: document.getElementById("fGrades"),
+      fFinish: document.getElementById("fFinish"),
+      fColor: document.getElementById("fColor"),
+      clear: document.getElementById("clearFilters"),
+      sidebar: document.getElementById("sidebar"),
+      mobileToggle: document.getElementById("mobileFilterToggle"),
+      mfIcon: document.getElementById("mfIcon"),
     };
 
-    const esc = (s) => String(s || '').replace(/[&<>\"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+    const esc = (s) =>
+      String(s || "").replace(/[&<>\"']/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '\"': "&quot;", "'": "&#39;" })[c]
+      );
 
-    function parseConstLiteral(source, name){
+    function parseConstLiteral(source, name) {
       const marker = `const ${name}=`;
       const start = source.indexOf(marker);
-      if(start < 0) throw new Error(`Missing ${name}`);
+      if (start < 0) throw new Error(`Missing ${name}`);
+
       let i = start + marker.length;
-      while(i < source.length && /\s/.test(source[i])) i += 1;
+      while (i < source.length && /\s/.test(source[i])) i += 1;
+
       let depth = 0;
-      let quote = '';
-      let out = '';
+      let quote = "";
       let escaped = false;
-      for(; i < source.length; i += 1){
+      let out = "";
+
+      for (; i < source.length; i += 1) {
         const ch = source[i];
         out += ch;
-        if(quote){
-          if(escaped){ escaped = false; continue; }
-          if(ch === '\\'){ escaped = true; continue; }
-          if(ch === quote) quote = '';
+
+        if (quote) {
+          if (escaped) {
+            escaped = false;
+            continue;
+          }
+          if (ch === "\\") {
+            escaped = true;
+            continue;
+          }
+          if (ch === quote) quote = "";
           continue;
         }
-        if(ch === '"' || ch === "'" || ch === '`'){ quote = ch; continue; }
-        if(ch === '[' || ch === '{' || ch === '('){ depth += 1; continue; }
-        if(ch === ']' || ch === '}' || ch === ')'){ depth -= 1; continue; }
-        if(ch === ';' && depth === 0){
+
+        if (ch === '"' || ch === "'" || ch === "`") {
+          quote = ch;
+          continue;
+        }
+
+        if (ch === "[" || ch === "{" || ch === "(") {
+          depth += 1;
+          continue;
+        }
+
+        if (ch === "]" || ch === "}" || ch === ")") {
+          depth -= 1;
+          continue;
+        }
+
+        if (ch === ";" && depth === 0) {
           out = out.slice(0, -1);
           break;
         }
       }
+
       return out.trim();
     }
 
-    function evalLiteral(lit){
-      return Function(`\"use strict\"; return (${lit});`)();
+    function evalLiteral(lit) {
+      return Function(`\"use strict\";return (${lit});`)();
     }
 
-    function getFinish(name){
-      const n = String(name || '').toLowerCase();
-      if(n.includes('unfinished') || n.includes('be apdailos')) return 'Be apdailos';
-      if(n.includes('lac') || n.includes('lakuot')) return 'Lakuotas';
-      if(n.includes('oiled') || n.includes('aliejuot')) return 'Aliejuotas';
-      if(n.includes('smoked') || n.includes('dumint')) return 'Dumintas';
-      if(n.includes('white') || n.includes('grey') || n.includes('bal') || n.includes('pilk')) return 'Baltas/pilkas tonas';
-      return 'Kita';
+    function getFinish(name) {
+      const n = String(name || "").toLowerCase();
+      if (n.includes("unfinished") || n.includes("be apdailos")) return "Be apdailos";
+      if (n.includes("lac") || n.includes("lakuot")) return "Lakuotas";
+      if (n.includes("oiled") || n.includes("aliejuot")) return "Aliejuotas";
+      if (n.includes("smoked") || n.includes("dumint")) return "Dumintas";
+      if (n.includes("white") || n.includes("grey") || n.includes("bal") || n.includes("pilk")) return "Baltas ir pilkas tonas";
+      return "Kita";
     }
 
-    function getColorGroup(name){
-      const n = String(name || '').toLowerCase();
-      if(n.includes('white') || n.includes('bal')) return 'Sviesios';
-      if(n.includes('grey') || n.includes('smoked') || n.includes('pilk') || n.includes('dum')) return 'Pilkos/dumintos';
-      if(n.includes('dark') || n.includes('brown') || n.includes('walnut') || n.includes('juod') || n.includes('tams')) return 'Tamsios';
-      return 'Naturalios';
+    function getColorGroup(name) {
+      const n = String(name || "").toLowerCase();
+      if (n.includes("white") || n.includes("bal")) return "Sviesios";
+      if (n.includes("grey") || n.includes("smoked") || n.includes("pilk") || n.includes("dum")) return "Pilkos / Dumintos";
+      if (n.includes("dark") || n.includes("brown") || n.includes("walnut") || n.includes("juod") || n.includes("tams")) return "Tamsios";
+      return "Naturalios";
     }
 
-    function decorateProduct(raw){
+    function decorateProduct(raw) {
       return {
         sku: raw[0],
         name: raw[1],
@@ -216,136 +687,151 @@
         subtype: raw[5],
         swatch: raw[6],
         finish: getFinish(raw[1]),
-        colorGroup: getColorGroup(raw[1])
+        colorGroup: getColorGroup(raw[1]),
       };
     }
 
-    function currentFiltered(){
+    function currentFiltered() {
       const q = state.search.trim().toLowerCase();
       return state.products.filter((p) => {
-        if(state.cat && p.category !== state.cat) return false;
-        if(state.grade && p.grade !== state.grade) return false;
-        if(state.finish && p.finish !== state.finish) return false;
-        if(state.color && p.colorGroup !== state.color) return false;
-        if(!q) return true;
+        if (state.cat && p.category !== state.cat) return false;
+        if (state.grade && p.grade !== state.grade) return false;
+        if (state.finish && p.finish !== state.finish) return false;
+        if (state.color && p.colorGroup !== state.color) return false;
+        if (!q) return true;
         return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
       });
     }
 
-    function countBy(key, value){
+    function countBy(key, value) {
       const q = state.search.trim().toLowerCase();
       return state.products.filter((p) => {
-        if(key !== 'category' && state.cat && p.category !== state.cat) return false;
-        if(key !== 'grade' && state.grade && p.grade !== state.grade) return false;
-        if(key !== 'finish' && state.finish && p.finish !== state.finish) return false;
-        if(key !== 'colorGroup' && state.color && p.colorGroup !== state.color) return false;
-        if(value && p[key] !== value) return false;
-        if(!q) return true;
+        if (key !== "category" && state.cat && p.category !== state.cat) return false;
+        if (key !== "grade" && state.grade && p.grade !== state.grade) return false;
+        if (key !== "finish" && state.finish && p.finish !== state.finish) return false;
+        if (key !== "colorGroup" && state.color && p.colorGroup !== state.color) return false;
+        if (value && p[key] !== value) return false;
+        if (!q) return true;
         return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
       }).length;
     }
 
-    function renderFilterButtons(container, values, active, onPick, key){
-      container.innerHTML = values.map((v) => {
-        const cnt = countBy(key, v);
-        const isActive = active === v;
-        return `<button type="button" class="f-btn${isActive ? ' active' : ''}" data-v="${esc(v)}"><span>${esc(v)}</span><span class="f-cnt">${cnt}</span></button>`;
-      }).join('');
-      container.querySelectorAll('.f-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const v = btn.getAttribute('data-v') || '';
-          onPick(v === active ? '' : v);
+    function renderFilterButtons(container, values, active, onPick, key) {
+      container.innerHTML = values
+        .map((v) => {
+          const cnt = countBy(key, v);
+          const isActive = active === v;
+          return `<button type=\"button\" class=\"filter-btn${isActive ? " active" : ""}\" data-v=\"${esc(v)}\"><span>${esc(v)}</span><span class=\"filter-count\">${cnt}</span></button>`;
+        })
+        .join("");
+
+      container.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const v = btn.getAttribute("data-v") || "";
+          onPick(v === active ? "" : v);
         });
       });
     }
 
-    function renderCards(items){
-      if(!items.length){
-        el.grid.innerHTML = '';
-        el.state.style.display = 'block';
-        el.state.textContent = 'Pagal pasirinktus filtrus produktu nerasta.';
+    function renderCards(items) {
+      if (!items.length) {
+        el.grid.innerHTML = "";
+        el.empty.style.display = "block";
+        el.empty.textContent = "Pagal pasirinktus filtrus produktu nerasta.";
         return;
       }
-      el.state.style.display = 'none';
-      el.grid.innerHTML = items.map((p) => {
-        const img = Array.isArray(state.skuImages[p.sku]) && state.skuImages[p.sku].length ? state.skuImages[p.sku][0] : '';
-        const desc = state.skuDesc[p.sku] || '';
-        return `<article class="card">
-          <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(p.name)}" />` : ''}<span class="sku">${esc(p.sku)}</span></div>
-          <div class="body">
-            <div class="finish">${esc(p.finish)}</div>
-            <div class="name">${esc(p.name)}</div>
-            <div class="dims">${esc(p.dims)}</div>
-            <div class="desc">${esc(desc)}</div>
-            <div class="meta">
-              <span class="tag grade">${esc(p.grade)}</span>
-              <span class="tag cat">${esc(p.category)}</span>
-            </div>
-          </div>
-        </article>`;
-      }).join('');
+
+      el.empty.style.display = "none";
+      el.grid.innerHTML = items
+        .map((p) => {
+          const img = Array.isArray(state.skuImages[p.sku]) && state.skuImages[p.sku].length ? state.skuImages[p.sku][0] : "";
+          const desc = state.skuDesc[p.sku] || "";
+          return `<article class=\"card\">\n            <div class=\"card-media\">${img ? `<img src=\"${esc(img)}\" alt=\"${esc(p.name)}\" loading=\"lazy\" />` : ""}<span class=\"card-sku\">${esc(p.sku)}</span></div>\n            <div class=\"card-body\">\n              <div class=\"card-finish\">${esc(p.finish)}</div>\n              <h3 class=\"card-name\">${esc(p.name)}</h3>\n              <div class=\"card-dims\">${esc(p.dims)}</div>\n              <div class=\"card-desc\">${esc(desc)}</div>\n              <div class=\"card-meta\">\n                <span class=\"pill pill-grade\">${esc(p.grade)}</span>\n                <span class=\"pill pill-category\">${esc(p.category)}</span>\n              </div>\n            </div>\n          </article>`;
+        })
+        .join("");
     }
 
-    function render(){
+    function render() {
       const cats = [...new Set(state.products.map((p) => p.category))];
       const grades = [...new Set(state.products.map((p) => p.grade))];
       const finishes = [...new Set(state.products.map((p) => p.finish))];
       const colors = [...new Set(state.products.map((p) => p.colorGroup))];
 
-      renderFilterButtons(el.fCats, cats, state.cat, (v) => { state.cat = v; render(); }, 'category');
-      renderFilterButtons(el.fGrades, grades, state.grade, (v) => { state.grade = v; render(); }, 'grade');
-      renderFilterButtons(el.fFinish, finishes, state.finish, (v) => { state.finish = v; render(); }, 'finish');
-      renderFilterButtons(el.fColor, colors, state.color, (v) => { state.color = v; render(); }, 'colorGroup');
+      renderFilterButtons(el.fCats, cats, state.cat, (v) => {
+        state.cat = v;
+        render();
+      }, "category");
+
+      renderFilterButtons(el.fGrades, grades, state.grade, (v) => {
+        state.grade = v;
+        render();
+      }, "grade");
+
+      renderFilterButtons(el.fFinish, finishes, state.finish, (v) => {
+        state.finish = v;
+        render();
+      }, "finish");
+
+      renderFilterButtons(el.fColor, colors, state.color, (v) => {
+        state.color = v;
+        render();
+      }, "colorGroup");
 
       const filtered = currentFiltered();
-      el.result.innerHTML = `${filtered.length} <span>produktai rodomi</span>`;
+      el.result.innerHTML = `<strong>${filtered.length}</strong> produktai rodomi`;
       renderCards(filtered);
     }
 
-    function attachUi(){
-      el.search.addEventListener('input', () => { state.search = el.search.value; render(); });
-      el.clear.addEventListener('click', () => {
-        state.search = '';
-        state.cat = '';
-        state.grade = '';
-        state.finish = '';
-        state.color = '';
-        el.search.value = '';
+    function attachUi() {
+      el.search.addEventListener("input", () => {
+        state.search = el.search.value;
         render();
       });
-      el.mobileToggle.addEventListener('click', () => {
-        el.sidebar.classList.toggle('collapsed');
-        el.mfIcon.textContent = el.sidebar.classList.contains('collapsed') ? '+' : '-';
+
+      el.clear.addEventListener("click", () => {
+        state.search = "";
+        state.cat = "";
+        state.grade = "";
+        state.finish = "";
+        state.color = "";
+        el.search.value = "";
+        render();
       });
-      if(window.innerWidth > 920){
-        el.sidebar.classList.remove('collapsed');
-        el.mfIcon.textContent = '-';
+
+      el.mobileToggle.addEventListener("click", () => {
+        el.sidebar.classList.toggle("collapsed");
+        el.mfIcon.textContent = el.sidebar.classList.contains("collapsed") ? "+" : "-";
+      });
+
+      if (window.innerWidth > 809.98) {
+        el.sidebar.classList.remove("collapsed");
+        el.mfIcon.textContent = "-";
       }
     }
 
-    async function loadData(){
-      const res = await fetch('../index.html', { cache: 'no-store' });
-      if(!res.ok) throw new Error(`Failed to load source: ${res.status}`);
+    async function loadData() {
+      const res = await fetch("../index.html", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load source: ${res.status}`);
       const src = await res.text();
 
-      const products = evalLiteral(parseConstLiteral(src, 'PRODUCTS'));
-      const skuImages = evalLiteral(parseConstLiteral(src, 'SKU_IMAGES'));
-      const skuDesc = evalLiteral(parseConstLiteral(src, 'SKU_DESC'));
+      const products = evalLiteral(parseConstLiteral(src, "PRODUCTS"));
+      const skuImages = evalLiteral(parseConstLiteral(src, "SKU_IMAGES"));
+      const skuDesc = evalLiteral(parseConstLiteral(src, "SKU_DESC"));
 
       state.products = products.map(decorateProduct);
       state.skuImages = skuImages;
       state.skuDesc = skuDesc;
     }
 
-    async function boot(){
-      try{
+    async function boot() {
+      try {
         await loadData();
         attachUi();
         render();
-      }catch(err){
-        el.grid.innerHTML = '';
-        el.state.style.display = 'block';
-        el.state.textContent = `Nepavyko uzkrauti katalogo duomenu: ${err && err.message ? err.message : 'unknown error'}`;
+      } catch (err) {
+        el.grid.innerHTML = "";
+        el.empty.style.display = "block";
+        el.empty.textContent = `Nepavyko uzkrauti katalogo duomenu: ${err && err.message ? err.message : "unknown error"}`;
       }
     }
 
